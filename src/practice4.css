@@ -8,7 +8,7 @@
 .model-actions { display: flex; align-items: center; flex-wrap: wrap; gap: .45rem; }
 .model-actions button, .model-actions a { display: inline-flex; align-items: center; justify-content: center; min-height: 2.4rem; border: 1px solid var(--color-line); background: var(--color-panel); padding: .4rem .7rem; color: var(--color-ink); font-size: .85rem; text-decoration: none; }
 .model-actions button:hover, .model-actions a:hover { border-color: var(--color-brand); color: var(--color-brand); }
-.bpmn-canvas { width: 100%; height: clamp(24rem, 45vw, 38rem); background: #fff; }
+.bpmn-canvas { width: 100%; height: clamp(20rem, 32vw, 25rem); background: #fff; }
 .model-figure figcaption, .model-error { border-top: 1px solid var(--color-line); padding: .85rem 1.5rem; color: var(--color-muted); font-size: .85rem; line-height: 1.55; }
 .model-error { color: #a73725; }
 .bpmn-canvas .djs-element.erp-task .djs-visual > rect { stroke: var(--color-brand) !important; stroke-width: 2.5px !important; fill: #fff7f2 !important; }
@@ -48,7 +48,7 @@
 }
 @media (max-width: 600px) {
   .model-heading { padding: 1rem; }
-  .bpmn-canvas { height: 26rem; }
+  .bpmn-canvas { height: 20rem; }
   .analysis-item, .improvement-list article { grid-template-columns: 2rem minmax(0, 1fr); gap: .6rem; }
   .story-list li > p { font-size: 1rem; }
 }

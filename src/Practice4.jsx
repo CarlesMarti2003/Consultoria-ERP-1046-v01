@@ -55,7 +55,7 @@ function Diagram({ file, title, caption, improved = false }) {
       </div>
       <div className="bpmn-canvas" ref={mount} role="img" aria-label={title + '. El fitxer BPMN es pot descarregar amb l’enllaç de damunt.'} />
       {error && <p className="model-error" role="alert">{error}</p>}
-      {improved && <figcaption>Les tasques ressaltades tenen suport de l’ERP. Les passarel·les indiquen decisions; els finals alternatius deixen el material pendent o rebutjat.</figcaption>}
+      <figcaption>Amplia el model amb «+» i arrossega'l per llegir cada pas. {improved && 'Les tasques ressaltades tenen suport de l’ERP. Les passarel·les indiquen decisions; els finals alternatius deixen el material pendent o rebutjat.'}</figcaption>
     </figure>
   )
 }
@@ -74,7 +74,7 @@ export function AnalysisPage() {
         <div className="analysis-list">
           {analysis.map((item) => <article key={item.id} className="analysis-item">
             <span className="analysis-id">{item.id}</span>
-            <div><h3>{item.step}</h3><p className="analysis-owner">{item.owner}</p><p>{item.diagnosis}</p><p><strong>Decisió:</strong> {item.decision}</p><p><strong>Conseqüència:</strong> {item.consequence}</p></div>
+            <div><h3>{item.step}</h3><p className="analysis-owner">{item.owner}</p><p>{item.diagnosis}</p><p><strong>Decisió:</strong> {item.decision}</p><p><strong>Conseqüència:</strong> {item.consequence}</p><p><strong>Millora ({item.category}):</strong> {item.improvement}</p></div>
           </article>)}
         </div>
       </div>
