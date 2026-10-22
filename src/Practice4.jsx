@@ -107,7 +107,7 @@ export function ImprovementPage() {
       <div className="wrap"><Diagram file="to-be.bpmn" title="Model TO-BE · BPMN2" caption="El model separa les decisions humanes de les tasques amb suport de l’ERP." improved />
         <div className="to-be-notes"><h2>Què canvia en el recorregut</h2><p>La necessitat es vincula al pla de fabricació. L’ERP calcula la disponibilitat descomptant reserves i lots bloquejats. Si falta material, l’aprovació i la comparació d’ofertes queden registrades abans d’emetre la comanda.</p><p>La data confirmada es contrasta amb la data requerida. En la recepció es comprova la quantitat; qualitat allibera o bloqueja el lot. Només el material acceptat actualitza l’estoc i genera l’avís a producció. Les diferències i els rebutjos segueixen camins d’incidència visibles.</p></div>
         <p className="model-note">Aquest és un model proposat per avaluar solucions ERP. No representa una implantació ja feta ni beneficis mesurats.</p>
-        <a className="text-link next-link" href={base + 'presentacio/Nexe-P4-analisi-i-millora.pptx'} download>Descarregar la presentació de dues diapositives <span aria-hidden="true">↗</span></a>
+        <a className="text-link next-link" href={base + 'presentacio/Nexe-P4-analisi-i-millora-v2.pptx'} download>Descarregar la presentació de dues diapositives <span aria-hidden="true">↗</span></a>
         <a className="text-link next-link" href="#/requisits">Consultar els requisits ERP <span aria-hidden="true">↗</span></a>
       </div>
     </section>
