@@ -41,4 +41,4 @@ git commit -m "Actualitza la web"
 git push origin main
 ```
 
-`npm run export` compila l'aplicació i copia `index.html`, `assets/`, `images/` i, si existeix, `cv/` a la carpeta principal. Editeu sempre els fitxers de `src/` i `public/`; els de la carpeta principal es tornen a generar amb l'exportació. L'adreça pública és [carlesmarti2003.github.io/Consultoria-ERP-1046](https://carlesmarti2003.github.io/Consultoria-ERP-1046/).
+`npm run export` compila l'aplicació i copia `index.html`, `assets/`, `images/` i, si existeix, `cv/` a la carpeta principal. Editeu sempre els fitxers de `src/` i `public/`; els de la carpeta principal es tornen a generar amb l'exportació. L'adreça pública és [carlesmarti2003.github.io/Consultoria-ERP-1046-v01](https://carlesmarti2003.github.io/Consultoria-ERP-1046-v01/).
