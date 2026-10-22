@@ -1,9 +1,9 @@
 // cvUrl accepta una ruta a public/cv/ o un enllaç públic a un PDF.
 export const team = [
-  { name: 'Héctor Balaguer Romero', studies: 'Grau en Enginyeria Informàtica (en curs)', responsibility: 'Analitza el procés d’aprovisionament i les necessitats de producció i magatzem.', cvUrl: 'cv/hector-balaguer.pdf' },
-  { name: 'Carles Martí Corredor', studies: 'Grau en Enginyeria Informàtica (en curs)', responsibility: 'Revisa els sistemes actuals i compara les funcions dels ERP que poden cobrir el procés.', cvUrl: 'cv/carles-marti.pdf' },
-  { name: 'Domingo Zurera González', studies: 'Grau en Enginyeria Informàtica (en curs)', responsibility: 'Documenta el cas i defineix els requisits que hauria de complir la solució.', cvUrl: 'cv/domingo-zurera.pdf' },
-  { name: 'Pau Mollar Belis', studies: 'Grau en Matemàtica Computacional (en curs)', responsibility: 'Estudia les dades d’estoc i proposa indicadors per a valorar les millores.', cvUrl: 'cv/pau-mollar.pdf' },
+  { name: 'Héctor Balaguer Romero', studies: 'Grau en Enginyeria Informàtica (en curs)', cvUrl: 'cv/hector-balaguer.pdf' },
+  { name: 'Carles Martí Corredor', studies: 'Grau en Enginyeria Informàtica (en curs)', cvUrl: 'cv/carles-marti.pdf' },
+  { name: 'Domingo Zurera González', studies: 'Grau en Enginyeria Informàtica (en curs)', cvUrl: 'cv/domingo-zurera.pdf' },
+  { name: 'Pau Mollar Belis', studies: 'Grau en Matemàtica Computacional (en curs)', cvUrl: 'cv/pau-mollar.pdf' },
 ]
 
 export const departments = [

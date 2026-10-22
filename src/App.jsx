@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { departments, steps, team } from './content.js'
+import { AnalysisPage, ImprovementPage, RequirementsPage } from './Practice4.jsx'
 
 const asset = (file) => import.meta.env.BASE_URL + 'images/' + file
 
@@ -7,6 +8,9 @@ const navigation = [
   { label: 'Inici', href: '#/', page: 'inici' },
   { label: 'Empresa', href: '#/empresa', page: 'empresa' },
   { label: 'Procés', href: '#/proces', page: 'proces' },
+  { label: 'Anàlisi', href: '#/analisi', page: 'analisi' },
+  { label: 'Millora', href: '#/millora', page: 'millora' },
+  { label: 'Requisits', href: '#/requisits', page: 'requisits' },
   { label: 'Consultora', href: '#/consultora', page: 'consultora' },
   { label: 'Contacte', href: '#/contacte', page: 'contacte' },
 ]
@@ -20,6 +24,9 @@ const titles = {
   inici: 'Inici',
   empresa: 'Empresa',
   proces: 'Procés',
+  analisi: 'Anàlisi',
+  millora: 'Millora',
+  requisits: 'Requisits',
   consultora: 'Consultora',
   contacte: 'Contacte',
   privacitat: 'Privacitat',
@@ -68,7 +75,7 @@ function Header({ page }) {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 850) setMenuOpen(false)
+      if (window.innerWidth > 950) setMenuOpen(false)
     }
     const handleEscape = (event) => {
       if (event.key === 'Escape') setMenuOpen(false)
@@ -145,11 +152,11 @@ function Home() {
       <section className="case-overview section-space">
         <div className="wrap split-section">
           <div>
-            <p className="page-label">Cas pràctic simulat</p>
-            <h2>Quin és el cas?</h2>
+            <p className="page-label">Aprovisionament</p>
+            <h2>El punt de partida</h2>
           </div>
           <div className="body-copy">
-            <p>Ceràmica Riu Sec és l’empresa fictícia d’aquest projecte. Les seues àrees treballen amb informació separada i de vegades detecten massa tard que falta material per a fabricar.</p>
+            <p>A Ceràmica Riu Sec, producció, compres i magatzem treballen amb informació separada. De vegades detecten massa tard que falta material per a fabricar.</p>
             <p>Nexe analitza com funciona ara l’aprovisionament i quines necessitats hauria de cobrir un ERP. La millora que es busca és compartir dades fiables entre producció, compres i magatzem. Encara no s’ha triat ni implantat cap solució, de manera que no presentem resultats obtinguts.</p>
           </div>
         </div>
@@ -197,7 +204,7 @@ function Company() {
         <div className="wrap split-section">
           <h2>El context</h2>
           <div className="body-copy">
-            <p>Per a aquest cas plantegem que Ceràmica Riu Sec va començar a Onda com una fàbrica de taulells amb un equip més menut. A mesura que van augmentar les comandes de distribuïdors i empreses de construcció, va ampliar la producció i el magatzem fins a arribar a les {workforce} persones actuals.</p>
+            <p>Ceràmica Riu Sec va començar a Onda com una fàbrica de taulells amb un equip més menut. A mesura que van augmentar les comandes de distribuïdors i empreses de construcció, va ampliar la producció i el magatzem fins a arribar a les {workforce} persones actuals.</p>
             <p>Hui treballa amb una planta de producció i un magatzem propi. Els registres d’estoc, les peticions de materials i les compres continuen repartits entre fulls de càlcul i correus, cosa que complica la coordinació quan canvia el pla de fabricació.</p>
             <p>La seua estratègia és fabricar segons la demanda prevista, disposar dels materials a temps i evitar tant les aturades com l’excés d’estoc.</p>
           </div>
@@ -230,6 +237,7 @@ function Company() {
               ))}
             </ul>
           </div>
+          <a className="text-link next-link" href="#/analisi">Llegir l’anàlisi del procés <span aria-hidden="true">↗</span></a>
         </div>
       </section>
       <section className="section-space current-state">
@@ -300,6 +308,7 @@ function Process() {
               </ol>
             ))}
           </div>
+          <a className="text-link next-link" href="#/analisi">Llegir l’anàlisi de cada pas <span aria-hidden="true">↗</span></a>
         </div>
       </section>
       <section className="concerns section-space">
@@ -345,7 +354,7 @@ function Consultancy() {
         <div className="wrap">
           <div className="section-heading-row">
             <h2>Qui som</h2>
-            <p>Ens repartim l’anàlisi del procés, els sistemes, els requisits i les dades per estudiar l’aprovisionament de Ceràmica Riu Sec.</p>
+            <p>Formem l’equip de Nexe. Pots consultar la formació i el currículum de cada membre.</p>
           </div>
           <ul className="team-list">
             {team.map((person) => (
@@ -353,7 +362,6 @@ function Consultancy() {
                 <h3>{person.name}</h3>
                 <dl>
                   <div><dt>Formació</dt><dd>{person.studies}</dd></div>
-                  <div><dt>En el projecte</dt><dd>{person.responsibility}</dd></div>
                 </dl>
                 {person.cvUrl
                   ? <a className="text-link" href={cvHref(person.cvUrl)} target="_blank" rel="noopener noreferrer">Veure el CV <span aria-hidden="true">↗</span></a>
@@ -469,6 +477,9 @@ export default function App() {
         {page === 'inici' && <Home />}
         {page === 'empresa' && <Company />}
         {page === 'proces' && <Process />}
+        {page === 'analisi' && <AnalysisPage />}
+        {page === 'millora' && <ImprovementPage />}
+        {page === 'requisits' && <RequirementsPage />}
         {page === 'consultora' && <Consultancy />}
         {page === 'contacte' && <Contact />}
         {page === 'privacitat' && <Privacy />}

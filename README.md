@@ -1,44 +1,43 @@
 # Nexe Consultoria ERP · Ceràmica Riu Sec
 
-Web de Nexe Consultoria ERP sobre Ceràmica Riu Sec i el procés d'aprovisionament de matèries primeres. És un cas pràctic simulat i està organitzada en cinc apartats: inici, empresa, procés, consultora i contacte.
+Web de Nexe Consultoria ERP sobre el procés d'aprovisionament de matèries primeres de Ceràmica Riu Sec. Aquesta branca de treball correspon a la versió 1. La versió 0 es conserva al repositori `Consultoria-ERP-1046`.
 
-## Obrir el projecte
+La web conté la presentació de l'empresa i la consultora, el procés, l'anàlisi AS-IS, la proposta TO-BE en BPMN 2.0, els requisits ERP i el contacte. Els quatre CV es poden obrir des de «Qui som». Els models `.bpmn` es poden descarregar des de les pàgines corresponents.
 
-Cal tindre Node.js 22 o posterior. Des de la carpeta del repositori:
+## Desenvolupament
+
+Cal Node.js 22 o posterior.
 
 ```bash
-npm install
+npm ci
 npm run dev
 ```
 
-Vite mostrarà l'adreça local de la web. Per comprovar la versió que es publicarà:
+Per comprovar la compilació:
 
 ```bash
 npm run build
 npm run preview
 ```
 
-## On editar els continguts
+## Continguts
 
-- `src/index.html`: entrada de l'aplicació per al desenvolupament.
-- `src/App.jsx`: textos, apartats i navegació.
-- `src/content.js`: membres de l'equip, departaments i passos del procés.
-- `src/styles.css`: colors i estils generals de Tailwind.
-- `public/images/`: logotip de Nexe i imatge il·lustrativa.
+- `src/App.jsx`: rutes i pàgines generals.
+- `src/Practice4.jsx` i `src/practice4Content.js`: anàlisi, millora i requisits.
+- `src/styles.css` i `src/practice4.css`: presentació visual.
+- `public/models/`: models BPMN 2.0. Es poden regenerar amb `node scripts/generate-bpmn.mjs`.
+- `public/cv/`: CV de l'equip.
+- `public/presentacio/`: diapositives de la sessió.
 
-L'apartat **Qui som** mostra la formació confirmada de cada membre i un repartiment proposat de responsabilitats per al cas. Confirmeu aquestes funcions amb l'equip abans del lliurament. Els CV encara no s'han facilitat; no s'han inventat experiències ni competències personals.
+## Publicació
 
-Per incorporar-los, la via més senzilla és guardar **un PDF per membre** dins de `public/cv/` i indicar-ne la ruta a `cvUrl` de `src/content.js`, per exemple `cvUrl: 'cv/hector-balaguer.pdf'`. També es pot posar un **enllaç públic complet** a un PDF allotjat fora de la web, per exemple `cvUrl: 'https://exemple.org/cv/hector-balaguer.pdf'`. Cal comprovar que el PDF s'obri sense iniciar sessió. En publicar la web, «CV pendent d’incorporar» es convertirà en «Veure el CV». Reviseu abans de publicar-los que no hi haja dades personals que no vulgueu fer públiques (adreça, telèfon, document d'identitat, etc.).
-
-## Publicació en GitHub Pages
-
-GitHub Pages publica la carpeta principal de la branca `main`. Per generar els fitxers que serveix:
+El projecte compila amb la base `/Consultoria-ERP-1046-v01/`. `npm run export` copia a l'arrel els fitxers que GitHub Pages serveix des de `main`:
 
 ```bash
 npm run export
 git add -A
-git commit -m "Actualitza la web"
+git commit -m "Actualitza la versió 1"
 git push origin main
 ```
 
-`npm run export` compila l'aplicació i copia `index.html`, `assets/`, `images/` i, si existeix, `cv/` a la carpeta principal. Editeu sempre els fitxers de `src/` i `public/`; els de la carpeta principal es tornen a generar amb l'exportació. L'adreça pública és [carlesmarti2003.github.io/Consultoria-ERP-1046-v01](https://carlesmarti2003.github.io/Consultoria-ERP-1046-v01/).
+Cal configurar GitHub Pages amb la branca `main` i la carpeta `/ (root)` una sola vegada. L'adreça pública és [carlesmarti2003.github.io/Consultoria-ERP-1046-v01](https://carlesmarti2003.github.io/Consultoria-ERP-1046-v01/).

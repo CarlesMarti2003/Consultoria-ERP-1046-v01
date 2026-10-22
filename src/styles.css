@@ -35,8 +35,8 @@ p, h1, h2, h3, h4, figure { margin: 0; }
 .header-inner { display: flex; align-items: center; justify-content: space-between; gap: 2rem; min-height: 5rem; }
 .brand { display: inline-flex; flex: none; align-items: center; }
 .brand img { display: block; width: 8.55rem; height: auto; }
-.desktop-nav { display: flex; align-items: stretch; gap: clamp(1rem, 2.6vw, 2.35rem); align-self: stretch; }
-.desktop-nav a { display: inline-flex; align-items: center; border-bottom: 2px solid transparent; padding: .15rem 0 0; color: var(--color-muted); font-size: .9rem; font-weight: 500; text-decoration: none; }
+.desktop-nav { display: flex; align-items: stretch; gap: clamp(.7rem, 1.4vw, 1.3rem); align-self: stretch; }
+.desktop-nav a { display: inline-flex; align-items: center; border-bottom: 2px solid transparent; padding: .15rem 0 0; color: var(--color-muted); font-size: .84rem; font-weight: 500; text-decoration: none; }
 .desktop-nav a:hover, .desktop-nav a[aria-current="page"] { color: var(--color-ink); }
 .desktop-nav a[aria-current="page"] { border-bottom-color: var(--color-brand); font-weight: 600; }
 .menu-button { display: none; align-items: center; gap: .8rem; min-height: 2.75rem; border: 0; background: transparent; color: var(--color-ink); font-size: .95rem; font-weight: 600; }
@@ -143,7 +143,7 @@ p, h1, h2, h3, h4, figure { margin: 0; }
 .service-list p { max-width: 40rem; font-size: 1.04rem; line-height: 1.55; }
 .erp-section { background: #eeeae5; }
 .team-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 2.5rem; margin: 0; border-top: 1px solid var(--color-line); padding: 0; list-style: none; }
-.team-list li { min-height: 13rem; border-bottom: 1px solid var(--color-line); padding: 1.5rem 0; }
+.team-list li { min-height: 9rem; border-bottom: 1px solid var(--color-line); padding: 1.5rem 0; }
 .team-list h3 { font-size: 1.3rem; font-weight: 600; }
 .team-list dl { margin: 1.1rem 0 0; }
 .team-list dl div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: .6rem; margin-top: .4rem; font-size: .91rem; line-height: 1.5; }
@@ -172,13 +172,16 @@ p, h1, h2, h3, h4, figure { margin: 0; }
 .footer-links a { color: var(--color-muted); font-size: .87rem; text-decoration: none; }
 .footer-links a:hover, .footer-links a[aria-current="page"] { color: var(--color-brand); text-decoration: underline; text-underline-offset: .2rem; }
 
-@media (max-width: 850px) {
+@media (max-width: 950px) {
   .desktop-nav { display: none; }
   .menu-button { display: inline-flex; }
   .mobile-nav { position: absolute; top: 100%; right: 0; left: 0; display: flex; flex-direction: column; border-bottom: 1px solid var(--color-line); background: var(--color-panel); padding: .5rem max(1.5rem, calc((100vw - 74rem) / 2)) .8rem; box-shadow: 0 12px 25px rgb(37 33 30 / 8%); }
   .mobile-nav a { border-bottom: 1px solid var(--color-line); padding: .8rem 0; color: var(--color-ink); font-size: .95rem; font-weight: 500; text-decoration: none; }
   .mobile-nav a:last-child { border-bottom: 0; }
   .mobile-nav a[aria-current="page"] { color: var(--color-brand); font-weight: 700; }
+}
+
+@media (max-width: 850px) {
   .home-opening-grid, .page-intro { grid-template-columns: 1fr; }
   .home-opening-grid { gap: 1.5rem; }
   .home-opening h1 { font-size: clamp(3rem, 6vw, 4.4rem); }
