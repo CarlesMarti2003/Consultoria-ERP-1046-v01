@@ -149,8 +149,6 @@ p, h1, h2, h3, h4, figure { margin: 0; }
 .team-list dl div { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: .6rem; margin-top: .4rem; font-size: .91rem; line-height: 1.5; }
 .team-list dt { color: var(--color-muted); }
 .team-list dd { margin: 0; }
-.team-list .text-link { margin-top: 1rem; }
-.cv-status { margin-top: 1rem; color: var(--color-muted); font-size: .9rem; }
 
 .info-section { background: var(--color-panel); }
 .info-layout { display: grid; grid-template-columns: minmax(12rem, .35fr) minmax(0, .65fr); gap: 4rem; }

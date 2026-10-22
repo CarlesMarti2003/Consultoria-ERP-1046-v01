@@ -33,10 +33,6 @@ const titles = {
   cookies: 'Cookies',
 }
 
-const cvHref = (url) => /^https?:\/\//i.test(url)
-  ? url
-  : import.meta.env.BASE_URL + url.replace(/^\/+/, '')
-
 const handoffs = [
   { team: 'Producció', action: 'Comunica els materials necessaris' },
   { team: 'Magatzem', action: 'Contrasta les existències' },
@@ -354,7 +350,7 @@ function Consultancy() {
         <div className="wrap">
           <div className="section-heading-row">
             <h2>Qui som</h2>
-            <p>Formem l’equip de Nexe. Pots consultar la formació i el currículum de cada membre.</p>
+            <p>Formem l’equip de Nexe. Estes són les funcions de cada membre dins de la consultora.</p>
           </div>
           <ul className="team-list">
             {team.map((person) => (
@@ -362,10 +358,9 @@ function Consultancy() {
                 <h3>{person.name}</h3>
                 <dl>
                   <div><dt>Formació</dt><dd>{person.studies}</dd></div>
+                  <div><dt>Funció</dt><dd>{person.role}</dd></div>
+                  <div><dt>Responsabilitat</dt><dd>{person.responsibility}</dd></div>
                 </dl>
-                {person.cvUrl
-                  ? <a className="text-link" href={cvHref(person.cvUrl)} target="_blank" rel="noopener noreferrer">Veure el CV <span aria-hidden="true">↗</span></a>
-                  : <p className="cv-status">CV pendent d’incorporar</p>}
               </li>
             ))}
           </ul>
@@ -410,7 +405,7 @@ function Privacy() {
         <div className="wrap info-layout">
           <h2>Dades a la web</h2>
           <div className="info-copy">
-            <p>La web publica els noms i els estudis dels membres de Nexe per presentar l’equip del projecte.</p>
+            <p>La web publica els noms, els estudis i les funcions dels membres de Nexe per presentar l’equip del projecte.</p>
             <p>El formulari de contacte està desactivat. Ara mateix no pots enviar-hi dades ni missatges a través de la pàgina. No hem incorporat eines pròpies d’analítica ni de publicitat.</p>
             <p>La web s’allotja a GitHub Pages. GitHub pot tractar dades tècniques de navegació d’acord amb la seua <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noreferrer">declaració de privacitat</a>.</p>
           </div>

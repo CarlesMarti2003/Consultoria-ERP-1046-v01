@@ -2,7 +2,7 @@
 
 Web de Nexe Consultoria ERP sobre el procés d'aprovisionament de matèries primeres de Ceràmica Riu Sec. Aquesta branca de treball correspon a la versió 1. La versió 0 es conserva al repositori `Consultoria-ERP-1046`.
 
-La web conté la presentació de l'empresa i la consultora, el procés, l'anàlisi AS-IS, la proposta TO-BE en BPMN 2.0, els requisits ERP i el contacte. Els quatre CV es poden obrir des de «Qui som». Els models `.bpmn` es poden descarregar des de les pàgines corresponents.
+La web conté la presentació de l'empresa i la consultora, el procés, l'anàlisi AS-IS, la proposta TO-BE en BPMN 2.0, els requisits ERP i el contacte. «Qui som» mostra la formació i les funcions assignades a l'equip. Els models `.bpmn` es poden descarregar des de les pàgines corresponents.
 
 ## Desenvolupament
 
@@ -26,7 +26,6 @@ npm run preview
 - `src/Practice4.jsx` i `src/practice4Content.js`: anàlisi, millora i requisits.
 - `src/styles.css` i `src/practice4.css`: presentació visual.
 - `public/models/`: models BPMN 2.0. Es poden regenerar amb `node scripts/generate-bpmn.mjs`.
-- `public/cv/`: CV de l'equip.
 - `public/presentacio/`: diapositives de la sessió.
 
 ## Publicació
