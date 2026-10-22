@@ -248,3 +248,27 @@ p, h1, h2, h3, h4, figure { margin: 0; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
 }
+
+/* Consultancy landing page and client project hierarchy. */
+.home-opening { border-bottom: 1px solid var(--color-line); }
+.home-opening h1 { max-width: 15ch; }
+.cases-section { padding-top: 0; }
+.client-case { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); align-items: center; border-top: 1px solid var(--color-line); padding-block: 2rem; }
+.client-case figure img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.client-case figcaption { margin-top: .6rem; color: var(--color-muted); font-size: .75rem; }
+.client-case h2 { margin-top: .8rem; font-size: clamp(2rem, 3vw, 2.8rem); font-weight: 600; letter-spacing: -.035em; }
+.client-case-copy > p:not(.page-label) { margin-top: 1rem; color: var(--color-muted); line-height: 1.7; }
+.client-case-copy > .case-status { color: var(--color-brand) !important; font-size: .85rem; font-weight: 600; }
+.client-case .text-link { margin-top: 1.6rem; }
+.case-context { background: var(--color-panel); border-bottom: 1px solid var(--color-line); }
+.case-breadcrumb { display: flex; align-items: center; flex-wrap: wrap; gap: .65rem; padding-block: 1.2rem; color: var(--color-muted); font-size: .85rem; }
+.case-breadcrumb a { color: var(--color-brand); text-underline-offset: .2rem; }
+.case-breadcrumb strong { font-weight: 500; }
+.case-navigation { display: flex; gap: 1.8rem; overflow-x: auto; }
+.case-navigation a { flex: none; border-bottom: 2px solid transparent; padding: .6rem 0 .85rem; color: var(--color-muted); font-size: .9rem; text-decoration: none; }
+.case-navigation a[aria-current="page"] { border-color: var(--color-brand); color: var(--color-ink); font-weight: 600; }
+.case-navigation a:hover { color: var(--color-brand); }
+@media (max-width: 650px) {
+  .client-case { grid-template-columns: 1fr; gap: 1.3rem; }
+  .case-navigation { gap: 1.3rem; }
+}

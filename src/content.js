@@ -81,3 +81,7 @@ export const steps = [
     consequence: 'La dada d’estoc pot quedar desactualitzada encara que el material ja estiga acceptat.',
   },
 ]
+
+export const caseStudies = [
+  { slug: 'ceramica-riu-sec', name: 'Ceràmica Riu Sec', sector: 'Indústria ceràmica', location: 'Onda', status: 'Projecte en curs · anàlisi i proposta', image: 'ceramica-illustrativa.png', summary: 'Revisem l’aprovisionament de matèries primeres per millorar la coordinació entre producció, compres, magatzem i qualitat. La proposta està en desenvolupament i encara no hi ha una implantació ni resultats mesurats.' },
+]

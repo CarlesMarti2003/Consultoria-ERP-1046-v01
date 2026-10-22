@@ -83,7 +83,7 @@ export function AnalysisPage() {
       <div className="wrap">
         <div className="section-heading-row"><h2>Problemes i decisions</h2><p>La taula condensa l’anàlisi anterior i relaciona cada problema amb la resposta proposada.</p></div>
         <div className="table-scroll"><table className="work-table"><thead><tr><th>Pas i valoració</th><th>Problema principal</th><th>Punt de decisió</th><th>Millora i categoria</th></tr></thead><tbody>{analysis.map((item) => <tr key={item.id}><th scope="row">{item.id} · {item.step}<small>{item.assessment}</small></th><td>{item.problemSummary}</td><td>{item.decision}</td><td>{item.improvement}<small>Categories {item.category}</small></td></tr>)}</tbody></table></div>
-        <a className="text-link next-link" href="#/millora">Veure les millores i el TO-BE <span aria-hidden="true">↗</span></a>
+        <a className="text-link next-link" href="#/casos/ceramica-riu-sec/millora">Veure les millores i el TO-BE <span aria-hidden="true">↗</span></a>
       </div>
     </section>
   </>
@@ -116,7 +116,7 @@ export function ImprovementPage() {
         <div className="to-be-notes"><h2>Què canvia en el recorregut</h2><p>Primer es comprova si l’estoc utilitzable cobreix la necessitat actual. Si la cobreix, es reserva el material i es revisa igualment el punt de reposició. Per tant, pot iniciar-se una compra encara que la fabricació immediata tinga material. Si no cal reposar, el cas es tanca sense compra. Si la necessitat no està coberta, la sol·licitud és directa. Una petició retornada torna a revisió després de corregir-la. Una petició rebutjada es tanca sense emetre cap comanda.</p><p>Quan la data confirmada posa en risc la fabricació, compres decideix si reclama al proveïdor, en busca un altre o replanifica. Després torna a comprovar la data o repeteix la selecció de proveïdor. Una recepció parcial deixa obert el saldo pendent i envia només la part rebuda a qualitat. Quan arribe la resta, es registra una altra recepció contra la mateixa comanda. Un material incorrecte es bloqueja i passa a reclamació. Un lot pendent continua bloquejat i torna a inspecció quan es completen les proves. Els lots bloquejats o rebutjats s’associen a les ordres de fabricació afectades. Només la quantitat acceptada s’incorpora a l’estoc i es comunica a producció.</p></div>
         <p className="model-note">Aquest és un model proposat per avaluar solucions ERP. No representa una implantació ja feta ni beneficis mesurats.</p>
         <a className="text-link next-link" href={base + 'presentacio/Nexe-P4-analisi-i-millora-v4.pptx'} download>Descarregar la presentació de dues diapositives <span aria-hidden="true">↗</span></a>
-        <a className="text-link next-link" href="#/requisits">Consultar els requisits ERP <span aria-hidden="true">↗</span></a>
+        <a className="text-link next-link" href="#/casos/ceramica-riu-sec/requisits">Consultar els requisits ERP <span aria-hidden="true">↗</span></a>
       </div>
     </section>
   </>
