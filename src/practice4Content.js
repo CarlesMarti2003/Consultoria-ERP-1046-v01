@@ -102,8 +102,8 @@ export const improvementCategories = [
   },
   {
     title: 'Noves necessitats del negoci', steps: '02',
-    change: 'Definir mínims d’estoc i punts de reposició per material a partir de la demanda prevista, els terminis dels proveïdors i la capacitat del magatzem.',
-    reason: 'Dona suport al creixement previst sense acumular material innecessari ni deixar la producció sense subministrament.',
+    change: 'Aplicar l’estratègia de fabricar segons la demanda prevista: definir mínims d’estoc i punts de reposició per material segons els terminis dels proveïdors i la capacitat del magatzem.',
+    reason: 'Ajuda a ajustar les compres a la demanda prevista sense acumular material innecessari ni deixar la producció sense subministrament.',
   },
   {
     title: 'Adopció de programari o TIC', steps: '01–08',
@@ -129,22 +129,17 @@ export const indicators = [
 ]
 
 export const userStories = [
-  { id: 'HU-01', role: 'planificador de producció', need: 'registrar les necessitats de cada versió del pla i la data en què necessite els materials', benefit: 'avisar compres a temps quan canvie la fabricació', task: 'Tasca d’usuari', differential: true, steps: '01' },
-  { id: 'HU-02', role: 'responsable de magatzem', need: 'que l’ERP calcule l’estoc utilitzable descomptant reserves i lots bloquejats, i el compare amb el punt de reposició', benefit: 'anticipar quan caldrà reposar material', task: 'Tasca de servei', differential: true, steps: '02' },
+  { id: 'HU-01', role: 'planificador de producció', need: 'saber quines matèries primeres requereix cada versió del pla i en quina data', benefit: 'comunicar els canvis a compres abans que afecten la fabricació', task: 'Tasca d’usuari', differential: false, steps: '01' },
+  { id: 'HU-02', role: 'responsable de magatzem', need: 'conéixer la quantitat que es pot utilitzar i quan caldrà reposar cada material', benefit: 'demanar només allò que falta i evitar ruptures d’estoc', task: 'Tasca de servei', differential: false, steps: '02' },
   { id: 'HU-03', role: 'responsable de compres', need: 'rebre sol·licituds amb l’estat de l’aprovació i un avís si s’esgota el termini', benefit: 'tramitar les compres sense perdre peticions', task: 'Tasca d’usuari', differential: false, steps: '03' },
-  { id: 'HU-04', role: 'comprador', need: 'comparar ofertes amb preu, termini i especificació del material', benefit: 'deixar constància del motiu de la selecció', task: 'Tasca d’usuari', differential: true, steps: '04' },
-  { id: 'HU-05', role: 'planificador de producció', need: 'rebre un avís quan la data confirmada d’un material crític supere la data necessària', benefit: 'reprogramar la fabricació o demanar una alternativa', task: 'Tasca de servei', differential: true, steps: '05' },
-  { id: 'HU-06', role: 'operari de magatzem', need: 'registrar les quantitats rebudes contra la comanda i obrir una incidència si no coincideixen', benefit: 'evitar que una recepció incompleta es considere disponible', task: 'Tasca d’usuari', differential: false, steps: '06' },
-  { id: 'HU-07', role: 'tècnic de qualitat', need: 'bloquejar o alliberar cada lot segons el resultat de la inspecció', benefit: 'impedir que producció utilitze material no acceptat', task: 'Tasca d’usuari', differential: true, steps: '07' },
-  { id: 'HU-08', role: 'responsable de magatzem', need: 'actualitzar l’estoc i avisar producció quan confirme la ubicació d’un lot acceptat', benefit: 'mantindre les existències al dia sense un segon registre manual', task: 'Tasca de servei', differential: false, steps: '08' },
+  { id: 'HU-04', role: 'comprador', need: 'comparar les ofertes segons el preu, el termini i les especificacions', benefit: 'triar un proveïdor adequat i justificar la decisió', task: 'Tasca d’usuari', differential: false, steps: '04' },
+  { id: 'HU-05', role: 'planificador de producció', need: 'saber quines ordres de fabricació quedarien afectades per un lliurament tardà o un lot bloquejat', benefit: 'decidir a temps si cal reclamar, buscar una alternativa o replanificar', task: 'Tasca de servei', differential: true, differentialReason: 'Relaciona cada retard i cada lot bloquejat amb les ordres de fabricació afectades. Cal comprovar si el producte ERP ofereix aquesta relació entre compres, qualitat i producció.', steps: '05 · 07' },
+  { id: 'HU-06', role: 'operari de magatzem', need: 'distingir la part rebuda de la que encara falta i registrar qualsevol diferència', benefit: 'continuar el control de la quantitat rebuda sense tancar la comanda pendent', task: 'Tasca d’usuari', differential: false, steps: '06' },
+  { id: 'HU-07', role: 'tècnic de qualitat', need: 'decidir si cada lot d’argila o esmalt compleix la fitxa tècnica vigent', benefit: 'mantindre bloquejat el material pendent o rebutjat i alliberar només l’acceptat', task: 'Tasca d’usuari', differential: true, differentialReason: 'Exigeix aplicar criteris d’acceptació segons el tipus de matèria primera i la versió de la seua fitxa tècnica, i traslladar el resultat a la disponibilitat per a producció.', steps: '07' },
+  { id: 'HU-08', role: 'responsable de magatzem', need: 'veure les existències actualitzades i avisar producció quan es confirme la ubicació d’un lot acceptat', benefit: 'disposar de la mateixa dada sense repetir el registre manual', task: 'Tasca de servei', differential: false, steps: '08' },
 ]
 
 export const differentialData = [
-  { name: 'Versió del pla de fabricació', use: 'Relaciona cada necessitat amb el pla vigent i els seus canvis.', stories: 'HU-01' },
-  { name: 'Data requerida per material', use: 'Permet comparar la necessitat de producció amb la data confirmada del proveïdor.', stories: 'HU-01 · HU-05' },
-  { name: 'Estoc reservat i pendent de qualitat', use: 'Separa el material físic de la quantitat realment utilitzable.', stories: 'HU-02 · HU-07' },
-  { name: 'Mínim i punt de reposició per material', use: 'Permet anticipar la compra segons la demanda prevista, el termini del proveïdor i la capacitat de magatzem.', stories: 'HU-02' },
-  { name: 'Criticitat per a l’ordre de fabricació', use: 'Prioritza els avisos quan un retard pot aturar una ordre concreta.', stories: 'HU-05' },
-  { name: 'Especificació ceràmica del material', use: 'Guarda el requisit tècnic que qualitat compara amb el lot rebut.', stories: 'HU-04 · HU-07' },
-  { name: 'Estat i causa de la incidència de recepció', use: 'Manté traçables les diferències de quantitat o de qualitat.', stories: 'HU-06 · HU-07' },
+  { name: 'Ordres de fabricació afectades per un lot o lliurament', use: 'Relaciona la data requerida, la comanda i l’estat del lot amb les ordres que podrien quedar sense matèria primera. No és una dada bàsica de la fitxa del producte.', stories: 'HU-05' },
+  { name: 'Criteris d’acceptació per matèria primera i versió de fitxa', use: 'Permet aplicar al lot els criteris vigents per a l’argila o l’esmalt rebut. Cal verificar si l’ERP pot guardar-los i usar-los en la decisió de qualitat.', stories: 'HU-07' },
 ]

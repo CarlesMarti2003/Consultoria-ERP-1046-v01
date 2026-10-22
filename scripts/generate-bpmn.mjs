@@ -6,7 +6,7 @@ mkdirSync(directory, { recursive: true })
 
 const escape = (value) => String(value).replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll('"', '&quot;')
 const node = (id, type, name, x, y, width = 164, height = 82) => ({ id, type, name, x, y, width, height })
-const flow = (id, source, target, name = '') => ({ id, source, target, name })
+const flow = (id, source, target, name = '', points = null) => ({ id, source, target, name, points })
 
 const asIs = {
   id: 'AS_IS', name: 'Aprovisionament actual',
@@ -47,48 +47,64 @@ const asIs = {
 const toBe = {
   id: 'TO_BE', name: 'Aprovisionament millorat',
   nodes: [
-    node('start', 'startEvent', 'Pla confirmat', 40, 292, 36, 36),
+    node('start', 'startEvent', 'Necessitat identificada', 40, 292, 36, 36),
     node('need', 'userTask', 'Registrar necessitat al pla (ERP)', 130, 270),
     node('calculate', 'serviceTask', 'Calcular estoc i reposició (ERP)', 345, 270),
     node('stock_ok', 'exclusiveGateway', 'Disponible suficient?', 560, 286, 50, 50),
     node('reserve', 'serviceTask', 'Reservar material (ERP)', 675, 85),
-    node('stock_end', 'endEvent', 'Material reservat', 890, 108, 36, 36),
-    node('request', 'userTask', 'Aprovar sol·licitud (ERP)', 675, 270),
-    node('approval_ok', 'exclusiveGateway', 'Sol·licitud aprovada?', 890, 286, 50, 50),
-    node('request_issue', 'userTask', 'Retornar o rebutjar petició (ERP)', 1005, 465),
-    node('request_end', 'endEvent', 'Petició no aprovada', 1220, 488, 36, 36),
-    node('supplier', 'userTask', 'Comparar ofertes (ERP)', 1020, 270),
-    node('order', 'serviceTask', 'Emetre comanda (ERP)', 1235, 270),
-    node('eta', 'serviceTask', 'Seguir data i avisar riscos (ERP)', 1450, 270),
-    node('receive', 'userTask', 'Registrar recepció contra comanda (ERP)', 1665, 270),
-    node('qty_ok', 'exclusiveGateway', 'Quantitat correcta?', 1880, 286, 50, 50),
-    node('qty_issue', 'userTask', 'Obrir incidència (ERP)', 1995, 85),
-    node('qty_end', 'endEvent', 'Pendent de regularitzar', 2210, 108, 36, 36),
-    node('quality', 'userTask', 'Inspeccionar lot (ERP)', 1995, 270),
-    node('quality_ok', 'exclusiveGateway', 'Lot acceptat?', 2210, 286, 50, 50),
-    node('reject', 'userTask', 'Bloquejar lot i avisar (ERP)', 2325, 85),
-    node('reject_end', 'endEvent', 'Lot rebutjat', 2540, 108, 36, 36),
-    node('quality_pending', 'userTask', 'Mantindre lot en revisió (ERP)', 2325, 465),
-    node('quality_pending_end', 'endEvent', 'Pendent de qualitat', 2540, 488, 36, 36),
-    node('register', 'serviceTask', 'Actualitzar estoc i avisar (ERP)', 2325, 270),
-    node('end', 'endEvent', 'Material disponible', 2540, 293, 36, 36),
+    node('reorder_check', 'exclusiveGateway', 'Cal reposar?', 890, 101, 50, 50),
+    node('stock_end', 'endEvent', 'Necessitat coberta', 1100, 108, 36, 36),
+    node('request', 'userTask', 'Revisar sol·licitud (ERP)', 1005, 270),
+    node('approval_ok', 'exclusiveGateway', 'Decisió?', 1220, 286, 50, 50),
+    node('request_correction', 'userTask', 'Corregir petició (ERP)', 1335, 475),
+    node('request_rejected', 'userTask', 'Notificar rebuig (ERP)', 1335, 85),
+    node('request_end', 'endEvent', 'Petició rebutjada', 1550, 108, 36, 36),
+    node('supplier', 'userTask', 'Comparar ofertes (ERP)', 1335, 270),
+    node('order', 'serviceTask', 'Emetre comanda (ERP)', 1550, 270),
+    node('eta', 'serviceTask', 'Seguir data i avisar ordres afectades (ERP)', 1765, 270),
+    node('date_ok', 'exclusiveGateway', 'Arriba a temps?', 1980, 286, 50, 50),
+    node('delay_response', 'userTask', 'Reclamar, buscar alternativa o replanificar (ERP)', 2095, 475, 178, 82),
+    node('alternative_needed', 'exclusiveGateway', 'Canvi de proveïdor?', 2300, 491, 50, 50),
+    node('receive', 'userTask', 'Registrar recepció contra comanda (ERP)', 2200, 270),
+    node('qty_ok', 'exclusiveGateway', 'Recepció?', 2415, 286, 50, 50),
+    node('qty_issue', 'userTask', 'Bloquejar i reclamar (ERP)', 2530, 85),
+    node('qty_end', 'endEvent', 'Incidència derivada', 2745, 108, 36, 36),
+    node('partial', 'userTask', 'Registrar part rebuda i saldo pendent (ERP)', 2530, 475),
+    node('quality', 'userTask', 'Inspeccionar lot (ERP)', 2630, 270),
+    node('quality_ok', 'exclusiveGateway', 'Decisió de qualitat?', 2845, 286, 50, 50),
+    node('reject', 'userTask', 'Bloquejar lot, avisar ordres i reclamar (ERP)', 2960, 85),
+    node('reject_end', 'endEvent', 'Lot rebutjat', 3175, 108, 36, 36),
+    node('quality_pending', 'userTask', 'Bloquejar lot, avisar ordres i completar proves (ERP)', 2960, 475),
+    node('register', 'serviceTask', 'Actualitzar estoc i avisar (ERP)', 2960, 270),
+    node('end', 'endEvent', 'Material acceptat registrat', 3175, 293, 36, 36),
   ],
   flows: [
     flow('f1', 'start', 'need'), flow('f2', 'need', 'calculate'), flow('f3', 'calculate', 'stock_ok'),
-    flow('f4', 'stock_ok', 'reserve', 'Sí'), flow('f5', 'reserve', 'stock_end'),
-    flow('f6', 'stock_ok', 'request', 'No'), flow('f7', 'request', 'approval_ok'),
-    flow('f20', 'approval_ok', 'supplier', 'Sí'), flow('f21', 'approval_ok', 'request_issue', 'No'), flow('f22', 'request_issue', 'request_end'),
-    flow('f8', 'supplier', 'order'), flow('f9', 'order', 'eta'), flow('f10', 'eta', 'receive'),
-    flow('f11', 'receive', 'qty_ok'), flow('f12', 'qty_ok', 'qty_issue', 'No'),
-    flow('f13', 'qty_issue', 'qty_end'), flow('f14', 'qty_ok', 'quality', 'Sí'),
-    flow('f15', 'quality', 'quality_ok'), flow('f16', 'quality_ok', 'reject', 'No'),
-    flow('f17', 'reject', 'reject_end'), flow('f18', 'quality_ok', 'register', 'Sí'),
-    flow('f19', 'register', 'end'), flow('f23', 'quality_ok', 'quality_pending', 'Revisar'),
-    flow('f24', 'quality_pending', 'quality_pending_end'),
+    flow('f4', 'stock_ok', 'reserve', 'Sí'), flow('f5', 'reserve', 'reorder_check'),
+    flow('f6', 'reorder_check', 'stock_end', 'No'), flow('f7', 'reorder_check', 'request', 'Sí'),
+    flow('f8', 'stock_ok', 'request', 'No'), flow('f9', 'request', 'approval_ok'),
+    flow('f10', 'approval_ok', 'supplier', 'Aprovar'),
+    flow('f11', 'approval_ok', 'request_correction', 'Corregir'),
+    flow('f12', 'request_correction', 'request', '', [[1417, 557], [1417, 610], [1087, 610], [1087, 352]]),
+    flow('f13', 'approval_ok', 'request_rejected', 'Rebutjar'), flow('f14', 'request_rejected', 'request_end'),
+    flow('f15', 'supplier', 'order'), flow('f16', 'order', 'eta'), flow('f17', 'eta', 'date_ok'),
+    flow('f18', 'date_ok', 'receive', 'Sí'), flow('f19', 'date_ok', 'delay_response', 'No'),
+    flow('f20', 'delay_response', 'alternative_needed'),
+    flow('f21', 'alternative_needed', 'eta', 'Reclamar o replanificar', [[2300, 516], [2300, 665], [1847, 665], [1847, 352]]),
+    flow('f22', 'alternative_needed', 'supplier', 'Alternativa', [[2325, 541], [2325, 730], [1505, 730], [1505, 311], [1499, 311]]),
+    flow('f23', 'receive', 'qty_ok'), flow('f24', 'qty_ok', 'quality', 'Completa'),
+    flow('f25', 'qty_ok', 'partial', 'Parcial'), flow('f26', 'partial', 'quality'),
+    flow('f27', 'qty_ok', 'qty_issue', 'Incidència'), flow('f28', 'qty_issue', 'qty_end'),
+    flow('f29', 'quality', 'quality_ok'), flow('f30', 'quality_ok', 'register', 'Acceptar'),
+    flow('f31', 'quality_ok', 'quality_pending', 'Revisar'),
+    flow('f32', 'quality_pending', 'quality', '', [[3042, 557], [3042, 790], [2712, 790], [2712, 352]]),
+    flow('f33', 'quality_ok', 'reject', 'Rebutjar'), flow('f34', 'reject', 'reject_end'),
+    flow('f35', 'register', 'end'),
   ],
 }
 
-function waypoints(source, target) {
+function waypoints(source, target, edge) {
+  if (edge.points) return edge.points
   const sx = source.x + source.width / 2
   const sy = source.y + source.height / 2
   const tx = target.x + target.width / 2
@@ -114,7 +130,7 @@ function build(model) {
   const edges = model.flows.map((edge) => {
     const source = model.nodes.find((item) => item.id === edge.source)
     const target = model.nodes.find((item) => item.id === edge.target)
-    const points = waypoints(source, target).map(([x, y]) => `<di:waypoint x="${x}" y="${y}" />`).join('')
+    const points = waypoints(source, target, edge).map(([x, y]) => `<di:waypoint x="${x}" y="${y}" />`).join('')
     return `      <bpmndi:BPMNEdge id="${edge.id}_di" bpmnElement="${edge.id}">${points}</bpmndi:BPMNEdge>`
   }).join('\n')
   return `<?xml version="1.0" encoding="UTF-8"?>

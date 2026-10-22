@@ -266,9 +266,9 @@ function ProcessStep({ step, index, open, onToggle }) {
         </button>
       </h3>
       <div id={id} className="step-detail" hidden={!open}>
-        <div><h4>Responsables i eines</h4><p><strong>{step.owner}.</strong> {step.tools}.</p></div>
-        <div><h4>Entrada i resultat</h4><p>{step.input}.<br /><strong>Resultat:</strong> {step.output}.</p></div>
-        <div><h4>Què falla ara</h4><p>{step.problem}</p></div>
+        <div><h4>Qui hi intervé i amb què</h4><p><strong>Responsable:</strong> {step.owner}</p><p><strong>Eines:</strong> {step.tools}</p></div>
+        <div><h4>Entrada i resultat</h4><p><strong>Entrada:</strong> {step.input}</p><p><strong>Resultat:</strong> {step.output}</p></div>
+        <div><h4>Deficiència i conseqüència</h4><p>{step.problem}</p><p><strong>Conseqüència:</strong> {step.consequence}</p></div>
       </div>
     </li>
   )

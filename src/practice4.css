@@ -49,6 +49,7 @@
 .story-meta span:first-child, .story-meta strong { color: var(--color-brand); font-weight: 700; }
 .story-list li > p { max-width: 56rem; margin-top: .8rem; font-size: 1.08rem; line-height: 1.65; }
 .story-list li > p strong { font-weight: 600; }
+.story-list li > .story-reason { max-width: 56rem; margin-top: .55rem; color: var(--color-muted); font-size: .9rem; line-height: 1.6; }
 .sources-inline { border-top: 1px solid var(--color-line); }
 .sources-inline p { max-width: 50rem; margin-top: 1rem; color: var(--color-muted); font-size: .98rem; line-height: 1.7; }
 .sources-inline a { color: var(--color-brand); text-underline-offset: .2rem; }
