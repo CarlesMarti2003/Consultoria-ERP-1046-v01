@@ -58,6 +58,7 @@
     <bpmn:exclusiveGateway id="quality_ok" name="Lot acceptat?">
       <bpmn:incoming>f13</bpmn:incoming>
       <bpmn:outgoing>f14</bpmn:outgoing>
+      <bpmn:outgoing>f18</bpmn:outgoing>
       <bpmn:outgoing>f16</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="reject" name="Comunicar rebuig">
@@ -66,6 +67,14 @@
     </bpmn:userTask>
     <bpmn:endEvent id="reject_end" name="Lot rebutjat">
       <bpmn:incoming>f15</bpmn:incoming>
+
+    </bpmn:endEvent>
+    <bpmn:userTask id="quality_pending" name="Mantindre en revisió">
+      <bpmn:incoming>f18</bpmn:incoming>
+      <bpmn:outgoing>f19</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="quality_pending_end" name="Pendent de qualitat">
+      <bpmn:incoming>f19</bpmn:incoming>
 
     </bpmn:endEvent>
     <bpmn:userTask id="register" name="Registrar entrada al full">
@@ -91,6 +100,8 @@
     <bpmn:sequenceFlow id="f13" sourceRef="quality" targetRef="quality_ok" />
     <bpmn:sequenceFlow id="f14" sourceRef="quality_ok" targetRef="reject" name="No" />
     <bpmn:sequenceFlow id="f15" sourceRef="reject" targetRef="reject_end" />
+    <bpmn:sequenceFlow id="f18" sourceRef="quality_ok" targetRef="quality_pending" name="Revisar" />
+    <bpmn:sequenceFlow id="f19" sourceRef="quality_pending" targetRef="quality_pending_end" />
     <bpmn:sequenceFlow id="f16" sourceRef="quality_ok" targetRef="register" name="Sí" />
     <bpmn:sequenceFlow id="f17" sourceRef="register" targetRef="end" />
   </bpmn:process>
@@ -112,6 +123,8 @@
       <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok"><dc:Bounds x="1865" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="1980" y="85" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="2195" y="108" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="1980" y="465" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_pending_end_di" bpmnElement="quality_pending_end"><dc:Bounds x="2195" y="488" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="1980" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="2195" y="293" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="76" y="310" /><di:waypoint x="130" y="311" /></bpmndi:BPMNEdge>
@@ -129,6 +142,8 @@
       <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13"><di:waypoint x="1814" y="311" /><di:waypoint x="1865" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14"><di:waypoint x="1890" y="286" /><di:waypoint x="1890" y="226.5" /><di:waypoint x="2062" y="226.5" /><di:waypoint x="2062" y="167" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15"><di:waypoint x="2144" y="126" /><di:waypoint x="2195" y="126" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18"><di:waypoint x="1890" y="336" /><di:waypoint x="1890" y="400.5" /><di:waypoint x="2062" y="400.5" /><di:waypoint x="2062" y="465" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19"><di:waypoint x="2144" y="506" /><di:waypoint x="2195" y="506" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16"><di:waypoint x="1915" y="311" /><di:waypoint x="1980" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17"><di:waypoint x="2144" y="311" /><di:waypoint x="2195" y="311" /></bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

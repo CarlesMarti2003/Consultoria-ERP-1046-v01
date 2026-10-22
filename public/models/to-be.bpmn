@@ -9,7 +9,7 @@
       <bpmn:incoming>f1</bpmn:incoming>
       <bpmn:outgoing>f2</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="calculate" name="Calcular disponible i reserves (ERP)">
+    <bpmn:serviceTask id="calculate" name="Calcular estoc i reposició (ERP)">
       <bpmn:incoming>f2</bpmn:incoming>
       <bpmn:outgoing>f3</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -30,8 +30,21 @@
       <bpmn:incoming>f6</bpmn:incoming>
       <bpmn:outgoing>f7</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:userTask id="supplier" name="Comparar ofertes (ERP)">
+    <bpmn:exclusiveGateway id="approval_ok" name="Sol·licitud aprovada?">
       <bpmn:incoming>f7</bpmn:incoming>
+      <bpmn:outgoing>f20</bpmn:outgoing>
+      <bpmn:outgoing>f21</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="request_issue" name="Retornar o rebutjar petició (ERP)">
+      <bpmn:incoming>f21</bpmn:incoming>
+      <bpmn:outgoing>f22</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="request_end" name="Petició no aprovada">
+      <bpmn:incoming>f22</bpmn:incoming>
+
+    </bpmn:endEvent>
+    <bpmn:userTask id="supplier" name="Comparar ofertes (ERP)">
+      <bpmn:incoming>f20</bpmn:incoming>
       <bpmn:outgoing>f8</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="order" name="Emetre comanda (ERP)">
@@ -67,6 +80,7 @@
       <bpmn:incoming>f15</bpmn:incoming>
       <bpmn:outgoing>f16</bpmn:outgoing>
       <bpmn:outgoing>f18</bpmn:outgoing>
+      <bpmn:outgoing>f23</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="reject" name="Bloquejar lot i avisar (ERP)">
       <bpmn:incoming>f16</bpmn:incoming>
@@ -74,6 +88,14 @@
     </bpmn:userTask>
     <bpmn:endEvent id="reject_end" name="Lot rebutjat">
       <bpmn:incoming>f17</bpmn:incoming>
+
+    </bpmn:endEvent>
+    <bpmn:userTask id="quality_pending" name="Mantindre lot en revisió (ERP)">
+      <bpmn:incoming>f23</bpmn:incoming>
+      <bpmn:outgoing>f24</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="quality_pending_end" name="Pendent de qualitat">
+      <bpmn:incoming>f24</bpmn:incoming>
 
     </bpmn:endEvent>
     <bpmn:serviceTask id="register" name="Actualitzar estoc i avisar (ERP)">
@@ -90,7 +112,10 @@
     <bpmn:sequenceFlow id="f4" sourceRef="stock_ok" targetRef="reserve" name="Sí" />
     <bpmn:sequenceFlow id="f5" sourceRef="reserve" targetRef="stock_end" />
     <bpmn:sequenceFlow id="f6" sourceRef="stock_ok" targetRef="request" name="No" />
-    <bpmn:sequenceFlow id="f7" sourceRef="request" targetRef="supplier" />
+    <bpmn:sequenceFlow id="f7" sourceRef="request" targetRef="approval_ok" />
+    <bpmn:sequenceFlow id="f20" sourceRef="approval_ok" targetRef="supplier" name="Sí" />
+    <bpmn:sequenceFlow id="f21" sourceRef="approval_ok" targetRef="request_issue" name="No" />
+    <bpmn:sequenceFlow id="f22" sourceRef="request_issue" targetRef="request_end" />
     <bpmn:sequenceFlow id="f8" sourceRef="supplier" targetRef="order" />
     <bpmn:sequenceFlow id="f9" sourceRef="order" targetRef="eta" />
     <bpmn:sequenceFlow id="f10" sourceRef="eta" targetRef="receive" />
@@ -103,6 +128,8 @@
     <bpmn:sequenceFlow id="f17" sourceRef="reject" targetRef="reject_end" />
     <bpmn:sequenceFlow id="f18" sourceRef="quality_ok" targetRef="register" name="Sí" />
     <bpmn:sequenceFlow id="f19" sourceRef="register" targetRef="end" />
+    <bpmn:sequenceFlow id="f23" sourceRef="quality_ok" targetRef="quality_pending" name="Revisar" />
+    <bpmn:sequenceFlow id="f24" sourceRef="quality_pending" targetRef="quality_pending_end" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="Diagram_TO_BE">
     <bpmndi:BPMNPlane id="Plane_TO_BE" bpmnElement="Process_TO_BE">
@@ -113,19 +140,24 @@
       <bpmndi:BPMNShape id="reserve_di" bpmnElement="reserve"><dc:Bounds x="675" y="85" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="stock_end_di" bpmnElement="stock_end"><dc:Bounds x="890" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_di" bpmnElement="request"><dc:Bounds x="675" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="supplier_di" bpmnElement="supplier"><dc:Bounds x="890" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="1105" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="eta_di" bpmnElement="eta"><dc:Bounds x="1320" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="1535" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok"><dc:Bounds x="1750" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="1865" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="2080" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="1865" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok"><dc:Bounds x="2080" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="2195" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="2410" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="2195" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="2410" y="293" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="approval_ok_di" bpmnElement="approval_ok"><dc:Bounds x="890" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="request_issue_di" bpmnElement="request_issue"><dc:Bounds x="1005" y="465" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="request_end_di" bpmnElement="request_end"><dc:Bounds x="1220" y="488" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="supplier_di" bpmnElement="supplier"><dc:Bounds x="1020" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="1235" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="eta_di" bpmnElement="eta"><dc:Bounds x="1450" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="1665" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok"><dc:Bounds x="1880" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="1995" y="85" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="2210" y="108" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="1995" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok"><dc:Bounds x="2210" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="2325" y="85" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="2540" y="108" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="2325" y="465" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_pending_end_di" bpmnElement="quality_pending_end"><dc:Bounds x="2540" y="488" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="2325" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="2540" y="293" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="76" y="310" /><di:waypoint x="130" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="294" y="311" /><di:waypoint x="345" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="509" y="311" /><di:waypoint x="560" y="311" /></bpmndi:BPMNEdge>
@@ -133,18 +165,23 @@
       <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5"><di:waypoint x="839" y="126" /><di:waypoint x="890" y="126" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6"><di:waypoint x="610" y="311" /><di:waypoint x="675" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7"><di:waypoint x="839" y="311" /><di:waypoint x="890" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8"><di:waypoint x="1054" y="311" /><di:waypoint x="1105" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9"><di:waypoint x="1269" y="311" /><di:waypoint x="1320" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10"><di:waypoint x="1484" y="311" /><di:waypoint x="1535" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11"><di:waypoint x="1699" y="311" /><di:waypoint x="1750" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12"><di:waypoint x="1775" y="286" /><di:waypoint x="1775" y="226.5" /><di:waypoint x="1947" y="226.5" /><di:waypoint x="1947" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13"><di:waypoint x="2029" y="126" /><di:waypoint x="2080" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14"><di:waypoint x="1800" y="311" /><di:waypoint x="1865" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15"><di:waypoint x="2029" y="311" /><di:waypoint x="2080" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16"><di:waypoint x="2105" y="286" /><di:waypoint x="2105" y="226.5" /><di:waypoint x="2277" y="226.5" /><di:waypoint x="2277" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17"><di:waypoint x="2359" y="126" /><di:waypoint x="2410" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18"><di:waypoint x="2130" y="311" /><di:waypoint x="2195" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19"><di:waypoint x="2359" y="311" /><di:waypoint x="2410" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f20_di" bpmnElement="f20"><di:waypoint x="940" y="311" /><di:waypoint x="1020" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f21_di" bpmnElement="f21"><di:waypoint x="915" y="336" /><di:waypoint x="915" y="400.5" /><di:waypoint x="1087" y="400.5" /><di:waypoint x="1087" y="465" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f22_di" bpmnElement="f22"><di:waypoint x="1169" y="506" /><di:waypoint x="1220" y="506" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8"><di:waypoint x="1184" y="311" /><di:waypoint x="1235" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9"><di:waypoint x="1399" y="311" /><di:waypoint x="1450" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10"><di:waypoint x="1614" y="311" /><di:waypoint x="1665" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11"><di:waypoint x="1829" y="311" /><di:waypoint x="1880" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12"><di:waypoint x="1905" y="286" /><di:waypoint x="1905" y="226.5" /><di:waypoint x="2077" y="226.5" /><di:waypoint x="2077" y="167" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13"><di:waypoint x="2159" y="126" /><di:waypoint x="2210" y="126" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14"><di:waypoint x="1930" y="311" /><di:waypoint x="1995" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15"><di:waypoint x="2159" y="311" /><di:waypoint x="2210" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16"><di:waypoint x="2235" y="286" /><di:waypoint x="2235" y="226.5" /><di:waypoint x="2407" y="226.5" /><di:waypoint x="2407" y="167" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17"><di:waypoint x="2489" y="126" /><di:waypoint x="2540" y="126" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18"><di:waypoint x="2260" y="311" /><di:waypoint x="2325" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19"><di:waypoint x="2489" y="311" /><di:waypoint x="2540" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f23_di" bpmnElement="f23"><di:waypoint x="2235" y="336" /><di:waypoint x="2235" y="400.5" /><di:waypoint x="2407" y="400.5" /><di:waypoint x="2407" y="465" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f24_di" bpmnElement="f24"><di:waypoint x="2489" y="506" /><di:waypoint x="2540" y="506" /></bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
