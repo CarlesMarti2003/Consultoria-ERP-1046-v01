@@ -82,16 +82,22 @@ function Home() {
   return <>
     <section className="home-opening"><div className="wrap home-opening-grid">
       <div><p className="page-label">Nexe Consultoria ERP</p><h1>Consultoria ERP per a la teua empresa.</h1><p className="home-lead">Ajudem les empreses a definir com ha de treballar el seu ERP a partir dels processos i les necessitats de cada equip.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer l’equip ↗</a></div></div>
-      <aside className="home-project-preview"><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a><nav aria-label="Accés directe al projecte">{caseNavigation.slice(2).map((item) => <a key={item.page} href={item.href}>{item.label}<span aria-hidden="true">↗</span></a>)}</nav></aside>
+      <aside className="home-project-preview"><figure><img src={asset('ceramica-illustrativa.png')} alt="Línia de producció de taulells ceràmics" width="1672" height="941" /><figcaption>Imatge il·lustrativa</figcaption></figure><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a><nav aria-label="Accés directe al projecte">{caseNavigation.filter((item) => ['proces','millora','documents'].includes(item.page)).map((item) => <a key={item.page} href={item.href}>{item.label}<span aria-hidden="true">↗</span></a>)}</nav></aside>
     </div></section>
     <section className="section-space"><div className="wrap"><div className="section-heading-row"><h2>Com treballem</h2><p>Primer entenem el funcionament de l’empresa. Després definim els canvis del procés i els requisits amb què avaluarem l’ERP.</p></div><ol className="service-list home-services">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol></div></section>
     <section className="home-question section-space"><div className="wrap home-question-grid"><h2>L’equip de Nexe</h2><div><p>Quatre membres amb funcions de coordinació, anàlisi de processos, solucions ERP i dades. La nostra formació combina Enginyeria Informàtica i Matemàtica Computacional.</p><a className="text-link" href="#/consultora">Veure qui fa cada funció ↗</a></div></div></section>
   </>
 }
 
+const serviceOfferings = [
+  { title:'Anàlisi de processos', description:'Revisem les activitats, els responsables i el recorregut de la informació. Identifiquem les decisions i les dificultats de coordinació.', result:'Mapa del procés actual i diagnòstic.' },
+  { title:'Definició de requisits', description:'Recollim què necessita cada equip i com es comprovarà que una solució cobreix aquestes necessitats.', result:'Històries d’usuari i dades necessàries.' },
+  { title:'Avaluació de solucions ERP', description:'Preparem criteris per comparar els productes i els mòduls amb les necessitats del procés.', result:'Criteris de comparació i punts a verificar.' },
+  { title:'Planificació de la implantació', description:'Definim les fases, els responsables i les comprovacions que caldrà preparar per al canvi de sistema.', result:'Proposta de fases i validacions.' },
+]
 function Services() {
   return <><PageIntro label="Serveis" title="Anàlisi de processos i consultoria ERP">Analitzem el treball de cada departament i preparem una proposta perquè l’empresa puga avaluar una solució adequada.</PageIntro>
-    <section className="section-space"><div className="wrap"><ol className="service-list">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol></div></section>
+    <section className="section-space"><div className="wrap service-catalogue">{serviceOfferings.map((item,index) => <article key={item.title}><span className="service-number">{String(index + 1).padStart(2,'0')}</span><h2>{item.title}</h2><p>{item.description}</p><p className="service-result"><strong>Resultat del treball</strong>{item.result}</p></article>)}</div></section>
     <section className="section-space project-brief"><div className="wrap split-section"><h2>Com es concreta</h2><div className="body-copy"><p>El treball amb Ceràmica Riu Sec mostra les activitats que revisem, els problemes detectats i la proposta que estem desenvolupant.</p><a className="text-link next-link" href={projectBase}>Veure el projecte de Ceràmica Riu Sec ↗</a></div></div></section>
   </>
 }
@@ -240,18 +246,7 @@ function Consultancy() {
             <h2>Funcions de l’equip</h2>
             <p>Formem l’equip de Nexe. Estes són les funcions de cada membre dins de la consultora.</p>
           </div>
-          <ul className="team-list">
-            {team.map((person) => (
-              <li key={person.name}>
-                <h3>{person.name}</h3>
-                <dl>
-                  <div><dt>Formació</dt><dd>{person.studies}</dd></div>
-                  <div><dt>Funció</dt><dd>{person.role}</dd></div>
-                  <div><dt>Responsabilitat</dt><dd>{person.responsibility}</dd></div>
-                </dl>
-              </li>
-            ))}
-          </ul>
+          <ul className="team-list">{team.map((person) => <li key={person.name}><p className="team-role">{person.role}</p><h3>{person.name}</h3><p className="team-responsibility">{person.responsibility}</p><p className="team-studies">{person.studies}</p></li>)}</ul>
         </div>
       </section>
     </>
@@ -259,28 +254,7 @@ function Consultancy() {
 }
 
 function Contact() {
-  return (
-    <>
-      <PageIntro label="Contacte" title="Parlem del projecte">
-        Pots preparar el teu missatge ací. El formulari encara no està connectat a cap servei d’enviament.
-      </PageIntro>
-      <section className="section-space info-section">
-        <div className="wrap info-layout">
-          <div><h2>Escriu-nos</h2><p>Quan activem el contacte, aquest espai permetrà enviar consultes a l’equip de Nexe.</p></div>
-          <form className="contact-form" aria-describedby="contact-status">
-            <label htmlFor="contact-name">Nom</label>
-            <input id="contact-name" name="name" type="text" autoComplete="name" disabled />
-            <label htmlFor="contact-email">Correu electrònic</label>
-            <input id="contact-email" name="email" type="email" autoComplete="email" disabled />
-            <label htmlFor="contact-message">Missatge</label>
-            <textarea id="contact-message" name="message" rows="6" disabled />
-            <button type="button" disabled>Enviar missatge</button>
-            <p id="contact-status">Formulari en preparació. No es poden enviar missatges des d’aquesta pàgina.</p>
-          </form>
-        </div>
-      </section>
-    </>
-  )
+  return <><PageIntro label="Contacte" title="Parlem del teu projecte">La coordinació de consultes i la relació amb clients formen part de les funcions de l’equip de Nexe.</PageIntro><section className="section-space"><div className="wrap contact-editorial"><div><p className="page-label">Relació amb clients</p><h2>Héctor Balaguer Romero</h2><p>Gerent i responsable de relació amb clients.</p><a className="text-link next-link" href="#/consultora">Conéixer l’equip ↗</a></div><div className="contact-status"><h2>Canal de contacte en preparació</h2><p>Encara no disposem d’un formulari o d’una adreça de contacte publicada. Quan activem aquest canal, indicarem ací com enviar una consulta a Nexe.</p></div></div></section></>
 }
 
 function Privacy() {
@@ -294,7 +268,7 @@ function Privacy() {
           <h2>Dades a la web</h2>
           <div className="info-copy">
             <p>La web publica els noms, els estudis i les funcions dels membres de Nexe per presentar l’equip del projecte.</p>
-            <p>El formulari de contacte està desactivat. Ara mateix no pots enviar-hi dades ni missatges a través de la pàgina. No hem incorporat eines pròpies d’analítica ni de publicitat.</p>
+            <p>El canal de contacte encara està en preparació. La web no recull dades de formularis ni missatges. No hem incorporat eines pròpies d’analítica ni de publicitat.</p>
             <p>La web s’allotja a GitHub Pages. GitHub pot tractar dades tècniques de navegació d’acord amb la seua <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noreferrer">declaració de privacitat</a>.</p>
           </div>
         </div>

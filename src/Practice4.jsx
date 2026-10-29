@@ -74,8 +74,8 @@ export function AnalysisPage() {
         <div className="section-heading-row"><h2 id="diagnostic">Anàlisi de les huit activitats</h2><p>La insatisfacció indicada és una possibilitat deduïda del procés; cal contrastar-la amb el personal de cada departament.</p></div>
         <div className="analysis-list">
           {analysis.map((item) => <article key={item.id} className="analysis-item">
-            <span className="analysis-id">{item.id}</span>
-            <div><h3>{item.step}</h3><p className="analysis-owner">{item.owner} · {item.assessment}</p><p>{item.diagnosis}</p><p><strong>Possible insatisfacció:</strong> {item.participantConcern}</p><p><strong>Punt de decisió:</strong> {item.decision}</p><p><strong>Conseqüència:</strong> {item.consequence}</p><p><strong>Millora:</strong> {item.improvement}</p><p><strong>Justificació:</strong> {item.justification}</p><p className="analysis-category">Categories {item.category}</p></div>
+            <header className="analysis-heading"><span className="analysis-id">{item.id}</span><h3>{item.step}</h3><p className="analysis-owner">{item.owner}</p><p className="analysis-assessment">{item.assessment}</p></header>
+            <div className="analysis-copy"><p className="analysis-diagnosis">{item.diagnosis}</p><div className="analysis-observations"><div><h4>Participants i conseqüència</h4><p>{item.participantConcern}</p><p>{item.consequence}</p></div><div><h4>Punt de decisió</h4><p>{item.decision}</p></div></div><div className="analysis-response"><h4>Millora proposada</h4><p>{item.improvement}</p><p className="analysis-why">{item.justification}</p></div><p className="analysis-category">Categories {item.category}</p></div>
           </article>)}
         </div>
       </div>
@@ -125,29 +125,36 @@ export function ImprovementPage() {
   </>
 }
 
+const requirementGroups = [
+  { id: 'planificacio', title: 'Planificació i existències', detail: 'Necessitats, disponibilitat i assignació del material.', stories: ['HU-01','HU-02','HU-09'] },
+  { id: 'compres', title: 'Compres i proveïdors', detail: 'Autoritzacions, ofertes, comandes i resposta als retards.', stories: ['HU-03','HU-04','HU-10','HU-11'] },
+  { id: 'recepcio', title: 'Recepció i qualitat', detail: 'Controlar allò que arriba i decidir què es pot utilitzar.', stories: ['HU-06','HU-07'] },
+  { id: 'coordinacio', title: 'Coordinació amb producció', detail: 'Conéixer l’impacte de les incidències i confirmar la disponibilitat.', stories: ['HU-05','HU-08'] },
+]
+
 export function RequirementsPage() {
   return <>
-    <Intro label="Requisits" title="Què ha de permetre l’ERP">
-      Les històries d’usuari descriuen què necessiten les persones que participen en el procés. Serviran per comprovar les solucions ERP durant la selecció posterior.
+    <Intro label="Requisits ERP" title="Què necessita cada equip">
+      Les necessitats del procés s’agrupen per àrea de treball. Cada història explica qui la necessita, per a què i com comprovarem que la solució la cobreix.
     </Intro>
-    <PageContents page="requisits" items={[["histories","Històries d’usuari"],["dades","Dades específiques"]]} />
-    <section className="section-space">
-      <div className="wrap">
-        <div className="section-heading-row"><h2 id="histories">Històries d’usuari</h2><p>Les funcions habituals, com les reserves, la comparació d’ofertes i els punts de reposició, també són necessàries. Marquem com a candidats diferencials només els requisits vinculats a particularitats del procés ceràmic que cal verificar en cada ERP.</p></div>
-        <ol className="story-list">{userStories.map((story) => <li key={story.id}>
-          <div className="story-meta"><span>{story.id}</span><span>Pas {story.steps}</span><span>{[...new Set(erpTasks.filter((task) => story.taskRefs.includes(task.id)).map((task) => task.kind))].join(' + ')}</span>{story.differential && <strong>Candidat diferencial</strong>}</div>
-          <p>Com a <strong>{story.role}</strong>, vull {story.need} per a {story.benefit}.</p>
-          <p className="story-reason"><strong>Com comprovarem el requisit:</strong> {story.acceptance}</p><p className="story-reason"><strong>Tasques relacionades:</strong> {erpTasks.filter((task) => story.taskRefs.includes(task.id)).map((task) => task.label).join(' · ')}.</p>
-          {story.differentialReason && <p className="story-reason"><strong>Per què cal verificar-lo:</strong> {story.differentialReason}</p>}
-        </li>)}</ol>
-        <p className="story-note">«Diferencial» no significa que cap ERP ho puga fer. Vol dir que no podem donar per suposada aquesta capacitat a partir de les funcions bàsiques i l’hem de comprovar en el producte concret. En el model, les tasques d’usuari requereixen una decisió o entrada humana. Les tasques de servei fan càlculs o envien avisos a partir de dades confirmades.</p>
-      </div>
-    </section>
-    <section className="section-space table-section">
-      <div className="wrap"><div className="section-heading-row"><h2 id="dades">Dades específiques a verificar</h2><p>Les dades habituals d’estoc, reserves, dates i punts de reposició continuen sent necessàries, però no les presentem com a diferencials. Les dades següents detallen la configuració específica de qualitat i la relació amb producció que cal verificar en cada producte ERP.</p></div>
-        <div className="table-scroll"><table className="work-table"><thead><tr><th>Dada i camps necessaris</th><th>Origen i ús en el procés</th><th>Històries</th></tr></thead><tbody>{differentialData.map((item) => <tr key={item.name}><th scope="row">{item.name}<small>{item.fields}</small></th><td><strong>{item.source}.</strong> {item.use}</td><td>{item.stories}</td></tr>)}</tbody></table></div>
-      </div>
-    </section>
-
+    <PageContents page="requisits" items={[...requirementGroups.map((group) => [group.id, group.title]), ['dades','Dades específiques']]} />
+    <div id="histories" className="requirements-intro wrap"><p>La disponibilitat, les reserves i les ofertes formen part dels requisits habituals. Els candidats diferencials de qualitat i de coordinació amb producció s’han de verificar en cada ERP.</p><a href={pageHref('millora') + '?seccio=tasques-erp'}>Consultar les tasques del TO-BE ↗</a></div>
+    {requirementGroups.map((group, index) => <section key={group.id} id={group.id} className="requirement-chapter wrap" aria-labelledby={group.id + '-title'}>
+      <header className="chapter-heading"><span className="chapter-number">{String(index + 1).padStart(2,'0')}</span><h2 id={group.id + '-title'}>{group.title}</h2><p>{group.detail}</p></header>
+      <div className="story-list">{group.stories.map((id) => {
+        const story = userStories.find((item) => item.id === id)
+        const tasks = erpTasks.filter((task) => story.taskRefs.includes(task.id))
+        return <article className="user-story" key={story.id} id={story.id.toLowerCase()} aria-labelledby={story.id + '-title'}>
+          <div className="story-meta"><h3 id={story.id + '-title'}>{story.id}</h3><span>Pas {story.steps}</span>{story.differential && <span className="story-specific">Candidat diferencial</span>}</div>
+          <p className="story-statement">Com a <strong>{story.role}</strong>, vull {story.need} per a {story.benefit}.</p>
+          <div className="story-evidence"><div><h4>Com ho comprovarem</h4><p>{story.acceptance}</p></div><div><h4>Suport en el procés</h4><ul>{tasks.map((task) => <li key={task.id}>{task.label}<small>{task.kind}</small></li>)}</ul></div></div>
+          {story.differentialReason && <aside className="story-specific-note"><h4>Per què cal verificar-ho</h4><p>{story.differentialReason}</p></aside>}
+        </article>
+      })}</div>
+    </section>)}
+    <section id="dades" className="section-space data-section"><div className="wrap"><div className="section-heading-row"><h2>Les dades que ho fan possible</h2><p>Les fitxes de producte, estoc i comandes són necessàries. A més, el procés requereix aquestes dades de qualitat i la seua relació amb fabricació.</p></div>
+      <div className="table-scroll" role="region" aria-label="Dades específiques del procés" tabIndex="0"><table className="work-table"><thead><tr><th>Dada i camps necessaris</th><th>Origen i ús en el procés</th><th>Històries</th></tr></thead><tbody>{differentialData.map((item) => <tr key={item.name}><th scope="row">{item.name}<small>{item.fields}</small></th><td><strong>{item.source}.</strong> {item.use}</td><td>{item.stories}</td></tr>)}</tbody></table></div>
+      <p className="story-note">Les particularitats indicades s’han de comprovar en els mòduls i la configuració del producte concret. Qualitat ha de validar els paràmetres i els límits tècnics.</p>
+    </div></section>
   </>
 }
