@@ -1,5 +1,6 @@
 import { mkdirSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
+import { erpTasks, userStories } from '../src/practice4Content.js'
 
 const directory = join(process.cwd(), 'public', 'models')
 mkdirSync(directory, { recursive: true })
@@ -103,6 +104,53 @@ const toBe = {
   ],
 }
 
+// Additional decisions and the human confirmation before stock is updated.
+for (const item of toBe.nodes) {
+  if (item.x >= 1550) item.x += 250
+}
+for (const edge of toBe.flows) {
+  if (edge.points) edge.points = edge.points.map(([x,y]) => [x >= 1550 ? x + 250 : x, y])
+}
+toBe.nodes.push(node('offer_ok', 'exclusiveGateway', 'Oferta adequada?', 1550, 286, 50, 50))
+const supplierFlow = toBe.flows.find((edge) => edge.id === 'f15')
+supplierFlow.target = 'offer_ok'
+toBe.flows.push(flow('f36','offer_ok','order','Sí'))
+toBe.flows.push(flow('f37','offer_ok','supplier','No',[[1575,336],[1575,430],[1417,430],[1417,352]]))
+
+// Keep usable stock assigned even when it does not cover the complete need.
+toBe.nodes.push(node('reserve_partial','serviceTask','Reservar part disponible (ERP)',675,475))
+toBe.flows.find((edge) => edge.id === 'f8').target = 'reserve_partial'
+toBe.flows.push(flow('f38','reserve_partial','request'))
+
+// Replacing a supplier must resolve the outstanding quantity of the original order.
+toBe.nodes.push(node('cancel_order','userTask','Resoldre saldo original i vincular substitució (ERP)',1800,850))
+const alternative = toBe.flows.find((edge) => edge.id === 'f22')
+alternative.target = 'cancel_order'
+alternative.name = 'Sí'
+alternative.points = [[2575,541],[2575,891],[1964,891]]
+toBe.flows.find((edge) => edge.id === 'f21').name = 'No: reclamar o replanificar'
+toBe.flows.push(flow('f39','cancel_order','supplier','',[[1800,891],[1505,891],[1505,311],[1499,311]]))
+
+const register = toBe.nodes.find((item) => item.id === 'register')
+const locate = { ...register, id:'locate', type:'userTask', name:'Confirmar quantitat i ubicació (ERP)' }
+register.x += 215
+toBe.nodes.push(locate)
+toBe.nodes.find((item) => item.id === 'end').x += 215
+toBe.flows.find((edge) => edge.id === 'f30').target = 'locate'
+toBe.flows.push(flow('f40','locate','register'))
+toBe.nodes.find((item) => item.id === 'date_ok').name = 'Data compatible amb el pla?'
+toBe.nodes.find((item) => item.id === 'calculate').name = 'Calcular disponible i proposta (ERP)'
+toBe.nodes.find((item) => item.id === 'reorder_check').name = 'Reposició projectada?'
+
+// Responsibility and requirement references remain inside the editable BPMN file.
+for (const item of toBe.nodes) {
+  const task = erpTasks.find((entry) => entry.id === item.id)
+  if (task) {
+    const stories = userStories.filter((story) => story.taskRefs.includes(item.id)).map((story) => story.id)
+    item.documentation = `Responsable: ${task.owner}. Tipus: ${task.kind}. Pas: ${task.step}. Requisits: ${stories.join(', ')}.`
+  }
+}
+
 function waypoints(source, target, edge) {
   if (edge.points) return edge.points
   const sx = source.x + source.width / 2
@@ -124,7 +172,7 @@ function build(model) {
     outgoing.get(edge.source).push(edge.id)
     incoming.get(edge.target).push(edge.id)
   }
-  const elements = model.nodes.map((item) => `    <bpmn:${item.type} id="${item.id}" name="${escape(item.name)}">\n${incoming.get(item.id).map((id) => `      <bpmn:incoming>${id}</bpmn:incoming>`).join('\n')}\n${outgoing.get(item.id).map((id) => `      <bpmn:outgoing>${id}</bpmn:outgoing>`).join('\n')}\n    </bpmn:${item.type}>`).join('\n')
+  const elements = model.nodes.map((item) => `    <bpmn:${item.type} id="${item.id}" name="${escape(item.name)}">\n${item.documentation ? `      <bpmn:documentation>${escape(item.documentation)}</bpmn:documentation>\n` : ''}${incoming.get(item.id).map((id) => `      <bpmn:incoming>${id}</bpmn:incoming>`).join('\n')}\n${outgoing.get(item.id).map((id) => `      <bpmn:outgoing>${id}</bpmn:outgoing>`).join('\n')}\n    </bpmn:${item.type}>`).join('\n')
   const sequences = model.flows.map((edge) => `    <bpmn:sequenceFlow id="${edge.id}" sourceRef="${edge.source}" targetRef="${edge.target}"${edge.name ? ` name="${escape(edge.name)}"` : ''} />`).join('\n')
   const shapes = model.nodes.map((item) => `      <bpmndi:BPMNShape id="${item.id}_di" bpmnElement="${item.id}"><dc:Bounds x="${item.x}" y="${item.y}" width="${item.width}" height="${item.height}" /></bpmndi:BPMNShape>`).join('\n')
   const edges = model.flows.map((edge) => {

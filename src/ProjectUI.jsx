@@ -37,7 +37,7 @@ export function ProjectOverview() {
 const downloads = [
   { title: 'Model del procés actual', detail: 'AS-IS · fitxer BPMN editable', file: 'models/as-is.bpmn' },
   { title: 'Model del procés proposat', detail: 'TO-BE · fitxer BPMN editable', file: 'models/to-be.bpmn' },
-  { title: 'Presentació del projecte', detail: 'PowerPoint · dues diapositives', file: 'presentacio/Nexe-P4-analisi-i-millora-v4.pptx' },
+  { title: 'Presentació del projecte', detail: 'PowerPoint · dues diapositives', file: 'presentacio/Nexe-P4-analisi-i-millora-v5.pptx' },
 ]
 export function Sources() {
   return <section id="fonts" className="section-space sources-inline"><div className="wrap"><h2>Fonts de consulta</h2><ul className="source-list">
@@ -51,7 +51,7 @@ export function Documents() {
   return <>
     <header className="page-intro wrap"><p className="page-label">Ceràmica Riu Sec</p><h1>Documents i fonts</h1><p className="page-intro-copy">Tots els fitxers del projecte i les referències consultades, en un mateix lloc.</p></header>
     <PageContents page="documents" items={[["descarregues","Descarregar fitxers"],["fonts","Fonts de consulta"]]} />
-    <section id="descarregues" className="section-space"><div className="wrap"><h2 className="plain-section-title">Descarregar fitxers</h2><ul className="download-list">{downloads.map((item) => <li key={item.file}><div><h3>{item.title}</h3><p>{item.detail}</p></div><a href={import.meta.env.BASE_URL + item.file} download>Descarregar <span aria-hidden="true">↓</span></a></li>)}</ul><p className="document-help">Pots consultar els models en la web, en «Procés actual» i «Proposta de millora». Els fitxers BPMN també es poden obrir amb Camunda Modeler.</p></div></section>
+    <section id="descarregues" className="section-space"><div className="wrap"><h2 className="plain-section-title">Descarregar fitxers</h2><ul className="download-list">{downloads.map((item) => <li key={item.file}><div><h3>{item.title}</h3><p>{item.detail}</p></div><a href={import.meta.env.BASE_URL + item.file} download>Descarregar <span aria-hidden="true">↓</span></a></li>)}</ul><p className="document-help">Pots consultar els models en la web, en «Procés actual» i «Proposta de millora». Els fitxers BPMN també es poden obrir amb bpmn.io o Camunda Modeler.</p></div></section>
     <Sources />
   </>
 }

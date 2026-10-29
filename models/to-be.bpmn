@@ -6,10 +6,12 @@
       <bpmn:outgoing>f1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="need" name="Registrar necessitat al pla (ERP)">
+      <bpmn:documentation>Responsable: Producció. Tipus: Tasca d’usuari. Pas: 01. Requisits: HU-01.</bpmn:documentation>
       <bpmn:incoming>f1</bpmn:incoming>
       <bpmn:outgoing>f2</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:serviceTask id="calculate" name="Calcular estoc i reposició (ERP)">
+    <bpmn:serviceTask id="calculate" name="Calcular disponible i proposta (ERP)">
+      <bpmn:documentation>Responsable: Magatzem / ERP. Tipus: Tasca de servei. Pas: 02. Requisits: HU-02.</bpmn:documentation>
       <bpmn:incoming>f2</bpmn:incoming>
       <bpmn:outgoing>f3</bpmn:outgoing>
     </bpmn:serviceTask>
@@ -19,10 +21,11 @@
       <bpmn:outgoing>f8</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:serviceTask id="reserve" name="Reservar material (ERP)">
+      <bpmn:documentation>Responsable: Producció / ERP. Tipus: Tasca de servei. Pas: 02. Requisits: HU-09.</bpmn:documentation>
       <bpmn:incoming>f4</bpmn:incoming>
       <bpmn:outgoing>f5</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="reorder_check" name="Cal reposar?">
+    <bpmn:exclusiveGateway id="reorder_check" name="Reposició projectada?">
       <bpmn:incoming>f5</bpmn:incoming>
       <bpmn:outgoing>f6</bpmn:outgoing>
       <bpmn:outgoing>f7</bpmn:outgoing>
@@ -32,9 +35,10 @@
 
     </bpmn:endEvent>
     <bpmn:userTask id="request" name="Revisar sol·licitud (ERP)">
+      <bpmn:documentation>Responsable: Responsable autoritzador de compres. Tipus: Tasca d’usuari. Pas: 03. Requisits: HU-03.</bpmn:documentation>
       <bpmn:incoming>f7</bpmn:incoming>
-      <bpmn:incoming>f8</bpmn:incoming>
       <bpmn:incoming>f12</bpmn:incoming>
+      <bpmn:incoming>f38</bpmn:incoming>
       <bpmn:outgoing>f9</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="approval_ok" name="Decisió?">
@@ -44,10 +48,12 @@
       <bpmn:outgoing>f13</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="request_correction" name="Corregir petició (ERP)">
+      <bpmn:documentation>Responsable: Producció i magatzem. Tipus: Tasca d’usuari. Pas: 03. Requisits: HU-03.</bpmn:documentation>
       <bpmn:incoming>f11</bpmn:incoming>
       <bpmn:outgoing>f12</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="request_rejected" name="Notificar rebuig (ERP)">
+      <bpmn:documentation>Responsable: Compres. Tipus: Tasca d’usuari. Pas: 03. Requisits: HU-03.</bpmn:documentation>
       <bpmn:incoming>f13</bpmn:incoming>
       <bpmn:outgoing>f14</bpmn:outgoing>
     </bpmn:userTask>
@@ -56,25 +62,30 @@
 
     </bpmn:endEvent>
     <bpmn:userTask id="supplier" name="Comparar ofertes (ERP)">
+      <bpmn:documentation>Responsable: Compres. Tipus: Tasca d’usuari. Pas: 04. Requisits: HU-04.</bpmn:documentation>
       <bpmn:incoming>f10</bpmn:incoming>
-      <bpmn:incoming>f22</bpmn:incoming>
+      <bpmn:incoming>f37</bpmn:incoming>
+      <bpmn:incoming>f39</bpmn:incoming>
       <bpmn:outgoing>f15</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="order" name="Emetre comanda (ERP)">
-      <bpmn:incoming>f15</bpmn:incoming>
+      <bpmn:documentation>Responsable: Compres / ERP. Tipus: Tasca de servei. Pas: 04. Requisits: HU-10.</bpmn:documentation>
+      <bpmn:incoming>f36</bpmn:incoming>
       <bpmn:outgoing>f16</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="eta" name="Seguir data i avisar ordres afectades (ERP)">
+      <bpmn:documentation>Responsable: Compres i producció / ERP. Tipus: Tasca de servei. Pas: 05. Requisits: HU-05.</bpmn:documentation>
       <bpmn:incoming>f16</bpmn:incoming>
       <bpmn:incoming>f21</bpmn:incoming>
       <bpmn:outgoing>f17</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="date_ok" name="Arriba a temps?">
+    <bpmn:exclusiveGateway id="date_ok" name="Data compatible amb el pla?">
       <bpmn:incoming>f17</bpmn:incoming>
       <bpmn:outgoing>f18</bpmn:outgoing>
       <bpmn:outgoing>f19</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="delay_response" name="Reclamar, buscar alternativa o replanificar (ERP)">
+      <bpmn:documentation>Responsable: Compres i producció. Tipus: Tasca d’usuari. Pas: 05. Requisits: HU-11.</bpmn:documentation>
       <bpmn:incoming>f19</bpmn:incoming>
       <bpmn:outgoing>f20</bpmn:outgoing>
     </bpmn:userTask>
@@ -84,6 +95,7 @@
       <bpmn:outgoing>f22</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="receive" name="Registrar recepció contra comanda (ERP)">
+      <bpmn:documentation>Responsable: Magatzem. Tipus: Tasca d’usuari. Pas: 06. Requisits: HU-06.</bpmn:documentation>
       <bpmn:incoming>f18</bpmn:incoming>
       <bpmn:outgoing>f23</bpmn:outgoing>
     </bpmn:userTask>
@@ -94,6 +106,7 @@
       <bpmn:outgoing>f27</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="qty_issue" name="Bloquejar i reclamar (ERP)">
+      <bpmn:documentation>Responsable: Magatzem i compres. Tipus: Tasca d’usuari. Pas: 06. Requisits: HU-06.</bpmn:documentation>
       <bpmn:incoming>f27</bpmn:incoming>
       <bpmn:outgoing>f28</bpmn:outgoing>
     </bpmn:userTask>
@@ -102,10 +115,12 @@
 
     </bpmn:endEvent>
     <bpmn:userTask id="partial" name="Registrar part rebuda i saldo pendent (ERP)">
+      <bpmn:documentation>Responsable: Magatzem. Tipus: Tasca d’usuari. Pas: 06. Requisits: HU-06.</bpmn:documentation>
       <bpmn:incoming>f25</bpmn:incoming>
       <bpmn:outgoing>f26</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="quality" name="Inspeccionar lot (ERP)">
+      <bpmn:documentation>Responsable: Qualitat. Tipus: Tasca d’usuari. Pas: 07. Requisits: HU-07.</bpmn:documentation>
       <bpmn:incoming>f24</bpmn:incoming>
       <bpmn:incoming>f26</bpmn:incoming>
       <bpmn:incoming>f32</bpmn:incoming>
@@ -118,6 +133,7 @@
       <bpmn:outgoing>f33</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="reject" name="Bloquejar lot, avisar ordres i reclamar (ERP)">
+      <bpmn:documentation>Responsable: Qualitat i compres. Tipus: Tasca d’usuari. Pas: 07. Requisits: HU-05, HU-07.</bpmn:documentation>
       <bpmn:incoming>f33</bpmn:incoming>
       <bpmn:outgoing>f34</bpmn:outgoing>
     </bpmn:userTask>
@@ -126,17 +142,39 @@
 
     </bpmn:endEvent>
     <bpmn:userTask id="quality_pending" name="Bloquejar lot, avisar ordres i completar proves (ERP)">
+      <bpmn:documentation>Responsable: Qualitat. Tipus: Tasca d’usuari. Pas: 07. Requisits: HU-05, HU-07.</bpmn:documentation>
       <bpmn:incoming>f31</bpmn:incoming>
       <bpmn:outgoing>f32</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="register" name="Actualitzar estoc i avisar (ERP)">
-      <bpmn:incoming>f30</bpmn:incoming>
+      <bpmn:documentation>Responsable: Magatzem / ERP. Tipus: Tasca de servei. Pas: 08. Requisits: HU-08.</bpmn:documentation>
+      <bpmn:incoming>f40</bpmn:incoming>
       <bpmn:outgoing>f35</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="end" name="Material acceptat registrat">
       <bpmn:incoming>f35</bpmn:incoming>
 
     </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="offer_ok" name="Oferta adequada?">
+      <bpmn:incoming>f15</bpmn:incoming>
+      <bpmn:outgoing>f36</bpmn:outgoing>
+      <bpmn:outgoing>f37</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="reserve_partial" name="Reservar part disponible (ERP)">
+      <bpmn:documentation>Responsable: Producció / ERP. Tipus: Tasca de servei. Pas: 02. Requisits: HU-09.</bpmn:documentation>
+      <bpmn:incoming>f8</bpmn:incoming>
+      <bpmn:outgoing>f38</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="cancel_order" name="Resoldre saldo original i vincular substitució (ERP)">
+      <bpmn:documentation>Responsable: Compres. Tipus: Tasca d’usuari. Pas: 05. Requisits: HU-11.</bpmn:documentation>
+      <bpmn:incoming>f22</bpmn:incoming>
+      <bpmn:outgoing>f39</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="locate" name="Confirmar quantitat i ubicació (ERP)">
+      <bpmn:documentation>Responsable: Magatzem. Tipus: Tasca d’usuari. Pas: 08. Requisits: HU-08.</bpmn:documentation>
+      <bpmn:incoming>f30</bpmn:incoming>
+      <bpmn:outgoing>f40</bpmn:outgoing>
+    </bpmn:userTask>
     <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="need" />
     <bpmn:sequenceFlow id="f2" sourceRef="need" targetRef="calculate" />
     <bpmn:sequenceFlow id="f3" sourceRef="calculate" targetRef="stock_ok" />
@@ -144,21 +182,21 @@
     <bpmn:sequenceFlow id="f5" sourceRef="reserve" targetRef="reorder_check" />
     <bpmn:sequenceFlow id="f6" sourceRef="reorder_check" targetRef="stock_end" name="No" />
     <bpmn:sequenceFlow id="f7" sourceRef="reorder_check" targetRef="request" name="Sí" />
-    <bpmn:sequenceFlow id="f8" sourceRef="stock_ok" targetRef="request" name="No" />
+    <bpmn:sequenceFlow id="f8" sourceRef="stock_ok" targetRef="reserve_partial" name="No" />
     <bpmn:sequenceFlow id="f9" sourceRef="request" targetRef="approval_ok" />
     <bpmn:sequenceFlow id="f10" sourceRef="approval_ok" targetRef="supplier" name="Aprovar" />
     <bpmn:sequenceFlow id="f11" sourceRef="approval_ok" targetRef="request_correction" name="Corregir" />
     <bpmn:sequenceFlow id="f12" sourceRef="request_correction" targetRef="request" />
     <bpmn:sequenceFlow id="f13" sourceRef="approval_ok" targetRef="request_rejected" name="Rebutjar" />
     <bpmn:sequenceFlow id="f14" sourceRef="request_rejected" targetRef="request_end" />
-    <bpmn:sequenceFlow id="f15" sourceRef="supplier" targetRef="order" />
+    <bpmn:sequenceFlow id="f15" sourceRef="supplier" targetRef="offer_ok" />
     <bpmn:sequenceFlow id="f16" sourceRef="order" targetRef="eta" />
     <bpmn:sequenceFlow id="f17" sourceRef="eta" targetRef="date_ok" />
     <bpmn:sequenceFlow id="f18" sourceRef="date_ok" targetRef="receive" name="Sí" />
     <bpmn:sequenceFlow id="f19" sourceRef="date_ok" targetRef="delay_response" name="No" />
     <bpmn:sequenceFlow id="f20" sourceRef="delay_response" targetRef="alternative_needed" />
-    <bpmn:sequenceFlow id="f21" sourceRef="alternative_needed" targetRef="eta" name="Reclamar o replanificar" />
-    <bpmn:sequenceFlow id="f22" sourceRef="alternative_needed" targetRef="supplier" name="Alternativa" />
+    <bpmn:sequenceFlow id="f21" sourceRef="alternative_needed" targetRef="eta" name="No: reclamar o replanificar" />
+    <bpmn:sequenceFlow id="f22" sourceRef="alternative_needed" targetRef="cancel_order" name="Sí" />
     <bpmn:sequenceFlow id="f23" sourceRef="receive" targetRef="qty_ok" />
     <bpmn:sequenceFlow id="f24" sourceRef="qty_ok" targetRef="quality" name="Completa" />
     <bpmn:sequenceFlow id="f25" sourceRef="qty_ok" targetRef="partial" name="Parcial" />
@@ -166,12 +204,17 @@
     <bpmn:sequenceFlow id="f27" sourceRef="qty_ok" targetRef="qty_issue" name="Incidència" />
     <bpmn:sequenceFlow id="f28" sourceRef="qty_issue" targetRef="qty_end" />
     <bpmn:sequenceFlow id="f29" sourceRef="quality" targetRef="quality_ok" />
-    <bpmn:sequenceFlow id="f30" sourceRef="quality_ok" targetRef="register" name="Acceptar" />
+    <bpmn:sequenceFlow id="f30" sourceRef="quality_ok" targetRef="locate" name="Acceptar" />
     <bpmn:sequenceFlow id="f31" sourceRef="quality_ok" targetRef="quality_pending" name="Revisar" />
     <bpmn:sequenceFlow id="f32" sourceRef="quality_pending" targetRef="quality" />
     <bpmn:sequenceFlow id="f33" sourceRef="quality_ok" targetRef="reject" name="Rebutjar" />
     <bpmn:sequenceFlow id="f34" sourceRef="reject" targetRef="reject_end" />
     <bpmn:sequenceFlow id="f35" sourceRef="register" targetRef="end" />
+    <bpmn:sequenceFlow id="f36" sourceRef="offer_ok" targetRef="order" name="Sí" />
+    <bpmn:sequenceFlow id="f37" sourceRef="offer_ok" targetRef="supplier" name="No" />
+    <bpmn:sequenceFlow id="f38" sourceRef="reserve_partial" targetRef="request" />
+    <bpmn:sequenceFlow id="f39" sourceRef="cancel_order" targetRef="supplier" />
+    <bpmn:sequenceFlow id="f40" sourceRef="locate" targetRef="register" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="Diagram_TO_BE">
     <bpmndi:BPMNPlane id="Plane_TO_BE" bpmnElement="Process_TO_BE">
@@ -186,25 +229,29 @@
       <bpmndi:BPMNShape id="approval_ok_di" bpmnElement="approval_ok"><dc:Bounds x="1220" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_correction_di" bpmnElement="request_correction"><dc:Bounds x="1335" y="475" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_rejected_di" bpmnElement="request_rejected"><dc:Bounds x="1335" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="request_end_di" bpmnElement="request_end"><dc:Bounds x="1550" y="108" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="request_end_di" bpmnElement="request_end"><dc:Bounds x="1800" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="supplier_di" bpmnElement="supplier"><dc:Bounds x="1335" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="1550" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="eta_di" bpmnElement="eta"><dc:Bounds x="1765" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="date_ok_di" bpmnElement="date_ok"><dc:Bounds x="1980" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="delay_response_di" bpmnElement="delay_response"><dc:Bounds x="2095" y="475" width="178" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="alternative_needed_di" bpmnElement="alternative_needed"><dc:Bounds x="2300" y="491" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="2200" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok"><dc:Bounds x="2415" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="2530" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="2745" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="partial_di" bpmnElement="partial"><dc:Bounds x="2530" y="475" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="2630" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok"><dc:Bounds x="2845" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="2960" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="3175" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="2960" y="475" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="2960" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="3175" y="293" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="1800" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="eta_di" bpmnElement="eta"><dc:Bounds x="2015" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="date_ok_di" bpmnElement="date_ok"><dc:Bounds x="2230" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="delay_response_di" bpmnElement="delay_response"><dc:Bounds x="2345" y="475" width="178" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="alternative_needed_di" bpmnElement="alternative_needed"><dc:Bounds x="2550" y="491" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="2450" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok"><dc:Bounds x="2665" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="2780" y="85" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="2995" y="108" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="partial_di" bpmnElement="partial"><dc:Bounds x="2780" y="475" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="2880" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok"><dc:Bounds x="3095" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="3210" y="85" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="3425" y="108" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="3210" y="475" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="3425" y="270" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="3640" y="293" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="offer_ok_di" bpmnElement="offer_ok"><dc:Bounds x="1550" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reserve_partial_di" bpmnElement="reserve_partial"><dc:Bounds x="675" y="475" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="cancel_order_di" bpmnElement="cancel_order"><dc:Bounds x="1800" y="850" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="locate_di" bpmnElement="locate"><dc:Bounds x="3210" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="76" y="310" /><di:waypoint x="130" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="294" y="311" /><di:waypoint x="345" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="509" y="311" /><di:waypoint x="560" y="311" /></bpmndi:BPMNEdge>
@@ -212,34 +259,39 @@
       <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5"><di:waypoint x="839" y="126" /><di:waypoint x="890" y="126" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6"><di:waypoint x="940" y="126" /><di:waypoint x="1100" y="126" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7"><di:waypoint x="915" y="151" /><di:waypoint x="915" y="210.5" /><di:waypoint x="1087" y="210.5" /><di:waypoint x="1087" y="270" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8"><di:waypoint x="610" y="311" /><di:waypoint x="1005" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8"><di:waypoint x="585" y="336" /><di:waypoint x="585" y="405.5" /><di:waypoint x="757" y="405.5" /><di:waypoint x="757" y="475" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9"><di:waypoint x="1169" y="311" /><di:waypoint x="1220" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10"><di:waypoint x="1270" y="311" /><di:waypoint x="1335" y="311" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11"><di:waypoint x="1245" y="336" /><di:waypoint x="1245" y="405.5" /><di:waypoint x="1417" y="405.5" /><di:waypoint x="1417" y="475" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12"><di:waypoint x="1417" y="557" /><di:waypoint x="1417" y="610" /><di:waypoint x="1087" y="610" /><di:waypoint x="1087" y="352" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13"><di:waypoint x="1245" y="286" /><di:waypoint x="1245" y="226.5" /><di:waypoint x="1417" y="226.5" /><di:waypoint x="1417" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14"><di:waypoint x="1499" y="126" /><di:waypoint x="1550" y="126" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14"><di:waypoint x="1499" y="126" /><di:waypoint x="1800" y="126" /></bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15"><di:waypoint x="1499" y="311" /><di:waypoint x="1550" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16"><di:waypoint x="1714" y="311" /><di:waypoint x="1765" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17"><di:waypoint x="1929" y="311" /><di:waypoint x="1980" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18"><di:waypoint x="2030" y="311" /><di:waypoint x="2200" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19"><di:waypoint x="2005" y="336" /><di:waypoint x="2005" y="405.5" /><di:waypoint x="2184" y="405.5" /><di:waypoint x="2184" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f20_di" bpmnElement="f20"><di:waypoint x="2273" y="516" /><di:waypoint x="2300" y="516" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f21_di" bpmnElement="f21"><di:waypoint x="2300" y="516" /><di:waypoint x="2300" y="665" /><di:waypoint x="1847" y="665" /><di:waypoint x="1847" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f22_di" bpmnElement="f22"><di:waypoint x="2325" y="541" /><di:waypoint x="2325" y="730" /><di:waypoint x="1505" y="730" /><di:waypoint x="1505" y="311" /><di:waypoint x="1499" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f23_di" bpmnElement="f23"><di:waypoint x="2364" y="311" /><di:waypoint x="2415" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f24_di" bpmnElement="f24"><di:waypoint x="2465" y="311" /><di:waypoint x="2630" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f25_di" bpmnElement="f25"><di:waypoint x="2440" y="336" /><di:waypoint x="2440" y="405.5" /><di:waypoint x="2612" y="405.5" /><di:waypoint x="2612" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f26_di" bpmnElement="f26"><di:waypoint x="2612" y="475" /><di:waypoint x="2612" y="413.5" /><di:waypoint x="2712" y="413.5" /><di:waypoint x="2712" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f27_di" bpmnElement="f27"><di:waypoint x="2440" y="286" /><di:waypoint x="2440" y="226.5" /><di:waypoint x="2612" y="226.5" /><di:waypoint x="2612" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f28_di" bpmnElement="f28"><di:waypoint x="2694" y="126" /><di:waypoint x="2745" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f29_di" bpmnElement="f29"><di:waypoint x="2794" y="311" /><di:waypoint x="2845" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f30_di" bpmnElement="f30"><di:waypoint x="2895" y="311" /><di:waypoint x="2960" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f31_di" bpmnElement="f31"><di:waypoint x="2870" y="336" /><di:waypoint x="2870" y="405.5" /><di:waypoint x="3042" y="405.5" /><di:waypoint x="3042" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f32_di" bpmnElement="f32"><di:waypoint x="3042" y="557" /><di:waypoint x="3042" y="790" /><di:waypoint x="2712" y="790" /><di:waypoint x="2712" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f33_di" bpmnElement="f33"><di:waypoint x="2870" y="286" /><di:waypoint x="2870" y="226.5" /><di:waypoint x="3042" y="226.5" /><di:waypoint x="3042" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f34_di" bpmnElement="f34"><di:waypoint x="3124" y="126" /><di:waypoint x="3175" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f35_di" bpmnElement="f35"><di:waypoint x="3124" y="311" /><di:waypoint x="3175" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16"><di:waypoint x="1964" y="311" /><di:waypoint x="2015" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17"><di:waypoint x="2179" y="311" /><di:waypoint x="2230" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18"><di:waypoint x="2280" y="311" /><di:waypoint x="2450" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19"><di:waypoint x="2255" y="336" /><di:waypoint x="2255" y="405.5" /><di:waypoint x="2434" y="405.5" /><di:waypoint x="2434" y="475" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f20_di" bpmnElement="f20"><di:waypoint x="2523" y="516" /><di:waypoint x="2550" y="516" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f21_di" bpmnElement="f21"><di:waypoint x="2550" y="516" /><di:waypoint x="2550" y="665" /><di:waypoint x="2097" y="665" /><di:waypoint x="2097" y="352" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f22_di" bpmnElement="f22"><di:waypoint x="2575" y="541" /><di:waypoint x="2575" y="891" /><di:waypoint x="1964" y="891" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f23_di" bpmnElement="f23"><di:waypoint x="2614" y="311" /><di:waypoint x="2665" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f24_di" bpmnElement="f24"><di:waypoint x="2715" y="311" /><di:waypoint x="2880" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f25_di" bpmnElement="f25"><di:waypoint x="2690" y="336" /><di:waypoint x="2690" y="405.5" /><di:waypoint x="2862" y="405.5" /><di:waypoint x="2862" y="475" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f26_di" bpmnElement="f26"><di:waypoint x="2862" y="475" /><di:waypoint x="2862" y="413.5" /><di:waypoint x="2962" y="413.5" /><di:waypoint x="2962" y="352" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f27_di" bpmnElement="f27"><di:waypoint x="2690" y="286" /><di:waypoint x="2690" y="226.5" /><di:waypoint x="2862" y="226.5" /><di:waypoint x="2862" y="167" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f28_di" bpmnElement="f28"><di:waypoint x="2944" y="126" /><di:waypoint x="2995" y="126" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f29_di" bpmnElement="f29"><di:waypoint x="3044" y="311" /><di:waypoint x="3095" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f30_di" bpmnElement="f30"><di:waypoint x="3145" y="311" /><di:waypoint x="3210" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f31_di" bpmnElement="f31"><di:waypoint x="3120" y="336" /><di:waypoint x="3120" y="405.5" /><di:waypoint x="3292" y="405.5" /><di:waypoint x="3292" y="475" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f32_di" bpmnElement="f32"><di:waypoint x="3292" y="557" /><di:waypoint x="3292" y="790" /><di:waypoint x="2962" y="790" /><di:waypoint x="2962" y="352" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f33_di" bpmnElement="f33"><di:waypoint x="3120" y="286" /><di:waypoint x="3120" y="226.5" /><di:waypoint x="3292" y="226.5" /><di:waypoint x="3292" y="167" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f34_di" bpmnElement="f34"><di:waypoint x="3374" y="126" /><di:waypoint x="3425" y="126" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f35_di" bpmnElement="f35"><di:waypoint x="3589" y="311" /><di:waypoint x="3640" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f36_di" bpmnElement="f36"><di:waypoint x="1600" y="311" /><di:waypoint x="1800" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f37_di" bpmnElement="f37"><di:waypoint x="1575" y="336" /><di:waypoint x="1575" y="430" /><di:waypoint x="1417" y="430" /><di:waypoint x="1417" y="352" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f38_di" bpmnElement="f38"><di:waypoint x="757" y="475" /><di:waypoint x="757" y="413.5" /><di:waypoint x="1087" y="413.5" /><di:waypoint x="1087" y="352" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f39_di" bpmnElement="f39"><di:waypoint x="1800" y="891" /><di:waypoint x="1505" y="891" /><di:waypoint x="1505" y="311" /><di:waypoint x="1499" y="311" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f40_di" bpmnElement="f40"><di:waypoint x="3374" y="311" /><di:waypoint x="3425" y="311" /></bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>
