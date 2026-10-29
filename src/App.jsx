@@ -82,7 +82,7 @@ function Home() {
   return <>
     <section className="home-opening"><div className="wrap home-opening-grid">
       <div><p className="page-label">Nexe Consultoria ERP</p><h1>Consultoria ERP <span>per a la teua empresa.</span></h1><p className="home-lead">Ajudem les empreses a definir com ha de treballar el seu ERP a partir dels processos i les necessitats de cada equip.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer l’equip ↗</a></div></div>
-      <aside className="home-project-preview"><figure><img src={asset('ceramica-illustrativa.png')} alt="Línia de producció de taulells ceràmics" width="1672" height="941" /><figcaption>Imatge il·lustrativa</figcaption></figure><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a><nav aria-label="Accés directe al projecte">{caseNavigation.filter((item) => ['proces','millora','documents'].includes(item.page)).map((item) => <a key={item.page} href={item.href}>{item.label}<span aria-hidden="true">↗</span></a>)}</nav></aside>
+      <aside className="home-project-preview"><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a><nav aria-label="Accés directe al projecte">{caseNavigation.filter((item) => ['proces','millora','documents'].includes(item.page)).map((item) => <a key={item.page} href={item.href}>{item.label}<span aria-hidden="true">↗</span></a>)}</nav></aside>
     </div></section>
     <section className="home-method section-space"><div className="wrap"><div className="section-heading-row"><h2>Com treballem</h2><p>Primer entenem el funcionament de l’empresa. Després definim els canvis del procés i els requisits amb què avaluarem l’ERP.</p></div><ol className="service-list home-services">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol></div></section>
     <section className="home-question section-space"><div className="wrap home-question-grid"><h2>L’equip de Nexe</h2><div><p>Quatre membres amb funcions de coordinació, anàlisi de processos, solucions ERP i dades. La nostra formació combina Enginyeria Informàtica i Matemàtica Computacional.</p><a className="text-link" href="#/consultora">Veure qui fa cada funció ↗</a></div></div></section>
@@ -240,13 +240,9 @@ function Consultancy() {
       <PageIntro label="Qui som" title="L’equip de Nexe">
         Som quatre estudiants d’Enginyeria Informàtica i Matemàtica Computacional. Estudiem com treballa l’empresa, identifiquem on es perd informació i definim què hauria de resoldre una solució ERP.
       </PageIntro>
-      <section className="section-space">
+      <section className="section-space team-section" aria-label="Funcions de l’equip">
         <div className="wrap">
-          <div className="section-heading-row">
-            <h2>Funcions de l’equip</h2>
-            <p>Formem l’equip de Nexe. Estes són les funcions de cada membre dins de la consultora.</p>
-          </div>
-          <ul className="team-list">{team.map((person) => <li key={person.name}><p className="team-role">{person.role}</p><h3>{person.name}</h3><p className="team-responsibility">{person.responsibility}</p><p className="team-studies">{person.studies}</p></li>)}</ul>
+          <ul className="team-list">{team.map((person) => <li key={person.name}><h2>{person.name}</h2><p className="team-role">{person.role}</p><p className="team-responsibility">{person.responsibility}</p><p className="team-studies">{person.studies}</p></li>)}</ul>
         </div>
       </section>
     </>
