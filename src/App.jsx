@@ -1,36 +1,23 @@
 import { useEffect, useState } from 'react'
 import { caseStudies, departments, steps, team } from './content.js'
-import { AnalysisPage, ImprovementPage, RequirementsPage } from './Practice4.jsx'
+import { AnalysisPage, Diagram, ImprovementPage, RequirementsPage } from './Practice4.jsx'
+
+import { mainNavigation as navigation, projectNavigation as caseNavigation, legalNavigation as footerNavigation, readRoute, pageHref, projectBase } from './navigation.js'
+import { Documents, PageContents, ProjectMenu, ProjectOverview, ProjectPager } from './ProjectUI.jsx'
 
 const asset = (file) => import.meta.env.BASE_URL + 'images/' + file
-
-const navigation = [
-  { label: 'Inici', href: '#/', page: 'inici' },
-  { label: 'Casos d’èxit', href: '#/casos', page: 'casos' },
-  { label: 'Qui som', href: '#/consultora', page: 'consultora' },
-  { label: 'Contacte', href: '#/contacte', page: 'contacte' },
-]
-
-const caseNavigation = [
-  { label: 'Empresa', href: '#/casos/ceramica-riu-sec', page: 'empresa' },
-  { label: 'Procés actual', href: '#/casos/ceramica-riu-sec/proces', page: 'proces' },
-  { label: 'Anàlisi', href: '#/casos/ceramica-riu-sec/analisi', page: 'analisi' },
-  { label: 'Millora', href: '#/casos/ceramica-riu-sec/millora', page: 'millora' },
-  { label: 'Requisits ERP', href: '#/casos/ceramica-riu-sec/requisits', page: 'requisits' },
-]
-
-const footerNavigation = [
-  { label: 'Privacitat', href: '#/privacitat' },
-  { label: 'Cookies', href: '#/cookies' },
-]
 
 const titles = {
   inici: 'Inici',
   casos: 'Casos d’èxit',
+  serveis: 'Serveis',
+  projecte: 'Resum del projecte',
+  documents: 'Documents i fonts',
+  notfound: 'Pàgina no trobada',
   empresa: 'Empresa',
   proces: 'Procés',
-  analisi: 'Anàlisi',
-  millora: 'Millora',
+  analisi: 'Problemes detectats',
+  millora: 'Proposta de millora',
   requisits: 'Requisits',
   consultora: 'Qui som',
   contacte: 'Contacte',
@@ -57,63 +44,28 @@ const services = [
   'Planificar una implantació ajustada al treball de cada empresa.',
 ]
 
-function pageFromHash() {
-  const path = window.location.hash.replace(/\/$/, '') || '#'
-  const routes = [...navigation, ...caseNavigation]
-  const match = routes.find((item) => item.href.replace(/\/$/, '') === path)
-  if (match) return match.page
-  const legacy = { '#/empresa': 'empresa', '#/proces': 'proces', '#/analisi': 'analisi', '#/millora': 'millora', '#/requisits': 'requisits', '#/privacitat': 'privacitat', '#/cookies': 'cookies' }
-  return titles[legacy[path]] ? legacy[path] : 'inici'
-}
-
 function Header({ page }) {
   const [menuOpen, setMenuOpen] = useState(false)
-
+  const isProject = caseNavigation.some((item) => item.page === page)
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth > 950) setMenuOpen(false)
-    }
-    const handleEscape = (event) => {
-      if (event.key === 'Escape') setMenuOpen(false)
-    }
-    window.addEventListener('resize', handleResize)
-    window.addEventListener('keydown', handleEscape)
-    return () => {
-      window.removeEventListener('resize', handleResize)
-      window.removeEventListener('keydown', handleEscape)
-    }
+    const close = () => setMenuOpen(false)
+    const onKey = (event) => { if (event.key === 'Escape') close() }
+    window.addEventListener('hashchange', close)
+    window.addEventListener('keydown', onKey)
+    return () => { window.removeEventListener('hashchange', close); window.removeEventListener('keydown', onKey) }
   }, [])
-
-  return (
-    <header className="site-header">
-      <a className="skip-link" href="#main-content">Saltar al contingut</a>
-      <div className="wrap header-inner">
-        <a className="brand" href="#/" aria-label="Nexe Consultoria ERP, tornar a l’inici" onClick={() => { setMenuOpen(false); if (page === 'inici') window.scrollTo(0, 0) }}>
-          <img src={asset('nexe-logo.svg')} alt="Nexe Consultoria ERP" width="1200" height="420" />
-        </a>
-        <nav className="desktop-nav" aria-label="Navegació principal">
-          {navigation.map((item) => (
-            <a key={item.page} href={item.href} aria-current={(page === item.page || (item.page === 'casos' && caseNavigation.some((section) => section.page === page))) ? 'page' : undefined} onClick={() => { if (page === item.page) window.scrollTo(0, 0) }}>{item.label}</a>
-          ))}
-        </nav>
-        <button
-          type="button"
-          className="menu-button"
-          aria-expanded={menuOpen}
-          aria-controls="mobile-nav"
-          onClick={() => setMenuOpen((open) => !open)}
-        >
-          <span>{menuOpen ? 'Tancar' : 'Menú'}</span>
-          <span className="menu-symbol" aria-hidden="true">{menuOpen ? '×' : '☰'}</span>
-        </button>
-      </div>
-      <nav id="mobile-nav" className="mobile-nav" aria-label="Navegació mòbil" hidden={!menuOpen}>
-        {navigation.map((item) => (
-          <a key={item.page} href={item.href} aria-current={(page === item.page || (item.page === 'casos' && caseNavigation.some((section) => section.page === page))) ? 'page' : undefined} onClick={() => { setMenuOpen(false); if (page === item.page) window.scrollTo(0, 0) }}>{item.label}</a>
-        ))}
-      </nav>
-    </header>
-  )
+  return <header className="site-header">
+    <a className="skip-link" href="#main-content" onClick={(event) => { event.preventDefault(); document.getElementById('main-content')?.focus(); document.getElementById('main-content')?.scrollIntoView() }}>Saltar al contingut</a>
+    <div className="wrap header-inner">
+      <a className="brand" href="#/" aria-label="Nexe Consultoria ERP, tornar a l’inici"><img src={asset('nexe-logo.svg')} alt="Nexe Consultoria ERP" width="1200" height="420" /></a>
+      <nav className="desktop-nav" aria-label="Navegació principal">{navigation.map((item) => <a key={item.page} href={item.href} aria-current={page === item.page || (item.page === 'casos' && isProject) ? 'page' : undefined}>{item.label}</a>)}</nav>
+      <button type="button" className="menu-button" aria-expanded={menuOpen} aria-controls="mobile-nav" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? 'Tancar' : 'Menú'} <span aria-hidden="true">{menuOpen ? '×' : '☰'}</span></button>
+    </div>
+    <nav id="mobile-nav" className="mobile-nav" aria-label="Navegació mòbil" hidden={!menuOpen}>
+      {navigation.map((item) => <a key={item.page} href={item.href} aria-current={page === item.page || (item.page === 'casos' && isProject) ? 'page' : undefined} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
+      <div className="mobile-project"><p>Ceràmica Riu Sec</p>{caseNavigation.map((item) => <a key={item.page} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}</div>
+    </nav>
+  </header>
 }
 
 function PageIntro({ label, title, children }) {
@@ -128,42 +80,30 @@ function PageIntro({ label, title, children }) {
 
 function Home() {
   return <>
-    <section className="home-opening">
-      <div className="wrap home-opening-grid">
-        <div><p className="page-label">Processos de negoci i sistemes d’informació</p><h1>Nexe Consultoria ERP</h1></div>
-        <div className="home-opening-side"><p>Ajudem les empreses a revisar com treballen i a definir què necessiten d’un ERP. Partim dels processos, de les dades i de les persones que els utilitzen cada dia.</p><a className="action-link" href="#/casos">Conéixer els nostres projectes <span aria-hidden="true">↗</span></a></div>
-      </div>
-    </section>
-    <section className="section-space">
-      <div className="wrap split-section">
-        <div><h2>Com et podem ajudar</h2><p className="section-side-note">Des de l’anàlisi del procés fins a la planificació de la implantació.</p></div>
-        <ol className="service-list">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol>
-      </div>
-    </section>
-    <section className="home-question section-space"><div className="wrap home-question-grid">
-      <h2>Un equip amb funcions definides</h2><div><p>Nexe reuneix coneixements d’Enginyeria Informàtica i Matemàtica Computacional. Ens repartim la coordinació, l’anàlisi de processos, l’avaluació de solucions ERP i el treball amb dades.</p><a className="text-link" href="#/consultora">Conéixer l’equip <span aria-hidden="true">↗</span></a></div>
+    <section className="home-opening"><div className="wrap home-opening-grid">
+      <div><p className="page-label">Nexe Consultoria ERP</p><h1>Consultoria ERP per a la teua empresa.</h1><p className="home-lead">Ajudem les empreses a definir com ha de treballar el seu ERP a partir dels processos i les necessitats de cada equip.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer l’equip ↗</a></div></div>
+      <aside className="home-project-preview"><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a><nav aria-label="Accés directe al projecte">{caseNavigation.slice(2).map((item) => <a key={item.page} href={item.href}>{item.label}<span aria-hidden="true">↗</span></a>)}</nav></aside>
     </div></section>
-    <section className="section-space"><div className="wrap split-section"><h2>El nostre treball</h2><div className="body-copy"><p>Actualment treballem amb Ceràmica Riu Sec en la revisió de l’aprovisionament de matèries primeres. Documentem la situació inicial i preparem una proposta de millora amb suport ERP.</p><a className="text-link next-link" href="#/casos">Veure els casos d’èxit <span aria-hidden="true">↗</span></a></div></div></section>
+    <section className="section-space"><div className="wrap"><div className="section-heading-row"><h2>Com treballem</h2><p>Primer entenem el funcionament de l’empresa. Després definim els canvis del procés i els requisits amb què avaluarem l’ERP.</p></div><ol className="service-list home-services">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol></div></section>
+    <section className="home-question section-space"><div className="wrap home-question-grid"><h2>L’equip de Nexe</h2><div><p>Quatre membres amb funcions de coordinació, anàlisi de processos, solucions ERP i dades. La nostra formació combina Enginyeria Informàtica i Matemàtica Computacional.</p><a className="text-link" href="#/consultora">Veure qui fa cada funció ↗</a></div></div></section>
+  </>
+}
+
+function Services() {
+  return <><PageIntro label="Serveis" title="Anàlisi de processos i consultoria ERP">Analitzem el treball de cada departament i preparem una proposta perquè l’empresa puga avaluar una solució adequada.</PageIntro>
+    <section className="section-space"><div className="wrap"><ol className="service-list">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol></div></section>
+    <section className="section-space project-brief"><div className="wrap split-section"><h2>Com es concreta</h2><div className="body-copy"><p>El treball amb Ceràmica Riu Sec mostra les activitats que revisem, els problemes detectats i la proposta que estem desenvolupant.</p><a className="text-link next-link" href={projectBase}>Veure el projecte de Ceràmica Riu Sec ↗</a></div></div></section>
   </>
 }
 
 function Cases() {
-  return <>
-    <PageIntro label="El nostre treball" title="Casos d’èxit">Coneix les empreses amb què treballem, els processos que revisem i l’estat de cada projecte.</PageIntro>
-    <section className="section-space cases-section"><div className="wrap case-list">
-      {caseStudies.map((item) => <article className="client-case" key={item.slug}>
-        <figure><img src={asset(item.image)} alt="Línia de fabricació de taulells ceràmics" width="1672" height="941" /><figcaption>Imatge il·lustrativa del sector</figcaption></figure>
-        <div className="client-case-copy"><p className="page-label">{item.sector} · {item.location}</p><h2>{item.name}</h2><p className="case-status">{item.status}</p><p>{item.summary}</p><a className="text-link" href={'#/casos/' + item.slug}>Veure el projecte <span aria-hidden="true">↗</span></a></div>
-      </article>)}
-    </div></section>
+  return <><PageIntro label="Projectes de Nexe" title="Casos d’èxit">Cada empresa té el seu espai, amb el context del projecte, l’anàlisi del procés i la proposta de millora.</PageIntro>
+    <section className="section-space cases-section"><div className="wrap case-list">{caseStudies.map((item) => <article className="client-case" key={item.slug}>
+      <figure><img src={asset(item.image)} alt="Línia de fabricació de taulells ceràmics" width="1672" height="941" /><figcaption>Imatge il·lustrativa del sector</figcaption></figure>
+      <div className="client-case-copy"><p className="page-label">{item.sector} · {item.location}</p><h2>{item.name}</h2><p className="case-status">{item.status}</p><p>{item.summary}</p><a className="action-link" href={'#/casos/' + item.slug}>Entrar al projecte ↗</a></div>
+      <nav className="case-quick-links" aria-label={'Continguts de ' + item.name}>{caseNavigation.map((section) => <a key={section.page} href={section.href}>{section.label}<span aria-hidden="true">↗</span></a>)}</nav>
+    </article>)}</div></section>
   </>
-}
-
-function CaseNavigation({ page }) {
-  return <div className="case-context"><div className="wrap">
-    <p className="case-breadcrumb"><a href="#/casos">Casos d’èxit</a><span aria-hidden="true">/</span><strong>Ceràmica Riu Sec</strong></p>
-    <nav className="case-navigation" aria-label="Apartats del projecte Ceràmica Riu Sec">{caseNavigation.map((item) => <a key={item.page} href={item.href} aria-current={page === item.page ? 'page' : undefined}>{item.label}</a>)}</nav>
-  </div></div>
 }
 
 function Company() {
@@ -172,13 +112,11 @@ function Company() {
 
   return (
     <>
-      <PageIntro label="Empresa" title="Ceràmica Riu Sec">
+      <PageIntro label="Ceràmica Riu Sec" title="L’empresa">
         Una fàbrica de taulells d’Onda amb una planta de producció, un magatzem propi i unes {workforce} persones. Fabrica per a distribuïdors i empreses de construcció.
       </PageIntro>
-      <section className="case-overview section-space"><div className="wrap split-section">
-        <h2>L’encàrrec de Nexe</h2><div className="body-copy"><p>Revisem l’aprovisionament de matèries primeres per identificar on es perd informació entre producció, compres, magatzem i qualitat. L’objectiu és definir un procés i uns requisits ERP que permeten treballar amb dades compartides.</p><p>El projecte està en fase d’anàlisi i proposta. La selecció i la implantació de l’ERP es treballaran després.</p><a className="text-link next-link" href="#/casos/ceramica-riu-sec/proces">Conéixer el procés actual <span aria-hidden="true">↗</span></a></div>
-      </div></section>
-      <section className="section-space company-overview">
+      <PageContents page="empresa" items={[["context","Context i estratègia"],["organitzacio","Organització"],["situacio","Situació actual"]]} />
+      <section id="context" className="section-space company-overview">
         <div className="wrap split-section">
           <h2>El context</h2>
           <div className="body-copy">
@@ -195,7 +133,7 @@ function Company() {
       <section className="section-space">
         <div className="wrap">
           <div className="section-heading-row">
-            <h2>Com s’organitza</h2>
+            <h2 id="organitzacio">Com s’organitza</h2>
             <p>Unes {workforce} persones repartides en set àrees. Producció, magatzem, compres i qualitat intervenen directament en l’aprovisionament.</p>
           </div>
           <div className="org-chart" aria-label="Estructura de Ceràmica Riu Sec">
@@ -215,10 +153,9 @@ function Company() {
               ))}
             </ul>
           </div>
-          <a className="text-link next-link" href="#/casos/ceramica-riu-sec/analisi">Llegir l’anàlisi del procés <span aria-hidden="true">↗</span></a>
         </div>
       </section>
-      <section className="section-space current-state">
+      <section id="situacio" className="section-space current-state">
         <div className="wrap">
           <div className="section-heading-row">
             <h2>Informació repartida</h2>
@@ -236,34 +173,21 @@ function Company() {
   )
 }
 
-function ProcessStep({ step, index, open, onToggle }) {
-  const id = 'step-' + (index + 1)
-  return (
-    <li className="process-item">
-      <h3>
-        <button className="process-toggle" type="button" aria-expanded={open} aria-controls={id} onClick={onToggle}>
-          <span className="step-number">{String(index + 1).padStart(2, '0')}</span>
-          <span className="step-heading"><strong>{step.title}</strong><small>{step.summary}</small></span>
-          <span className="step-symbol" aria-hidden="true">{open ? '−' : '+'}</span>
-        </button>
-      </h3>
-      <div id={id} className="step-detail" hidden={!open}>
-        <div><h4>Qui hi intervé i amb què</h4><p><strong>Responsable:</strong> {step.owner}</p><p><strong>Eines:</strong> {step.tools}</p></div>
-        <div><h4>Entrada i resultat</h4><p><strong>Entrada:</strong> {step.input}</p><p><strong>Resultat:</strong> {step.output}</p></div>
-        <div><h4>Deficiència i conseqüència</h4><p>{step.problem}</p><p><strong>Conseqüència:</strong> {step.consequence}</p></div>
-      </div>
-    </li>
-  )
+function ProcessStep({ step, index }) {
+  return <li className="process-item" id={'activitat-' + (index + 1)}>
+    <div className="process-step-title"><span className="step-number">{String(index + 1).padStart(2, '0')}</span><h3>{step.title}</h3></div><p className="process-step-action">{step.summary}</p>
+    <dl className="process-fields"><div><dt>Responsables</dt><dd>{step.owner}</dd></div><div><dt>Entrada</dt><dd>{step.input}</dd></div><div><dt>Resultat</dt><dd>{step.output}</dd></div><div><dt>Eines</dt><dd>{step.tools}</dd></div><div><dt>Deficiència</dt><dd>{step.problem}</dd></div><div><dt>Conseqüència</dt><dd>{step.consequence}</dd></div></dl>
+  </li>
 }
 
 function Process() {
-  const [openStep, setOpenStep] = useState(0)
   return (
     <>
       <PageIntro label="Procés" title="Aprovisionament de matèries primeres">
         L’objectiu del procés és garantir que producció dispose de les matèries primeres necessàries, en la quantitat adequada i a temps, amb l’estoc actualitzat. Comença quan producció identifica una necessitat i acaba quan el material acceptat queda registrat al magatzem.
       </PageIntro>
-      <section className="scope-section">
+      <PageContents page="proces" items={[["abast","Objectiu i abast"],["activitats","Les huit activitats"],["model-actual","Model AS-IS"],["preocupacions","Necessitats de direcció"]]} />
+      <section id="abast" className="scope-section">
         <div className="wrap scope-grid">
           <div><span>Inici</span><p>Producció comunica els materials que necessita.</p></div>
           <div><span>Final</span><p>El material acceptat queda disponible al magatzem.</p></div>
@@ -273,23 +197,23 @@ function Process() {
       <section className="section-space">
         <div className="wrap">
           <div className="section-heading-row process-heading">
-            <h2>Les activitats actuals</h2>
-            <p>Obri cada pas per veure qui hi intervé, quina informació utilitza i on apareix el problema.</p>
+            <h2 id="activitats">Les huit activitats actuals</h2>
+            <p>Cada activitat mostra els responsables, les entrades i eixides, les eines i la deficiència detectada.</p>
           </div>
           <div className="process-columns">
             {[0, 4].map((start) => (
               <ol className="process-list" start={start + 1} key={start}>
                 {steps.slice(start, start + 4).map((step, offset) => {
                   const index = start + offset
-                  return <ProcessStep key={step.title} step={step} index={index} open={openStep === index} onToggle={() => setOpenStep((current) => current === index ? null : index)} />
+                  return <ProcessStep key={step.title} step={step} index={index} />
                 })}
               </ol>
             ))}
           </div>
-          <a className="text-link next-link" href="#/casos/ceramica-riu-sec/analisi">Llegir l’anàlisi de cada pas <span aria-hidden="true">↗</span></a>
         </div>
       </section>
-      <section className="concerns section-space">
+      <section id="model-actual" className="section-space analysis-section"><div className="wrap"><Diagram file="as-is.bpmn" title="Model del procés actual · AS-IS" caption="Des de la necessitat de producció fins al registre manual de l’entrada." /></div></section>
+      <section id="preocupacions" className="concerns section-space">
         <div className="wrap">
           <div className="section-heading-row"><h2>Què preocupa la direcció</h2><p>Els errors de coordinació es traslladen a les compres i als terminis de fabricació.</p></div>
           <div className="concern-grid">
@@ -311,19 +235,9 @@ function Consultancy() {
         Som quatre estudiants d’Enginyeria Informàtica i Matemàtica Computacional. Estudiem com treballa l’empresa, identifiquem on es perd informació i definim què hauria de resoldre una solució ERP.
       </PageIntro>
       <section className="section-space">
-        <div className="wrap split-section">
-          <div><h2>Què fem</h2><p className="section-side-note">Del procés actual a una proposta d’implantació.</p></div>
-          <ol className="service-list">
-            {services.map((service, index) => (
-              <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>
-            ))}
-          </ol>
-        </div>
-      </section>
-      <section className="section-space">
         <div className="wrap">
           <div className="section-heading-row">
-            <h2>Qui som</h2>
+            <h2>Funcions de l’equip</h2>
             <p>Formem l’equip de Nexe. Estes són les funcions de cada membre dins de la consultora.</p>
           </div>
           <ul className="team-list">
@@ -412,6 +326,7 @@ function Cookies() {
 function Footer({ page }) {
   return (
     <footer className="site-footer">
+      <div className="wrap footer-directory"><div><h2>Nexe</h2>{navigation.filter((item) => item.page !== 'contacte').map((item) => <a key={item.page} href={item.href}>{item.label}</a>)}</div><div><h2>Ceràmica Riu Sec</h2>{caseNavigation.map((item) => <a key={item.page} href={item.href}>{item.label}</a>)}</div></div>
       <div className="wrap footer-inner">
         <div className="footer-meta">
           <strong>Nexe Consultoria ERP</strong>
@@ -426,37 +341,41 @@ function Footer({ page }) {
 }
 
 export default function App() {
-  const [page, setPage] = useState(pageFromHash)
-
+  const [route, setRoute] = useState(readRoute)
+  const { page, section } = route
+  const isProject = caseNavigation.some((item) => item.page === page)
   useEffect(() => {
-    const handleHashChange = () => setPage(pageFromHash())
+    const handleHashChange = () => setRoute(readRoute())
     window.addEventListener('hashchange', handleHashChange)
     return () => window.removeEventListener('hashchange', handleHashChange)
   }, [])
-
   useEffect(() => {
-    document.title = titles[page] + (caseNavigation.some((item) => item.page === page) ? ' · Ceràmica Riu Sec' : '') + ' · Nexe Consultoria ERP'
-    window.scrollTo(0, 0)
-  }, [page])
-
-  return (
-    <>
-      <Header page={page} />
-      <main id="main-content" tabIndex="-1">
-        {caseNavigation.some((item) => item.page === page) && <CaseNavigation page={page} />}
-        {page === 'inici' && <Home />}
-        {page === 'casos' && <Cases />}
-        {page === 'empresa' && <Company />}
-        {page === 'proces' && <Process />}
-        {page === 'analisi' && <AnalysisPage />}
-        {page === 'millora' && <ImprovementPage />}
-        {page === 'requisits' && <RequirementsPage />}
-        {page === 'consultora' && <Consultancy />}
-        {page === 'contacte' && <Contact />}
-        {page === 'privacitat' && <Privacy />}
-        {page === 'cookies' && <Cookies />}
-      </main>
-      <Footer page={page} />
-    </>
-  )
+    document.title = titles[page] + (isProject ? ' · Ceràmica Riu Sec' : '') + ' · Nexe Consultoria ERP'
+    const frame = requestAnimationFrame(() => {
+      const target = section && document.getElementById(section)
+      if (target) { target.scrollIntoView({ block: 'start' }); target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }) }
+      else window.scrollTo(0, 0)
+    })
+    return () => cancelAnimationFrame(frame)
+  }, [page, section, isProject])
+  const content = <>
+    {page === 'inici' && <Home />}
+    {page === 'serveis' && <Services />}
+    {page === 'casos' && <Cases />}
+    {page === 'projecte' && <ProjectOverview />}
+    {page === 'empresa' && <Company />}
+    {page === 'proces' && <Process />}
+    {page === 'analisi' && <AnalysisPage />}
+    {page === 'millora' && <ImprovementPage />}
+    {page === 'requisits' && <RequirementsPage />}
+    {page === 'documents' && <Documents />}
+    {page === 'consultora' && <Consultancy />}
+    {page === 'contacte' && <Contact />}
+    {page === 'privacitat' && <Privacy />}
+    {page === 'cookies' && <Cookies />}
+    {page === 'notfound' && <><PageIntro label="Navegació" title="Pàgina no trobada">Pots tornar a l’inici o consultar l’índex del projecte.</PageIntro><div className="wrap section-space"><a className="action-link" href="#/">Tornar a l’inici</a><a className="text-link" href={projectBase}>Resum de Ceràmica Riu Sec</a></div></>}
+  </>
+  return <><Header page={page} /><main id="main-content" tabIndex="-1">
+    {isProject ? <div className="project-shell wrap"><ProjectMenu page={page} /><div className="project-body"><nav className="project-breadcrumb" aria-label="Ruta de navegació"><a href="#/casos">Casos d’èxit</a><span aria-hidden="true">/</span>{page === 'projecte' ? <span>Ceràmica Riu Sec</span> : <><a href={projectBase}>Ceràmica Riu Sec</a><span aria-hidden="true">/</span><span aria-current="page">{caseNavigation.find((item) => item.page === page)?.label}</span></>}</nav>{content}<ProjectPager page={page} /></div></div> : content}
+  </main><Footer page={page} /></>
 }
