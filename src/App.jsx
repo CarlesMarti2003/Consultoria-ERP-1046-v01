@@ -88,7 +88,7 @@ function Services() {
 function Cases() {
   return <><PageIntro label="Projectes de Nexe" title="Casos d’èxit">Cada empresa té el seu espai, amb el context del projecte, l’anàlisi del procés i la proposta de millora.</PageIntro>
     <section className="section-space cases-section"><div className="wrap case-list">{caseStudies.map((item) => <article className="client-case" key={item.slug}>
-      <figure><img src={asset(item.image)} alt="Línia de fabricació de taulells ceràmics" width="1672" height="941" /><figcaption>Imatge il·lustrativa del sector</figcaption></figure>
+      <figure><img src={asset(item.image)} alt="Línia de fabricació de taulells ceràmics" width="1672" height="941" /></figure>
       <div className="client-case-copy"><p className="page-label">{item.sector} · {item.location}</p><h2>{item.name}</h2><p className="case-status">{item.status}</p><p>{item.summary}</p><a className="action-link" href={'#/casos/' + item.slug}>Entrar al projecte ↗</a></div>
     </article>)}</div></section>
   </>
@@ -151,7 +151,22 @@ function Consultancy() {
 }
 
 function Contact() {
-  return <><PageIntro label="Contacte" title="Parlem del teu projecte">Consultes i coordinació de projectes amb l’equip de Nexe.</PageIntro><section className="section-space"><div className="wrap contact-editorial"><div><p className="page-label">Relació amb clients</p><h2>Héctor Balaguer Romero</h2><p>Gerent i responsable de relació amb clients.</p><a className="text-link next-link" href="#/consultora">Conéixer l’equip ↗</a></div><div className="contact-status"><h2>Canal de contacte en preparació</h2><p>El canal d’enviament encara no està actiu. Publicarem ací les dades de contacte quan estiguen disponibles.</p></div></div></section></>
+  return <>
+    <PageIntro label="Contacte" title="Parlem del teu projecte">Consultes i coordinació de projectes amb l’equip de Nexe.</PageIntro>
+    <section className="section-space"><div className="wrap contact-editorial">
+      <div><p className="page-label">Relació amb clients</p><h2>Héctor Balaguer Romero</h2><p>Gerent i responsable de relació amb clients.</p><a className="text-link next-link" href="#/consultora">Conéixer l’equip ↗</a></div>
+      <form className="contact-form" onSubmit={(event) => event.preventDefault()} aria-labelledby="contact-form-title">
+        <h2 id="contact-form-title">Escriu-nos</h2>
+        <div className="contact-form-fields">
+          <label htmlFor="contact-name">Nom<input id="contact-name" type="text" autoComplete="name" /></label>
+          <label htmlFor="contact-email">Correu electrònic<input id="contact-email" type="email" autoComplete="email" /></label>
+          <label className="contact-form-full" htmlFor="contact-company">Empresa <span>(opcional)</span><input id="contact-company" type="text" autoComplete="organization" /></label>
+          <label className="contact-form-full" htmlFor="contact-message">Missatge<textarea id="contact-message" rows="4" /></label>
+        </div>
+        <button className="action-link" type="submit">Enviar missatge ↗</button>
+      </form>
+    </div></section>
+  </>
 }
 
 function Privacy() {
@@ -165,7 +180,7 @@ function Privacy() {
           <h2>Dades a la web</h2>
           <div className="info-copy">
             <p>La web publica els noms, els estudis i les funcions dels membres de Nexe per presentar l’equip del projecte.</p>
-            <p>El canal de contacte encara està en preparació. La web no recull dades de formularis ni missatges. No hem incorporat eines pròpies d’analítica ni de publicitat.</p>
+            <p>Les dades escrites en el formulari de contacte no s’envien ni s’emmagatzemen. No hem incorporat eines pròpies d’analítica ni de publicitat.</p>
             <p>La web s’allotja a GitHub Pages. GitHub pot tractar dades tècniques de navegació d’acord amb la seua <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" target="_blank" rel="noreferrer">declaració de privacitat</a>.</p>
           </div>
         </div>
