@@ -25,25 +25,6 @@ const titles = {
   cookies: 'Cookies',
 }
 
-const records = [
-  { title: 'Producció', detail: 'Necessitats comunicades per correu o verbalment.' },
-  { title: 'Compres', detail: 'Peticions i comandes en correus i fulls de càlcul.' },
-  { title: 'Magatzem', detail: 'Entrades de material registrades en un altre fitxer.' },
-]
-
-const concerns = [
-  { title: 'Estoc poc fiable', detail: 'Els fitxers separats dificulten saber quina quantitat de material hi ha disponible.' },
-  { title: 'Compres urgents', detail: 'Les peticions tardanes poden forçar comandes no planificades i elevar costos.' },
-  { title: 'Retards de fabricació', detail: 'Si el material no arriba a temps, es poden incomplir els terminis de lliurament.' },
-]
-
-const services = [
-  'Analitzar el procés actual i les dades que utilitza cada departament.',
-  'Definir les necessitats que ha de cobrir el sistema.',
-  'Comparar solucions ERP i proposar millores del procés.',
-  'Planificar una implantació ajustada al treball de cada empresa.',
-]
-
 function Header({ page }) {
   const [menuOpen, setMenuOpen] = useState(false)
   const isProject = caseNavigation.some((item) => item.page === page)
@@ -81,11 +62,13 @@ function PageIntro({ label, title, children }) {
 function Home() {
   return <>
     <section className="home-opening"><div className="wrap home-opening-grid">
-      <div><p className="page-label">Nexe Consultoria ERP</p><h1>Consultoria ERP <span>per a la teua empresa.</span></h1><p className="home-lead">Ajudem les empreses a definir com ha de treballar el seu ERP a partir dels processos i les necessitats de cada equip.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer l’equip ↗</a></div></div>
-      <aside className="home-project-preview"><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a></aside>
+      <div><p className="page-label">Nexe Consultoria ERP</p><h1>Consultoria ERP <span>per a la teua empresa.</span></h1><p className="home-lead">Analitzem com treballen els departaments i definim què ha de resoldre el sistema abans de triar una solució ERP.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer Nexe ↗</a></div></div>
+      <aside className="home-introduction"><p className="page-label">Processos i sistemes d’informació</p><h2>Entendre el treball abans de canviar l’eina</h2><p>Quan les dades estan repartides entre correus i fulls de càlcul, la coordinació depén de comprovacions manuals. Revisem eixe recorregut amb les persones que hi intervenen.</p><p>El resultat del treball és una proposta de procés i uns requisits concrets amb què comparar les solucions.</p></aside>
     </div></section>
-    <section className="home-method section-space"><div className="wrap"><div className="section-heading-row"><h2>Com treballem</h2><p>Primer entenem el funcionament de l’empresa. Després definim els canvis del procés i els requisits amb què avaluarem l’ERP.</p></div><ol className="service-list home-services">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol></div></section>
-    <section className="home-question section-space"><div className="wrap home-question-grid"><h2>L’equip de Nexe</h2><div><p>Quatre membres amb funcions de coordinació, anàlisi de processos, solucions ERP i dades. La nostra formació combina Enginyeria Informàtica i Matemàtica Computacional.</p><a className="text-link" href="#/consultora">Veure qui fa cada funció ↗</a></div></div></section>
+    <section className="section-space home-offering"><div className="wrap"><div className="section-heading-row"><h2>En què podem ajudar-te</h2><p>Des de l’anàlisi del procés fins a la preparació del canvi de sistema.</p></div><div className="home-offering-grid">{serviceOfferings.map((item,index) => <article key={item.title}><span>{String(index+1).padStart(2,'0')}</span><h3>{item.title}</h3><p>{item.result}</p></article>)}</div><a className="text-link next-link" href="#/serveis">Consultar els serveis ↗</a></div></section>
+    <section className="home-method section-space"><div className="wrap home-method-copy"><h2>Com treballem</h2><p>Documentem les activitats i les dades actuals, localitzem els problemes i proposem canvis justificats. Les necessitats de cada perfil es tradueixen en requisits que es puguen comprovar durant l’avaluació de l’ERP.</p><p>Els models del procés actual i del procés proposat permeten revisar les decisions amb l’empresa abans de plantejar la implantació.</p></div></section>
+    <section className="section-space home-featured"><div className="wrap home-featured-grid"><div><p className="page-label">Projecte en curs · Indústria ceràmica</p><h2>Ceràmica Riu Sec</h2><p>Revisem l’aprovisionament de matèries primeres d’una empresa d’Onda: des de la necessitat de producció fins al registre del material acceptat.</p><a className="action-link next-link" href={projectBase}>Conéixer el projecte ↗</a></div><dl><div><dt>Equips implicats</dt><dd>Producció, compres, magatzem i qualitat.</dd></div><div><dt>Objectiu</dt><dd>Disposar de material a temps i d’un estoc fiable.</dd></div><div><dt>Estat</dt><dd>Anàlisi i proposta de millora. Encara no s’ha implantat.</dd></div></dl></div></section>
+    <section className="home-question section-space"><div className="wrap"><div className="section-heading-row"><h2>Les persones darrere de Nexe</h2><p>Un equip amb formació en Enginyeria Informàtica i Matemàtica Computacional, amb una funció definida per a cada àrea del projecte.</p></div><ul className="home-team">{team.map((person) => <li key={person.name}><strong>{person.name}</strong><span>{person.role}</span></li>)}</ul><a className="text-link next-link" href="#/consultora">Veure l’equip ↗</a></div></section>
   </>
 }
 
@@ -112,71 +95,12 @@ function Cases() {
 }
 
 function Company() {
-  const workforce = departments.reduce((total, department) => total + department.people, 0)
-  const [management, ...areas] = departments
-
-  return (
-    <>
-      <PageIntro label="Ceràmica Riu Sec" title="L’empresa">
-        Una fàbrica de taulells d’Onda amb una planta de producció, un magatzem propi i unes {workforce} persones. Fabrica per a distribuïdors i empreses de construcció.
-      </PageIntro>
-        <SectionBrowser page="empresa" sections={[
-{ id: 'context', label: 'Context i estratègia', anchors: [], content: (<section id="context" className="section-space company-overview">
-        <div className="wrap split-section">
-          <h2>El context</h2>
-          <div className="body-copy">
-            <p>Ceràmica Riu Sec va començar a Onda com una fàbrica de taulells amb un equip més menut. A mesura que van augmentar les comandes de distribuïdors i empreses de construcció, va ampliar la producció i el magatzem fins a arribar a les {workforce} persones actuals.</p>
-            <p>Hui treballa amb una planta de producció i un magatzem propi. Els registres d’estoc, les peticions de materials i les compres continuen repartits entre fulls de càlcul i correus, cosa que complica la coordinació quan canvia el pla de fabricació.</p>
-            <p>La seua estratègia és fabricar segons la demanda prevista, disposar dels materials a temps i evitar tant les aturades com l’excés d’estoc.</p>
-          </div>
-        </div>
-        <div className="wrap goals-grid">
-          <div><h3>Missió</h3><p>Fabricar taulells de qualitat i entregar les comandes dins del termini acordat.</p></div>
-          <div><h3>Visió</h3><p>Créixer sense perdre el control de la producció, les existències ni els lliuraments.</p></div>
-        </div>
-      </section>) },
-{ id: 'organitzacio', label: 'Organització', anchors: [], content: (<section className="section-space">
-        <div className="wrap">
-          <div className="section-heading-row">
-            <h2 id="organitzacio">Com s’organitza</h2>
-            <p>Unes {workforce} persones repartides en set àrees. Producció, magatzem, compres i qualitat intervenen directament en l’aprovisionament.</p>
-          </div>
-          <div className="org-chart" aria-label="Estructura de Ceràmica Riu Sec">
-            <div className="org-management">
-              <h3>{management.name}</h3>
-              <p>{management.task}</p>
-              <span>{management.people} persones</span>
-            </div>
-            <p className="org-level-label">Departaments</p>
-            <ul className="org-areas">
-              {areas.map((department) => (
-                <li key={department.name}>
-                  <h3>{department.name}</h3>
-                  <p>{department.task}</p>
-                  <span>{department.people} persones</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>) },
-{ id: 'situacio', label: 'Situació actual', anchors: [], content: (<section id="situacio" className="section-space current-state">
-        <div className="wrap">
-          <div className="section-heading-row">
-            <h2>Informació repartida</h2>
-            <p>L’empresa utilitza un programa de comptabilitat, però encara no té un ERP que connecte aquestes àrees.</p>
-          </div>
-          <div className="record-grid">
-            {records.map((record) => (
-              <div key={record.title}><h3>{record.title}</h3><p>{record.detail}</p></div>
-            ))}
-          </div>
-          <p className="record-conclusion">La diferència entre l’estoc físic i el registrat es pot descobrir quan producció ja necessita el material.</p>
-        </div>
-      </section>) }
-]} />
-    </>
-  )
+  const workforce = departments.reduce((total,item) => total + item.people,0)
+  return <>
+    <PageIntro label="Ceràmica Riu Sec" title="L’empresa">Fàbrica de taulells d’Onda amb una planta, un magatzem propi i {workforce} persones. Treballa per a distribuïdors i empreses de construcció.</PageIntro>
+    <section id="context" className="section-space"><div className="wrap company-essential"><div><h2 className="plain-section-title">Activitat i estratègia</h2><p>Planifica la fabricació segons la demanda i busca disposar dels materials a temps, evitant aturades i excés d’estoc.</p><dl className="company-purpose"><div><dt>Missió</dt><dd>Fabricar taulells de qualitat i complir els terminis.</dd></div><div><dt>Visió</dt><dd>Créixer mantenint el control de la producció i les existències.</dd></div></dl></div><div id="situacio"><h2 className="plain-section-title">Situació actual</h2><p>Disposa d’un programa de comptabilitat, però encara no té un ERP que connecte les àrees. Producció comunica necessitats per correu, compres prepara peticions i comandes en fitxers separats, i magatzem registra les entrades en un altre full.</p></div></div></section>
+    <section id="organitzacio" className="section-space"><div className="wrap"><h2 className="plain-section-title">Organització</h2><ul className="org-areas">{departments.map((item) => <li key={item.name}><h3>{item.name}</h3><p>{item.task}</p><span>{item.people} persones</span></li>)}</ul></div></section>
+  </>
 }
 
 function ProcessStep({ step, index }) {
@@ -187,13 +111,8 @@ function ProcessStep({ step, index }) {
 }
 
 function Process() {
-  return (
-    <>
-      <PageIntro label="Procés" title="Aprovisionament de matèries primeres">
-        El recorregut de les matèries primeres, des de la necessitat de producció fins al registre del material acceptat al magatzem.
-      </PageIntro>
-        <SectionBrowser page="proces" sections={[
-{ id: 'activitats', label: 'Les huit activitats', anchors: ['activitat-1', 'activitat-2', 'activitat-3', 'activitat-4', 'activitat-5', 'activitat-6', 'activitat-7', 'activitat-8'], content: (<section className="section-space">
+  return <><PageIntro label="Procés actual" title="Aprovisionament de matèries primeres">L’objectiu és disposar de les matèries primeres en la quantitat adequada i a temps, amb l’estoc actualitzat. Comença amb la necessitat de producció i acaba amb el registre del material acceptat al magatzem.</PageIntro><p id="abast" className="process-scope wrap">Fora de l’abast: el consum en fabricació i el pagament de factures.</p><SectionBrowser page="proces" sections={[
+{ id: 'activitats', label: 'Les huit activitats', anchors: ['abast','preocupacions','activitat-1', 'activitat-2', 'activitat-3', 'activitat-4', 'activitat-5', 'activitat-6', 'activitat-7', 'activitat-8'], content: (<section className="section-space">
         <div className="wrap">
           <div className="section-heading-row process-heading">
             <h2 id="activitats">Les huit activitats actuals</h2>
@@ -210,30 +129,10 @@ function Process() {
             ))}
           </div>
         </div>
+        <div id="preocupacions" className="wrap process-management"><h3>Prioritats de direcció</h3><p>Estoc fiable, menys compres urgents i compliment dels terminis de fabricació.</p></div>
       </section>) },
-{ id: 'model-actual', label: 'Model AS-IS', anchors: [], content: (<section id="model-actual" className="section-space analysis-section"><div className="wrap"><Diagram file="as-is.bpmn" title="Model del procés actual · AS-IS" caption="Des de la necessitat de producció fins al registre manual de l’entrada." /></div></section>) },
-{ id: 'abast', label: 'Objectiu i abast', anchors: [], content: (<section id="abast" className="scope-section">
-        <div className="section-heading-row"><h2>Objectiu i abast</h2><p>Garantir que producció dispose de les matèries primeres necessàries, en la quantitat adequada i a temps, amb l’estoc actualitzat.</p></div>
-        <div className="wrap scope-grid">
-          <div><span>Inici</span><p>Producció comunica els materials que necessita.</p></div>
-          <div><span>Final</span><p>El material acceptat queda disponible al magatzem.</p></div>
-          <p className="scope-note">El consum durant la fabricació i el pagament de la factura queden fora de l’abast inicial.</p>
-        </div>
-      </section>) },
-{ id: 'preocupacions', label: 'Necessitats de direcció', anchors: [], content: (<section id="preocupacions" className="concerns section-space">
-        <div className="wrap">
-          <div className="section-heading-row"><h2>Què preocupa la direcció</h2><p>Els errors de coordinació es traslladen a les compres i als terminis de fabricació.</p></div>
-          <div className="concern-grid">
-            {concerns.map((concern) => (
-              <div key={concern.title}><h3>{concern.title}</h3><p>{concern.detail}</p></div>
-            ))}
-          </div>
-          <p className="concern-end">La proposta estudiarà com compartir dades d’estoc, necessitats de producció i estat de les compres mitjançant un ERP.</p>
-        </div>
-      </section>) }
-]} />
-    </>
-  )
+{ id: 'model-actual', label: 'Model AS-IS', anchors: [], content: (<section id="model-actual" className="section-space analysis-section"><div className="wrap"><Diagram file="as-is.bpmn" title="Model del procés actual · AS-IS" caption="Des de la necessitat de producció fins al registre manual de l’entrada." /></div></section>) }
+]} /></>
 }
 
 function Consultancy() {
@@ -252,7 +151,7 @@ function Consultancy() {
 }
 
 function Contact() {
-  return <><PageIntro label="Contacte" title="Parlem del teu projecte">La coordinació de consultes i la relació amb clients formen part de les funcions de l’equip de Nexe.</PageIntro><section className="section-space"><div className="wrap contact-editorial"><div><p className="page-label">Relació amb clients</p><h2>Héctor Balaguer Romero</h2><p>Gerent i responsable de relació amb clients.</p><a className="text-link next-link" href="#/consultora">Conéixer l’equip ↗</a></div><div className="contact-status"><h2>Canal de contacte en preparació</h2><p>Encara no disposem d’un formulari o d’una adreça de contacte publicada. Quan activem aquest canal, indicarem ací com enviar una consulta a Nexe.</p></div></div></section></>
+  return <><PageIntro label="Contacte" title="Parlem del teu projecte">Consultes i coordinació de projectes amb l’equip de Nexe.</PageIntro><section className="section-space"><div className="wrap contact-editorial"><div><p className="page-label">Relació amb clients</p><h2>Héctor Balaguer Romero</h2><p>Gerent i responsable de relació amb clients.</p><a className="text-link next-link" href="#/consultora">Conéixer l’equip ↗</a></div><div className="contact-status"><h2>Canal de contacte en preparació</h2><p>El canal d’enviament encara no està actiu. Publicarem ací les dades de contacte quan estiguen disponibles.</p></div></div></section></>
 }
 
 function Privacy() {

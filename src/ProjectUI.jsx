@@ -2,7 +2,7 @@ import { projectNavigation, pageHref, readRoute } from './navigation.js'
 
 export function SectionBrowser({ page, sections }) {
   const route = readRoute()
-  const legacy = sections.find((item) => item.id === route.section || item.anchors?.includes(route.section))
+  const legacy = sections.find((item) => item.id === route.section || (item.anchors?.includes(route.section) || item.anchors?.includes(route.view)))
   const active = sections.find((item) => item.id === route.view) || legacy || sections[0]
   return <div className="section-browser wrap">
     <nav className="section-navigation" aria-label="Continguts d’aquest apartat">

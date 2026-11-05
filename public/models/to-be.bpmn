@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_TO_BE" targetNamespace="https://nexe.example/processos">
   <bpmn:process id="Process_TO_BE" name="Aprovisionament millorat" isExecutable="false">
+<bpmn:laneSet id="LaneSet_TO_BE"><bpmn:lane id="Lane_production" name="Producció"><bpmn:flowNodeRef>start</bpmn:flowNodeRef><bpmn:flowNodeRef>need</bpmn:flowNodeRef><bpmn:flowNodeRef>request_correction</bpmn:flowNodeRef></bpmn:lane><bpmn:lane id="Lane_purchasing" name="Compres"><bpmn:flowNodeRef>request</bpmn:flowNodeRef><bpmn:flowNodeRef>approval_ok</bpmn:flowNodeRef><bpmn:flowNodeRef>request_rejected</bpmn:flowNodeRef><bpmn:flowNodeRef>request_end</bpmn:flowNodeRef><bpmn:flowNodeRef>supplier</bpmn:flowNodeRef><bpmn:flowNodeRef>delay_response</bpmn:flowNodeRef><bpmn:flowNodeRef>alternative_needed</bpmn:flowNodeRef><bpmn:flowNodeRef>offer_ok</bpmn:flowNodeRef><bpmn:flowNodeRef>cancel_order</bpmn:flowNodeRef></bpmn:lane><bpmn:lane id="Lane_warehouse" name="Magatzem"><bpmn:flowNodeRef>receive</bpmn:flowNodeRef><bpmn:flowNodeRef>qty_ok</bpmn:flowNodeRef><bpmn:flowNodeRef>qty_issue</bpmn:flowNodeRef><bpmn:flowNodeRef>qty_end</bpmn:flowNodeRef><bpmn:flowNodeRef>partial</bpmn:flowNodeRef><bpmn:flowNodeRef>end</bpmn:flowNodeRef><bpmn:flowNodeRef>locate</bpmn:flowNodeRef></bpmn:lane><bpmn:lane id="Lane_quality" name="Qualitat"><bpmn:flowNodeRef>quality</bpmn:flowNodeRef><bpmn:flowNodeRef>quality_ok</bpmn:flowNodeRef><bpmn:flowNodeRef>reject</bpmn:flowNodeRef><bpmn:flowNodeRef>reject_end</bpmn:flowNodeRef><bpmn:flowNodeRef>quality_pending</bpmn:flowNodeRef></bpmn:lane><bpmn:lane id="Lane_erp" name="Suport ERP"><bpmn:flowNodeRef>calculate</bpmn:flowNodeRef><bpmn:flowNodeRef>stock_ok</bpmn:flowNodeRef><bpmn:flowNodeRef>reserve</bpmn:flowNodeRef><bpmn:flowNodeRef>reorder_check</bpmn:flowNodeRef><bpmn:flowNodeRef>stock_end</bpmn:flowNodeRef><bpmn:flowNodeRef>order</bpmn:flowNodeRef><bpmn:flowNodeRef>eta</bpmn:flowNodeRef><bpmn:flowNodeRef>date_ok</bpmn:flowNodeRef><bpmn:flowNodeRef>register</bpmn:flowNodeRef><bpmn:flowNodeRef>reserve_partial</bpmn:flowNodeRef></bpmn:lane></bpmn:laneSet>
     <bpmn:startEvent id="start" name="Necessitat identificada">
 
       <bpmn:outgoing>f1</bpmn:outgoing>
@@ -216,82 +217,99 @@
     <bpmn:sequenceFlow id="f39" sourceRef="cancel_order" targetRef="supplier" />
     <bpmn:sequenceFlow id="f40" sourceRef="locate" targetRef="register" />
   </bpmn:process>
+  <bpmn:collaboration id="Collaboration_TO_BE">
+    <bpmn:participant id="Participant_TO_BE" name="Ceràmica Riu Sec" processRef="Process_TO_BE" />
+    <bpmn:participant id="Supplier" name="Proveïdors" />
+    <bpmn:messageFlow id="Message_order" name="Comanda" sourceRef="order" targetRef="Supplier" />
+    <bpmn:messageFlow id="Message_date" name="Confirmació de data" sourceRef="Supplier" targetRef="eta" />
+    <bpmn:messageFlow id="Message_delivery" name="Albarà i avís de lliurament" sourceRef="Supplier" targetRef="receive" />
+  </bpmn:collaboration>
   <bpmndi:BPMNDiagram id="Diagram_TO_BE">
-    <bpmndi:BPMNPlane id="Plane_TO_BE" bpmnElement="Process_TO_BE">
-      <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="40" y="292" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="need_di" bpmnElement="need"><dc:Bounds x="130" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="calculate_di" bpmnElement="calculate"><dc:Bounds x="345" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="stock_ok_di" bpmnElement="stock_ok" isMarkerVisible="true"><dc:Bounds x="560" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reserve_di" bpmnElement="reserve"><dc:Bounds x="675" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reorder_check_di" bpmnElement="reorder_check" isMarkerVisible="true"><dc:Bounds x="890" y="101" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="stock_end_di" bpmnElement="stock_end"><dc:Bounds x="1100" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="request_di" bpmnElement="request"><dc:Bounds x="1005" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="approval_ok_di" bpmnElement="approval_ok" isMarkerVisible="true"><dc:Bounds x="1220" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="request_correction_di" bpmnElement="request_correction"><dc:Bounds x="1335" y="475" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="request_rejected_di" bpmnElement="request_rejected"><dc:Bounds x="1335" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="request_end_di" bpmnElement="request_end"><dc:Bounds x="1800" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="supplier_di" bpmnElement="supplier"><dc:Bounds x="1335" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="1800" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="eta_di" bpmnElement="eta"><dc:Bounds x="2015" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="date_ok_di" bpmnElement="date_ok" isMarkerVisible="true"><dc:Bounds x="2230" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="delay_response_di" bpmnElement="delay_response"><dc:Bounds x="2345" y="475" width="178" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="alternative_needed_di" bpmnElement="alternative_needed" isMarkerVisible="true"><dc:Bounds x="2550" y="491" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="2450" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok" isMarkerVisible="true"><dc:Bounds x="2665" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="2780" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="2995" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="partial_di" bpmnElement="partial"><dc:Bounds x="2780" y="475" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="2880" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok" isMarkerVisible="true"><dc:Bounds x="3095" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="3210" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="3425" y="108" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="3210" y="475" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="3425" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="3640" y="293" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="offer_ok_di" bpmnElement="offer_ok" isMarkerVisible="true"><dc:Bounds x="1550" y="286" width="50" height="50" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reserve_partial_di" bpmnElement="reserve_partial"><dc:Bounds x="675" y="475" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="cancel_order_di" bpmnElement="cancel_order"><dc:Bounds x="1800" y="850" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="locate_di" bpmnElement="locate"><dc:Bounds x="3210" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="76" y="310" /><di:waypoint x="130" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="294" y="311" /><di:waypoint x="345" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="509" y="311" /><di:waypoint x="560" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4"><di:waypoint x="585" y="286" /><di:waypoint x="585" y="226.5" /><di:waypoint x="757" y="226.5" /><di:waypoint x="757" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5"><di:waypoint x="839" y="126" /><di:waypoint x="890" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6"><di:waypoint x="940" y="126" /><di:waypoint x="1100" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7"><di:waypoint x="915" y="151" /><di:waypoint x="915" y="210.5" /><di:waypoint x="1087" y="210.5" /><di:waypoint x="1087" y="270" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8"><di:waypoint x="585" y="336" /><di:waypoint x="585" y="405.5" /><di:waypoint x="757" y="405.5" /><di:waypoint x="757" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9"><di:waypoint x="1169" y="311" /><di:waypoint x="1220" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10"><di:waypoint x="1270" y="311" /><di:waypoint x="1335" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11"><di:waypoint x="1245" y="336" /><di:waypoint x="1245" y="405.5" /><di:waypoint x="1417" y="405.5" /><di:waypoint x="1417" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12"><di:waypoint x="1417" y="557" /><di:waypoint x="1417" y="610" /><di:waypoint x="1087" y="610" /><di:waypoint x="1087" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13"><di:waypoint x="1245" y="286" /><di:waypoint x="1245" y="226.5" /><di:waypoint x="1417" y="226.5" /><di:waypoint x="1417" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14"><di:waypoint x="1499" y="126" /><di:waypoint x="1800" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15"><di:waypoint x="1499" y="311" /><di:waypoint x="1550" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16"><di:waypoint x="1964" y="311" /><di:waypoint x="2015" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17"><di:waypoint x="2179" y="311" /><di:waypoint x="2230" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18"><di:waypoint x="2280" y="311" /><di:waypoint x="2450" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19"><di:waypoint x="2255" y="336" /><di:waypoint x="2255" y="405.5" /><di:waypoint x="2434" y="405.5" /><di:waypoint x="2434" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f20_di" bpmnElement="f20"><di:waypoint x="2523" y="516" /><di:waypoint x="2550" y="516" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f21_di" bpmnElement="f21"><di:waypoint x="2550" y="516" /><di:waypoint x="2550" y="665" /><di:waypoint x="2097" y="665" /><di:waypoint x="2097" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f22_di" bpmnElement="f22"><di:waypoint x="2575" y="541" /><di:waypoint x="2575" y="891" /><di:waypoint x="1964" y="891" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f23_di" bpmnElement="f23"><di:waypoint x="2614" y="311" /><di:waypoint x="2665" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f24_di" bpmnElement="f24"><di:waypoint x="2715" y="311" /><di:waypoint x="2880" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f25_di" bpmnElement="f25"><di:waypoint x="2690" y="336" /><di:waypoint x="2690" y="405.5" /><di:waypoint x="2862" y="405.5" /><di:waypoint x="2862" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f26_di" bpmnElement="f26"><di:waypoint x="2862" y="475" /><di:waypoint x="2862" y="413.5" /><di:waypoint x="2962" y="413.5" /><di:waypoint x="2962" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f27_di" bpmnElement="f27"><di:waypoint x="2690" y="286" /><di:waypoint x="2690" y="226.5" /><di:waypoint x="2862" y="226.5" /><di:waypoint x="2862" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f28_di" bpmnElement="f28"><di:waypoint x="2944" y="126" /><di:waypoint x="2995" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f29_di" bpmnElement="f29"><di:waypoint x="3044" y="311" /><di:waypoint x="3095" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f30_di" bpmnElement="f30"><di:waypoint x="3145" y="311" /><di:waypoint x="3210" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f31_di" bpmnElement="f31"><di:waypoint x="3120" y="336" /><di:waypoint x="3120" y="405.5" /><di:waypoint x="3292" y="405.5" /><di:waypoint x="3292" y="475" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f32_di" bpmnElement="f32"><di:waypoint x="3292" y="557" /><di:waypoint x="3292" y="790" /><di:waypoint x="2962" y="790" /><di:waypoint x="2962" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f33_di" bpmnElement="f33"><di:waypoint x="3120" y="286" /><di:waypoint x="3120" y="226.5" /><di:waypoint x="3292" y="226.5" /><di:waypoint x="3292" y="167" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f34_di" bpmnElement="f34"><di:waypoint x="3374" y="126" /><di:waypoint x="3425" y="126" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f35_di" bpmnElement="f35"><di:waypoint x="3589" y="311" /><di:waypoint x="3640" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f36_di" bpmnElement="f36"><di:waypoint x="1600" y="311" /><di:waypoint x="1800" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f37_di" bpmnElement="f37"><di:waypoint x="1575" y="336" /><di:waypoint x="1575" y="430" /><di:waypoint x="1417" y="430" /><di:waypoint x="1417" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f38_di" bpmnElement="f38"><di:waypoint x="757" y="475" /><di:waypoint x="757" y="413.5" /><di:waypoint x="1087" y="413.5" /><di:waypoint x="1087" y="352" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f39_di" bpmnElement="f39"><di:waypoint x="1800" y="891" /><di:waypoint x="1505" y="891" /><di:waypoint x="1505" y="311" /><di:waypoint x="1499" y="311" /></bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="f40_di" bpmnElement="f40"><di:waypoint x="3374" y="311" /><di:waypoint x="3425" y="311" /></bpmndi:BPMNEdge>
+    <bpmndi:BPMNPlane id="Plane_TO_BE" bpmnElement="Collaboration_TO_BE">
+<bpmndi:BPMNShape id="Participant_TO_BE_di" bpmnElement="Participant_TO_BE" isHorizontal="true"><dc:Bounds x="40" y="40" width="4696" height="1680" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Lane_production_di" bpmnElement="Lane_production" isHorizontal="true"><dc:Bounds x="70" y="40" width="4666" height="180" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Lane_purchasing_di" bpmnElement="Lane_purchasing" isHorizontal="true"><dc:Bounds x="70" y="220" width="4666" height="400" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Lane_warehouse_di" bpmnElement="Lane_warehouse" isHorizontal="true"><dc:Bounds x="70" y="620" width="4666" height="340" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Lane_quality_di" bpmnElement="Lane_quality" isHorizontal="true"><dc:Bounds x="70" y="960" width="4666" height="360" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Lane_erp_di" bpmnElement="Lane_erp" isHorizontal="true"><dc:Bounds x="70" y="1320" width="4666" height="400" /></bpmndi:BPMNShape>
+<bpmndi:BPMNShape id="Supplier_di" bpmnElement="Supplier" isHorizontal="true"><dc:Bounds x="40" y="1850" width="4696" height="90" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="140" y="112" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="98" y="156" width="120" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="need_di" bpmnElement="need"><dc:Bounds x="230" y="89" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="calculate_di" bpmnElement="calculate"><dc:Bounds x="500" y="1479" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="stock_ok_di" bpmnElement="stock_ok" isMarkerVisible="true"><dc:Bounds x="740" y="1495" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="695" y="1553" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reserve_di" bpmnElement="reserve"><dc:Bounds x="920" y="1344" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reorder_check_di" bpmnElement="reorder_check" isMarkerVisible="true"><dc:Bounds x="1160" y="1360" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="1115" y="1418" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="stock_end_di" bpmnElement="stock_end"><dc:Bounds x="1390" y="1367" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="1348" y="1411" width="120" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="request_di" bpmnElement="request"><dc:Bounds x="1390" y="379" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="approval_ok_di" bpmnElement="approval_ok" isMarkerVisible="true"><dc:Bounds x="1620" y="395" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="1575" y="453" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="request_correction_di" bpmnElement="request_correction"><dc:Bounds x="1620" y="89" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="request_rejected_di" bpmnElement="request_rejected"><dc:Bounds x="1850" y="244" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="request_end_di" bpmnElement="request_end"><dc:Bounds x="2080" y="267" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="2038" y="311" width="120" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="supplier_di" bpmnElement="supplier"><dc:Bounds x="1850" y="379" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="2310" y="1479" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="eta_di" bpmnElement="eta"><dc:Bounds x="2540" y="1479" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="date_ok_di" bpmnElement="date_ok" isMarkerVisible="true"><dc:Bounds x="2770" y="1495" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2725" y="1553" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="delay_response_di" bpmnElement="delay_response"><dc:Bounds x="2770" y="379" width="178" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="alternative_needed_di" bpmnElement="alternative_needed" isMarkerVisible="true"><dc:Bounds x="3000" y="395" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2955" y="453" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="3000" y="749" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok" isMarkerVisible="true"><dc:Bounds x="3230" y="765" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="3185" y="823" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="3460" y="644" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="3690" y="667" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="3648" y="711" width="120" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="partial_di" bpmnElement="partial"><dc:Bounds x="3460" y="854" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="3690" y="1099" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok" isMarkerVisible="true"><dc:Bounds x="3920" y="1115" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="3875" y="1173" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="4150" y="984" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="4380" y="1007" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="4338" y="1051" width="120" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="3920" y="1214" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="4380" y="1479" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="4610" y="772" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="4568" y="816" width="120" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="offer_ok_di" bpmnElement="offer_ok" isMarkerVisible="true"><dc:Bounds x="2080" y="395" width="50" height="50" /><bpmndi:BPMNLabel><dc:Bounds x="2035" y="453" width="140" height="30" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reserve_partial_di" bpmnElement="reserve_partial"><dc:Bounds x="920" y="1614" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="cancel_order_di" bpmnElement="cancel_order"><dc:Bounds x="3000" y="244" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="locate_di" bpmnElement="locate"><dc:Bounds x="4150" y="749" width="164" height="82" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="176" y="130" /><di:waypoint x="230" y="130" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="394" y="130" /><di:waypoint x="447" y="130" /><di:waypoint x="447" y="1520" /><di:waypoint x="500" y="1520" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="664" y="1520" /><di:waypoint x="740" y="1520" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4"><di:waypoint x="790" y="1520" /><di:waypoint x="855" y="1520" /><di:waypoint x="855" y="1385" /><di:waypoint x="920" y="1385" /><bpmndi:BPMNLabel><dc:Bounds x="810.5" y="1490" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5"><di:waypoint x="1084" y="1385" /><di:waypoint x="1160" y="1385" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6"><di:waypoint x="1210" y="1385" /><di:waypoint x="1390" y="1385" /><bpmndi:BPMNLabel><dc:Bounds x="1288" y="1355" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7"><di:waypoint x="1210" y="1385" /><di:waypoint x="1300" y="1385" /><di:waypoint x="1300" y="420" /><di:waypoint x="1390" y="420" /><bpmndi:BPMNLabel><dc:Bounds x="1243" y="1355" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8"><di:waypoint x="790" y="1520" /><di:waypoint x="855" y="1520" /><di:waypoint x="855" y="1655" /><di:waypoint x="920" y="1655" /><bpmndi:BPMNLabel><dc:Bounds x="810.5" y="1490" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9"><di:waypoint x="1554" y="420" /><di:waypoint x="1620" y="420" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f10_di" bpmnElement="f10"><di:waypoint x="1670" y="420" /><di:waypoint x="1850" y="420" /><bpmndi:BPMNLabel><dc:Bounds x="1733" y="390" width="54" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f11_di" bpmnElement="f11"><di:waypoint x="1645" y="395" /><di:waypoint x="1645" y="283" /><di:waypoint x="1702" y="283" /><di:waypoint x="1702" y="171" /><bpmndi:BPMNLabel><dc:Bounds x="1653" y="326" width="60" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f12_di" bpmnElement="f12"><di:waypoint x="1702" y="171" /><di:waypoint x="1702" y="204" /><di:waypoint x="1362" y="204" /><di:waypoint x="1362" y="420" /><di:waypoint x="1390" y="420" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f13_di" bpmnElement="f13"><di:waypoint x="1670" y="420" /><di:waypoint x="1760" y="420" /><di:waypoint x="1760" y="285" /><di:waypoint x="1850" y="285" /><bpmndi:BPMNLabel><dc:Bounds x="1685" y="390" width="60" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f14_di" bpmnElement="f14"><di:waypoint x="2014" y="285" /><di:waypoint x="2080" y="285" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f15_di" bpmnElement="f15"><di:waypoint x="2014" y="420" /><di:waypoint x="2080" y="420" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f16_di" bpmnElement="f16"><di:waypoint x="2474" y="1520" /><di:waypoint x="2540" y="1520" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f17_di" bpmnElement="f17"><di:waypoint x="2704" y="1520" /><di:waypoint x="2770" y="1520" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f18_di" bpmnElement="f18"><di:waypoint x="2820" y="1520" /><di:waypoint x="2910" y="1520" /><di:waypoint x="2910" y="790" /><di:waypoint x="3000" y="790" /><bpmndi:BPMNLabel><dc:Bounds x="2853" y="1490" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f19_di" bpmnElement="f19"><di:waypoint x="2795" y="1495" /><di:waypoint x="2795" y="978" /><di:waypoint x="2859" y="978" /><di:waypoint x="2859" y="461" /><bpmndi:BPMNLabel><dc:Bounds x="2815" y="948" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f20_di" bpmnElement="f20"><di:waypoint x="2948" y="420" /><di:waypoint x="3000" y="420" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f21_di" bpmnElement="f21"><di:waypoint x="3025" y="445" /><di:waypoint x="3025" y="604" /><di:waypoint x="2512" y="604" /><di:waypoint x="2512" y="1520" /><di:waypoint x="2540" y="1520" /><bpmndi:BPMNLabel><dc:Bounds x="2681.5" y="574" width="174" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f22_di" bpmnElement="f22"><di:waypoint x="3025" y="395" /><di:waypoint x="3025" y="360.5" /><di:waypoint x="3082" y="360.5" /><di:waypoint x="3082" y="326" /><bpmndi:BPMNLabel><dc:Bounds x="3041.5" y="330.5" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f23_di" bpmnElement="f23"><di:waypoint x="3164" y="790" /><di:waypoint x="3230" y="790" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f24_di" bpmnElement="f24"><di:waypoint x="3280" y="790" /><di:waypoint x="3662" y="790" /><di:waypoint x="3662" y="1140" /><di:waypoint x="3690" y="1140" /><bpmndi:BPMNLabel><dc:Bounds x="3441" y="760" width="60" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f25_di" bpmnElement="f25"><di:waypoint x="3280" y="790" /><di:waypoint x="3370" y="790" /><di:waypoint x="3370" y="895" /><di:waypoint x="3460" y="895" /><bpmndi:BPMNLabel><dc:Bounds x="3298" y="760" width="54" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f26_di" bpmnElement="f26"><di:waypoint x="3624" y="895" /><di:waypoint x="3657" y="895" /><di:waypoint x="3657" y="1140" /><di:waypoint x="3690" y="1140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f27_di" bpmnElement="f27"><di:waypoint x="3280" y="790" /><di:waypoint x="3370" y="790" /><di:waypoint x="3370" y="685" /><di:waypoint x="3460" y="685" /><bpmndi:BPMNLabel><dc:Bounds x="3289" y="760" width="72" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f28_di" bpmnElement="f28"><di:waypoint x="3624" y="685" /><di:waypoint x="3690" y="685" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f29_di" bpmnElement="f29"><di:waypoint x="3854" y="1140" /><di:waypoint x="3920" y="1140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f30_di" bpmnElement="f30"><di:waypoint x="3970" y="1140" /><di:waypoint x="4060" y="1140" /><di:waypoint x="4060" y="790" /><di:waypoint x="4150" y="790" /><bpmndi:BPMNLabel><dc:Bounds x="3985" y="1110" width="60" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f31_di" bpmnElement="f31"><di:waypoint x="3945" y="1165" /><di:waypoint x="3945" y="1189.5" /><di:waypoint x="4002" y="1189.5" /><di:waypoint x="4002" y="1214" /><bpmndi:BPMNLabel><dc:Bounds x="3953" y="1135" width="54" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f32_di" bpmnElement="f32"><di:waypoint x="4002" y="1296" /><di:waypoint x="4002" y="1304" /><di:waypoint x="3662" y="1304" /><di:waypoint x="3662" y="1140" /><di:waypoint x="3690" y="1140" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f33_di" bpmnElement="f33"><di:waypoint x="3970" y="1140" /><di:waypoint x="4060" y="1140" /><di:waypoint x="4060" y="1025" /><di:waypoint x="4150" y="1025" /><bpmndi:BPMNLabel><dc:Bounds x="3985" y="1110" width="60" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f34_di" bpmnElement="f34"><di:waypoint x="4314" y="1025" /><di:waypoint x="4380" y="1025" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f35_di" bpmnElement="f35"><di:waypoint x="4544" y="1520" /><di:waypoint x="4577" y="1520" /><di:waypoint x="4577" y="790" /><di:waypoint x="4610" y="790" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f36_di" bpmnElement="f36"><di:waypoint x="2130" y="420" /><di:waypoint x="2220" y="420" /><di:waypoint x="2220" y="1520" /><di:waypoint x="2310" y="1520" /><bpmndi:BPMNLabel><dc:Bounds x="2163" y="390" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f37_di" bpmnElement="f37"><di:waypoint x="2105" y="445" /><di:waypoint x="2105" y="604" /><di:waypoint x="1822" y="604" /><di:waypoint x="1822" y="420" /><di:waypoint x="1850" y="420" /><bpmndi:BPMNLabel><dc:Bounds x="1951.5" y="574" width="24" height="26" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f38_di" bpmnElement="f38"><di:waypoint x="1084" y="1655" /><di:waypoint x="1237" y="1655" /><di:waypoint x="1237" y="420" /><di:waypoint x="1390" y="420" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f39_di" bpmnElement="f39"><di:waypoint x="3082" y="326" /><di:waypoint x="3082" y="604" /><di:waypoint x="1822" y="604" /><di:waypoint x="1822" y="420" /><di:waypoint x="1850" y="420" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f40_di" bpmnElement="f40"><di:waypoint x="4314" y="790" /><di:waypoint x="4347" y="790" /><di:waypoint x="4347" y="1520" /><di:waypoint x="4380" y="1520" /></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Message_order_di" bpmnElement="Message_order"><di:waypoint x="2392" y="1561" /><di:waypoint x="2392" y="1850" /><bpmndi:BPMNLabel><dc:Bounds x="2402" y="1750" width="150" height="24" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Message_date_di" bpmnElement="Message_date"><di:waypoint x="2622" y="1850" /><di:waypoint x="2622" y="1561" /><bpmndi:BPMNLabel><dc:Bounds x="2632" y="1777" width="150" height="24" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="Message_delivery_di" bpmnElement="Message_delivery"><di:waypoint x="3082" y="1850" /><di:waypoint x="3082" y="831" /><bpmndi:BPMNLabel><dc:Bounds x="3092" y="1804" width="150" height="24" /></bpmndi:BPMNLabel></bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

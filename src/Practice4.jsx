@@ -3,7 +3,7 @@ import NavigatedViewer from 'bpmn-js/lib/NavigatedViewer'
 import { analysis, differentialData, erpTasks, improvementCategories, improvementPriorities, indicators, userStories } from './practice4Content.js'
 
 import { SectionBrowser } from './ProjectUI.jsx'
-import { pageHref } from './navigation.js'
+import { pageHref, readRoute } from './navigation.js'
 
 const base = import.meta.env.BASE_URL
 
@@ -13,13 +13,15 @@ function Intro({ label, title, children }) {
 
 function showDiagramStart(instance, container) {
   const canvas = instance.get('canvas')
-  const start = instance.get('elementRegistry').filter((element) => element.type === 'bpmn:StartEvent')[0]
+  const elements = instance.get('elementRegistry')
+  const start = elements.filter((element) => element.type === 'bpmn:StartEvent')[0]
+  const company = elements.filter((element) => element.type === 'bpmn:Participant' && element.businessObject.processRef)[0]
   if (!start || !container.clientWidth || !container.clientHeight) return
   const scale = 1
   canvas.resized()
   canvas.viewbox({
-    x: Math.max(0, start.x - 32),
-    y: Math.max(0, start.y + start.height / 2 - container.clientHeight / (2 * scale)),
+    x: Math.max(0, company ? company.x - 16 : start.x - 32),
+    y: Math.max(0, company ? company.y - 16 : start.y + start.height / 2 - container.clientHeight / (2 * scale)),
     width: container.clientWidth / scale,
     height: container.clientHeight / scale,
   })
@@ -33,7 +35,7 @@ export function Diagram({ file, title, caption, improved = false }) {
   const [error, setError] = useState('')
   const [expanded, setExpanded] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const url = base + 'models/' + file + '?v=20261105-symbols'
+  const url = base + 'models/' + file + '?v=20261105-pools-1'
 
   useEffect(() => {
     let active = true
@@ -87,7 +89,7 @@ export function Diagram({ file, title, caption, improved = false }) {
 
   const zoom = (factor) => {
     const canvas = viewer.current?.get('canvas')
-    if (canvas) canvas.zoom(Math.min(3, Math.max(.15, canvas.zoom() * factor)))
+    if (canvas) canvas.zoom(Math.min(3, Math.max(.03, canvas.zoom() * factor)))
   }
   const move = (dx, dy) => viewer.current?.get('canvas').scroll({ dx, dy })
 
@@ -101,7 +103,7 @@ export function Diagram({ file, title, caption, improved = false }) {
     <div className="bpmn-canvas" ref={mount} role="img" aria-label={title + '. Usa els controls per ampliar i recórrer el diagrama.'} />
     {!loaded && !error && <p role="status" className="model-status">Carregant el model…</p>}
     {error && <p className="model-error" role="alert">{error}</p>}
-    <figcaption>Usa «Moure» o arrossega el diagrama per seguir el recorregut. «Veure tot» mostra el conjunt. <span className="model-legend"><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Inici</span><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="3" /></svg>Final</span><span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 23 12 12 23 1 12Z M8 8 16 16 M16 8 8 16" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Decisió exclusiva (X)</span><span>→ Seqüència</span></span>{improved && 'Les tasques ressaltades tenen suport de l’ERP. Les fletxes de retorn indiquen correccions o revisions pendents.'}</figcaption>
+    <figcaption>Pools: Ceràmica Riu Sec i Proveïdors. Carrils: {improved ? 'Producció, Compres, Magatzem, Qualitat i Suport ERP' : 'Producció, Compres, Magatzem i Qualitat'}. Usa «Moure» o arrossega el diagrama per seguir el recorregut. «Veure tot» mostra el conjunt. <span className="model-legend"><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Inici</span><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="3" /></svg>Final</span><span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 23 12 12 23 1 12Z M8 8 16 16 M16 8 8 16" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Decisió exclusiva (X)</span><span>→ Seqüència dins de l’empresa</span><span>⇢ Missatge entre pools</span></span>{improved && 'Les tasques ressaltades tenen suport de l’ERP. Les fletxes de retorn indiquen correccions o revisions pendents.'}</figcaption>
   </figure>
 }
 
@@ -139,7 +141,7 @@ export function ImprovementPage() {
       La proposta actua sobre els errors detectats sense canviar l’abast: acaba quan el material acceptat queda disponible per a producció.
     </Intro>
     <SectionBrowser page="millora" sections={[
-{ id: 'canvis', label: 'Canvis proposats', anchors: [], content: (<section className="section-space">
+{ id: 'canvis', label: 'Canvis proposats', anchors: ['prioritats'], content: (<section className="section-space">
       <div className="wrap">
         <div className="section-heading-row"><h2 id="canvis">Millores proposades</h2><p>Les actuacions combinen canvis en el procés i suport de l’ERP. Les decisions de compres i qualitat continuen sota responsabilitat humana.</p></div>
         <p className="model-note">La reposició planificada es planteja com un canvi de la política de compres i s’ha de validar amb direcció. La proposta no pressuposa una ampliació aprovada ni un ERP ja adoptat.</p><div className="improvement-list">{improvementCategories.map((item, index) => <article key={item.title}>
@@ -147,6 +149,7 @@ export function ImprovementPage() {
           <div><h3>{item.title}</h3><p className="improvement-steps">Passos {item.steps}</p><p>{item.change}</p><p><strong>Justificació:</strong> {item.reason}</p></div>
         </article>)}</div>
       </div>
+      <details className="project-followup" id="prioritats" open={readRoute().view === 'prioritats' || readRoute().section === 'prioritats'}><summary>Prioritats, indicadors i validació <span aria-hidden="true">+</span></summary><div className="followup-content"><h3>Prioritats</h3><ul>{improvementPriorities.map((item) => <li key={item.title}><strong>{item.level} · {item.title}.</strong> {item.detail}</li>)}</ul><h3>Indicadors</h3><ul>{indicators.map((item) => <li key={item}>{item}</li>)}</ul><p>Cal mesurar el punt de partida i validar les causes i els canvis amb producció, compres, magatzem i qualitat.</p></div></details>
     </section>) },
 { id: 'model-proposat', label: 'Model TO-BE', anchors: [], content: (<section id="model-proposat" className="section-space analysis-section">
       <div className="wrap"><Diagram file="to-be.bpmn" title="Model TO-BE · BPMN2" caption="El model separa les decisions humanes de les tasques amb suport de l’ERP." improved />
@@ -155,14 +158,7 @@ export function ImprovementPage() {
         <a className="text-link next-link" href={pageHref('documents')}>Models i presentació del projecte <span aria-hidden="true">↗</span></a>
       </div>
     </section>) },
-{ id: 'prioritats', label: 'Prioritats i indicadors', anchors: [], content: (<section className="section-space priority-section">
-      <div className="wrap">
-        <div className="section-heading-row"><h2 id="prioritats">Prioritats d’actuació</h2><p>Prioritzem els problemes que poden fer prendre decisions amb dades incorrectes o aturar la fabricació.</p></div>
-        <ol className="priority-list">{improvementPriorities.map((item) => <li key={item.title}><span>{item.level}</span><div><h3>{item.title}</h3><p>{item.detail}</p></div></li>)}</ol>
-        <div className="validation-note"><h3>Validació amb els participants</h3><p>Abans de donar per confirmades les causes i la insatisfacció, cal parlar amb producció, magatzem, compres i qualitat. Les entrevistes poden revelar excepcions i ajudar a ajustar les prioritats.</p></div>
-        <div className="validation-note"><h3>Com mesurarem el canvi</h3><p>Estos indicadors necessiten un valor inicial abans de fixar objectius:</p><ul className="indicator-list">{indicators.map((indicator) => <li key={indicator}>{indicator}</li>)}</ul></div>
-      </div>
-    </section>) }
+
 ]} />
 
   </>
@@ -181,33 +177,19 @@ function StoryReferences({ ids }) {
 }
 
 export function RequirementsPage() {
-  const sections = requirementGroups.map((group) => ({
-    id: group.id,
-    label: ({ planificacio: 'Planificació', compres: 'Compres', recepcio: 'Recepció i qualitat', coordinacio: 'Producció' })[group.id],
-    count: group.stories.length,
-    anchors: group.stories.map((id) => id.toLowerCase()),
-    content: (<section id={group.id} className="requirement-chapter wrap" aria-labelledby={group.id + '-title'}>
-      <header className="chapter-heading"><span className="chapter-number">{String(requirementGroups.indexOf(group) + 1).padStart(2,'0')}</span><h2 id={group.id + '-title'}>{group.title}</h2><p>{group.detail}</p></header>
-      <div className="story-list">{group.stories.map((id) => {
-        const story = userStories.find((item) => item.id === id)
-        const tasks = erpTasks.filter((task) => story.taskRefs.includes(task.id))
-        return <article className="user-story" key={story.id} id={story.id.toLowerCase()} aria-labelledby={story.id + '-title'}>
-          <div className="story-meta"><h3 id={story.id + '-title'}>{story.id}</h3><span>Pas {story.steps}</span>{story.differential && <span className="story-specific">Candidat diferencial</span>}</div>
-          <p className="story-statement">Com a <strong>{story.role}</strong>, vull {story.need} per a {story.benefit}.</p>
-          <details className="story-validation"><summary>Validació i tasques relacionades <span aria-hidden="true">+</span></summary><div className="story-evidence"><div><h4>Com ho comprovarem</h4><p>{story.acceptance}</p></div><div><h4>Suport en el procés</h4><ul>{tasks.map((task) => <li key={task.id}>{task.label}<small>{task.kind}</small></li>)}</ul></div></div></details>
-          {story.differentialReason && <aside className="story-specific-note"><h4>Per què cal verificar-ho</h4><p>{story.differentialReason}</p></aside>}
-        </article>
-      })}</div>
-    </section>)
-  }))
+  const route = readRoute()
+  const selected = requirementGroups.find((group) => group.id === route.view || group.id === route.section || group.stories.some((id) => id.toLowerCase() === route.section))?.id || 'planificacio'
+  const sections = [{ id:'histories', label:'Històries d’usuari', anchors:[...requirementGroups.map((group) => group.id), ...userStories.map((story) => story.id.toLowerCase())], content:(<section className="section-space"><p className="requirements-note">Onze històries en quatre àrees. HU-05 i HU-07 són candidats diferencials que cal verificar.</p><div className="requirement-groups">{requirementGroups.map((group) => <details id={group.id} key={group.id + selected} className="requirement-group" name="requirement-areas" open={group.id === selected}>
+    <summary><h2>{group.title}</h2><span>{group.stories.length} històries <span aria-hidden="true">+</span></span></summary>
+    <div className="story-list">{group.stories.map((id) => {
+      const story = userStories.find((item) => item.id === id)
+      return <article className="user-story" key={id} id={id.toLowerCase()} aria-labelledby={id+'-title'}><div className="story-meta"><h3 id={id+'-title'}>{id}</h3><span>Pas {story.steps}</span>{story.differential && <span className="story-specific">Candidat diferencial</span>}</div><p className="story-statement">Com a <strong>{story.role}</strong>, vull {story.need} per a {story.benefit}.</p><p className="story-check"><strong>Validació.</strong> {story.acceptance}</p>{story.differentialReason && <p className="story-check"><strong>Particularitat.</strong> {story.differentialReason}</p>}</article>
+    })}</div>
+  </details>)}</div></section>)}]
   sections.push({ id: 'dades', label: 'Dades específiques', content: (<section id="dades" className="section-space data-section"><div className="wrap"><div className="section-heading-row"><h2>Les dades que ho fan possible</h2><p>Les fitxes de producte, estoc i comandes són necessàries. A més, el procés requereix aquestes dades de qualitat i la seua relació amb fabricació.</p></div>
       <div className="table-scroll" role="region" aria-label="Dades específiques del procés" tabIndex="0"><table className="work-table"><thead><tr><th>Dada i camps necessaris</th><th>Origen i ús en el procés</th><th>Històries</th></tr></thead><tbody>{differentialData.map((item) => <tr key={item.name}><th scope="row">{item.name}<small>{item.fields}</small></th><td><strong>{item.source}.</strong> {item.use}</td><td><StoryReferences ids={item.stories} /></td></tr>)}</tbody></table></div>
       <p className="story-note">Les particularitats indicades s’han de comprovar en els mòduls i la configuració del producte concret. Qualitat ha de validar els paràmetres i els límits tècnics.</p>
     </div></section>) })
   sections.push({ id: 'tasques-erp', label: 'Cobertura ERP', anchors: [], content: (<section id="tasques-erp" className="section-space"><div className="wrap"><div className="section-heading-row"><h2>Responsables i suport ERP</h2><p>Les tasques d’usuari impliquen una entrada o una decisió humana. Les tasques de servei automatitzen el càlcul, l’emissió o el registre després de dades confirmades. El fitxer BPMN conserva els responsables i les HU associades en la documentació de cada tasca.</p></div><div className="table-scroll" role="region" aria-label="Tasques amb suport ERP" tabIndex="0"><table className="work-table"><thead><tr><th>Pas i tasca del TO-BE</th><th>Responsable</th><th>Tipus de tasca</th><th>Històries d’usuari</th></tr></thead><tbody>{erpTasks.map((task) => <tr key={task.id}><th scope="row">{task.step} · {task.label}</th><td>{task.owner}</td><td>{task.kind}</td><td><StoryReferences ids={userStories.filter((story) => story.taskRefs.includes(task.id)).map((story) => story.id)} /></td></tr>)}</tbody></table></div></div></section>) })
-  return <>
-    <Intro label="Requisits ERP" title="Què necessita cada equip">Onze històries d’usuari agrupades per àrea, amb els criteris de validació i les tasques del procés que cobreixen.</Intro>
-    <p className="requirements-note wrap" id="histories">Les funcions habituals són necessàries. HU-05 i HU-07 són candidats diferencials que cal verificar en cada ERP.</p>
-    <SectionBrowser page="requisits" sections={sections} />
-  </>
+  return <><Intro label="Requisits ERP" title="Què necessita cada equip">Necessitats dels participants, dades específiques i relació amb les tasques del procés proposat.</Intro><SectionBrowser page="requisits" sections={sections} /></>
 }

@@ -64,13 +64,23 @@ La selecció del producte ERP i una implantació amb resultats mesurats no es do
 
 ## Organització de la web
 
-Cada apartat del projecte té vistes amb enllaç propi (`?vista=...`). Es manté la compatibilitat amb els enllaços anteriors `?seccio=...`.
+La portada presenta Nexe, els quatre serveis, el mètode, el projecte en curs i l’equip. Les pàgines interiors es concentren en els continguts següents:
 
-- Empresa: context i estratègia, organització, situació actual.
-- Procés actual: huit activitats, model AS-IS, objectiu i abast, necessitats de direcció. Cada activitat conserva responsables, entrada, resultat, eines, deficiència i conseqüència en el seu detall.
-- Problemes detectats: anàlisi textual de cada activitat, amb resum visible i detall desplegable, seguida d’una vista amb la taula comparativa.
-- Proposta de millora: quatre categories de canvis, model TO-BE amb explicació de les excepcions, prioritats i indicadors.
-- Requisits ERP: onze històries distribuïdes en quatre àrees, dades específiques i cobertura de les vint tasques. La necessitat i el benefici són visibles. Els criteris i les tasques associades es consulten en cada història.
+- Empresa: activitat, estratègia, missió, visió, situació actual i organització, en una sola pàgina.
+- Procés actual: huit activitats amb responsables, documents, eines i incidències, i una segona vista amb el model AS-IS. L’objectiu, l’abast i les prioritats de direcció s’integren en la lectura principal.
+- Problemes detectats: anàlisi i justificació de les huit activitats, i taula comparativa.
+- Proposta de millora: quatre categories justificades amb prioritats i indicadors desplegables, i model TO-BE.
+- Requisits ERP: onze històries agrupades per àrea, dades específiques i cobertura de les vint tasques. Es conserva la validació de cada història. Les tasques relacionades es consulten en la taula de cobertura, amb enllaços a les històries.
 - Documents: descàrregues i fonts reunides.
 
-La reorganització conserva els fitxers BPMN i totes les dades d’anàlisi i requisits. No dona per feta la validació amb participants ni una implantació ERP.
+S’han eliminat la història descriptiva prescindible de l’empresa, accessos repetits i explicacions duplicades. Els enllaços anteriors continuen portant al contingut corresponent. Els models, les justificacions, els requisits i les dades necessàries per a l’entrega es conserven.
+
+## Pools i carrils dels models
+
+Els dos models utilitzen una col·laboració amb el pool de Ceràmica Riu Sec i un pool extern de Proveïdors sense detallar-ne el procés intern. Les comandes, les confirmacions de data i els albarans o avisos de lliurament es representen amb fluxos de missatge entre pools. Les seqüències de les activitats es mantenen dins de Ceràmica Riu Sec.
+
+- AS-IS: carrils de Producció, Compres, Magatzem i Qualitat.
+- TO-BE: els mateixos departaments i un carril de Suport ERP per a les automatitzacions. Els responsables funcionals continuen identificats en la documentació de cada tasca.
+- Cada node pertany a un sol carril. Les activitats amb participació de diverses àrees s’ubiquen al carril que coordina l’acció.
+
+La reorganització gràfica conserva les activitats i les decisions del procés anterior. Els fluxos de retorn utilitzen corredors entre nodes per evitar travessar altres activitats.

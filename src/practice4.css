@@ -79,6 +79,20 @@
 .validation-note { margin-top: 1.5rem; }
 .validation-note h3 { font-family: var(--font-editorial); font-size: 1.5rem; font-weight: 400; }
 .indicator-list { padding-left: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 2rem; margin-top: 1rem; color: var(--color-muted); font-size: .86rem; line-height: 1.7; }
+.project-followup { margin-top: 1.5rem; border-top: 1px solid var(--color-line); padding-top: 1rem; }
+.project-followup > summary { display: flex; justify-content: space-between; gap: 1rem; list-style: none; cursor: pointer; color: var(--color-forest); font-size: .9rem; font-weight: 500; }
+.followup-content { color: var(--color-muted); font-size: .9rem; line-height: 1.7; max-width: 70ch; }
+.followup-content h3 { margin-top: 1rem; color: var(--color-ink); font-size: 1rem; }
+.followup-content ul { padding-left: 1.2rem; margin-block: .6rem 1rem; }
+.followup-content li + li { margin-top: .35rem; }
+.requirement-group { --chapter-color: var(--color-brand); padding-block: 1rem; border-bottom: 1px solid var(--color-line); }
+.requirement-group > summary { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; list-style: none; cursor: pointer; }
+.requirement-group > summary h2 { font-family: var(--font-editorial); font-size: 1.4rem; font-weight: 400; }
+.requirement-group > summary > span { flex: none; color: var(--color-muted); font-size: .78rem; }
+.requirement-group[open] > summary { margin-bottom: 1rem; }
+.requirement-group .user-story + .user-story { margin-top: 1rem; padding-top: 1rem; }
+.story-check { color: var(--color-muted); line-height: 1.65; font-size: .88rem; margin-top: .6rem; }
+.story-check strong { color: var(--color-forest); font-weight: 500; }
 .requirements-note { font-size: .85rem; line-height: 1.65; color: var(--color-muted); padding-top: .8rem; }
 .story-validation { margin-top: .75rem; }
 .story-validation[open] { margin-bottom: .8rem; }

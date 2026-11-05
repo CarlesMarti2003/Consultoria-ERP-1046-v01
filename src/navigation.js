@@ -27,8 +27,10 @@ export function readRoute(hash = window.location.hash) {
   const found = allNavigation.find((item) => item.href.replace(/\/$/, '') === path)
   const params = new URLSearchParams(query)
   const page = found?.page || aliases[path] || 'notfound'
-  const section = params.get('seccio') || ''
+  const view = params.get('vista') || ''
+  const mergedViews = { empresa: ['context','organitzacio','situacio'], proces: ['abast','preocupacions'], millora: ['prioritats'], requisits: ['planificacio','compres','recepcio','coordinacio'] }
+  const section = params.get('seccio') || (mergedViews[page]?.includes(view) ? view : '')
   if (page === 'millora' && section === 'tasques-erp') return { page: 'requisits', section: 'tasques-erp', view: 'tasques-erp' }
-  return { page, section, view: params.get('vista') || '' }
+  return { page, section, view }
 }
 export const pageHref = (page) => allNavigation.find((item) => item.page === page)?.href || '#/'

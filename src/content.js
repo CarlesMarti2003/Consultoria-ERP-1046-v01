@@ -83,5 +83,5 @@ export const steps = [
 ]
 
 export const caseStudies = [
-  { slug: 'ceramica-riu-sec', name: 'Ceràmica Riu Sec', sector: 'Indústria ceràmica', location: 'Onda', status: 'Projecte en curs · anàlisi i proposta', image: 'ceramica-illustrativa.png', summary: 'Revisem l’aprovisionament de matèries primeres per millorar la coordinació entre producció, compres, magatzem i qualitat. La proposta està en desenvolupament i encara no hi ha una implantació ni resultats mesurats.' },
+  { slug: 'ceramica-riu-sec', name: 'Ceràmica Riu Sec', sector: 'Indústria ceràmica', location: 'Onda', status: 'Anàlisi i proposta · pendent d’implantació', image: 'ceramica-illustrativa.png', summary: 'Revisem l’aprovisionament de matèries primeres i definim com coordinar producció, compres, magatzem i qualitat amb suport ERP.' },
 ]
