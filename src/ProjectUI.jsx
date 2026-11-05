@@ -46,8 +46,8 @@ export function ProjectOverview() {
 }
 
 const downloads = [
-  { title: 'Model del procés actual', detail: 'AS-IS · fitxer BPMN editable', file: 'models/as-is.bpmn' },
-  { title: 'Model del procés proposat', detail: 'TO-BE · imatge PNG', file: 'models/to-be-diagrama.png' },
+  { title: 'Model del procés actual', detail: 'AS-IS · imatge PNG', file: 'models/as-is-diagrama.png' },
+  { title: 'Model del procés proposat', detail: 'TO-BE · fitxer BPMN editable', file: 'models/to-be.bpmn' },
   { title: 'Presentació del projecte', detail: 'PowerPoint · dues diapositives', file: 'presentacio/Nexe-P4-analisi-i-millora-v5.pptx' },
 ]
 export function Sources() {

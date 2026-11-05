@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { caseStudies, departments, steps, team } from './content.js'
-import { AnalysisPage, Diagram, ImprovementPage, RequirementsPage } from './Practice4.jsx'
+import { AnalysisPage, CurrentProcessDiagram, ImprovementPage, RequirementsPage } from './Practice4.jsx'
 
 import { mainNavigation as navigation, projectNavigation as caseNavigation, legalNavigation as footerNavigation, readRoute, pageHref, projectBase } from './navigation.js'
 import { Documents, SectionBrowser, ProjectMenu, ProjectOverview, ProjectPager } from './ProjectUI.jsx'
@@ -131,7 +131,7 @@ function Process() {
         </div>
         <div id="preocupacions" className="wrap process-management"><h3>Prioritats de direcció</h3><p>Estoc fiable, menys compres urgents i compliment dels terminis de fabricació.</p></div>
       </section>) },
-{ id: 'model-actual', label: 'Model AS-IS', anchors: [], content: (<section id="model-actual" className="section-space analysis-section"><div className="wrap"><Diagram file="as-is.bpmn" title="Model del procés actual · AS-IS" caption="Des de la necessitat de producció fins al registre manual de l’entrada." /></div></section>) }
+{ id: 'model-actual', label: 'Model AS-IS', anchors: [], content: (<section id="model-actual" className="section-space analysis-section"><div className="wrap"><CurrentProcessDiagram /></div></section>) }
 ]} /></>
 }
 

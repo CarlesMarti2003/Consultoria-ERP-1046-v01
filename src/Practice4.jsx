@@ -107,11 +107,11 @@ export function Diagram({ file, title, caption, improved = false }) {
   </figure>
 }
 
-function ImageDiagram() {
+export function CurrentProcessDiagram() {
   const dialog = useRef(null)
   const [expanded, setExpanded] = useState(false)
   const [zoom, setZoom] = useState(1)
-  const url = modelUrl('to-be-diagrama.png')
+  const url = modelUrl('as-is-diagrama.png')
 
   useEffect(() => {
     if (!expanded) return
@@ -130,19 +130,19 @@ function ImageDiagram() {
       <button type="button" aria-label="Reduir el model" disabled={zoom <= 1} onClick={() => setZoom((value) => Math.max(1,value / 1.5))}>−</button>
       <button type="button" onClick={() => setZoom(1)}>Veure tot</button>
     </div>
-    <a className="model-download" href={url} download="Nexe-model-TO-BE.png">Descarregar imatge ↓</a>
+    <a className="model-download" href={url} download="Nexe-model-AS-IS.png">Descarregar imatge ↓</a>
   </div>
-  const image = <div className="model-image-viewport" tabIndex="0" role="region" aria-label="Diagrama TO-BE. Desplaça’t per la imatge quan estiga ampliada.">
+  const image = <div className="model-image-viewport" tabIndex="0" role="region" aria-label="Diagrama AS-IS. Desplaça’t per la imatge quan estiga ampliada.">
     <img src={url} alt="Diagrama amb els pools de Ceràmica Riu Sec i proveïdors, i els carrils de producció, compres, magatzem i qualitat." width="7998" height="3870" style={{ width: `${zoom * 100}%`, height: zoom === 1 ? '100%' : 'auto', objectFit: zoom === 1 ? 'contain' : undefined }} />
   </div>
 
   return <>
     <figure className="model-figure model-image">
-      <div className="model-heading"><h2>Model TO-BE</h2><button className="model-expand-button" type="button" onClick={() => { setZoom(1); setExpanded(true) }}>Ampliar vista ↗</button></div>
+      <div className="model-heading"><h2>Model AS-IS</h2><button className="model-expand-button" type="button" onClick={() => { setZoom(1); setExpanded(true) }}>Ampliar vista ↗</button></div>
       {controls}{image}
     </figure>
-    <dialog className="model-image-dialog" ref={dialog} aria-labelledby="to-be-dialog-title" onCancel={() => setExpanded(false)} onClose={() => setExpanded(false)}>
-      <div className="model-heading"><h2 id="to-be-dialog-title">Model TO-BE</h2><button className="model-expand-button" type="button" onClick={() => setExpanded(false)}>Tancar vista ampliada ×</button></div>
+    <dialog className="model-image-dialog" ref={dialog} aria-labelledby="as-is-dialog-title" onCancel={() => setExpanded(false)} onClose={() => setExpanded(false)}>
+      <div className="model-heading"><h2 id="as-is-dialog-title">Model AS-IS</h2><button className="model-expand-button" type="button" onClick={() => setExpanded(false)}>Tancar vista ampliada ×</button></div>
       {controls}{image}
     </dialog>
   </>
@@ -193,8 +193,10 @@ export function ImprovementPage() {
       <details className="project-followup" id="prioritats" open={readRoute().view === 'prioritats' || readRoute().section === 'prioritats'}><summary>Prioritats, indicadors i validació <span aria-hidden="true">+</span></summary><div className="followup-content"><h3>Prioritats</h3><ul>{improvementPriorities.map((item) => <li key={item.title}><strong>{item.level} · {item.title}.</strong> {item.detail}</li>)}</ul><h3>Indicadors</h3><ul>{indicators.map((item) => <li key={item}>{item}</li>)}</ul><p>Cal mesurar el punt de partida i validar les causes i els canvis amb producció, compres, magatzem i qualitat.</p></div></details>
     </section>) },
 { id: 'model-proposat', label: 'Model TO-BE', anchors: [], content: (<section id="model-proposat" className="section-space analysis-section">
-      <div className="wrap"><ImageDiagram />
-        {isProjectPagePublished('documents') && <a className="text-link next-link" href={pageHref('documents')}>Documents del projecte <span aria-hidden="true">↗</span></a>}
+      <div className="wrap"><Diagram file="to-be.bpmn" title="Model TO-BE · BPMN2" caption="El model separa les decisions humanes de les tasques amb suport de l’ERP." improved />
+        <details className="model-explanation"><summary>Decisions i incidències del recorregut <span aria-hidden="true">+</span></summary><div className="to-be-notes"><h2>Què canvia en el recorregut</h2><h3>Disponibilitat i reposició</h3><p>Primer es calcula la disponibilitat i una proposta de reposició amb el consum previst i les entrades confirmades. Les reserves es consideren una sola vegada. Es comprova si l’estoc utilitzable cobreix la necessitat actual. Si la cobreix, es reserva el material i es revisa igualment el punt de reposició. Per tant, pot iniciar-se una compra encara que la fabricació immediata tinga material. Si no cal reposar, el cas es tanca sense compra. Si no està coberta, es reserva la part utilitzable i es demana la quantitat pendent, junt amb la reposició que pertoque. </p><h3>Revisió de la petició</h3><p>Una petició retornada torna a revisió després de corregir-la. Una petició rebutjada es tanca sense emetre cap comanda.</p><h3>Resposta als retards</h3><p>Quan la data confirmada posa en risc la fabricació, compres decideix si reclama al proveïdor, en busca un altre o replanifica. Després torna a comprovar la data. Si cal un altre proveïdor, primer resol el saldo substituït de la comanda original i després repeteix la selecció. Si cap oferta és adequada, torna a buscar-ne abans d’emetre una comanda. </p><h3>Recepcions parcials</h3><p>Una recepció parcial deixa obert el saldo pendent i envia només la part rebuda a qualitat. Quan arribe la resta, es registra una altra recepció contra la mateixa comanda. Un material incorrecte es bloqueja i passa a reclamació. </p><h3>Qualitat i lots bloquejats</h3><p>Un lot pendent continua bloquejat i torna a inspecció quan es completen les proves. Els lots bloquejats o rebutjats s’associen a les ordres de fabricació afectades. </p><h3>Registre del material acceptat</h3><p>Magatzem confirma la quantitat acceptada i la ubicació. A partir d’aquesta confirmació, el servei de l’ERP actualitza l’estoc i avisa producció.</p></div></details>
+        <p className="model-note">Aquest és un model proposat per avaluar solucions ERP. No representa una implantació ja feta ni beneficis mesurats.</p>
+        {isProjectPagePublished('documents') && <a className="text-link next-link" href={pageHref('documents')}>Models i presentació del projecte <span aria-hidden="true">↗</span></a>}
       </div>
     </section>) },
 
