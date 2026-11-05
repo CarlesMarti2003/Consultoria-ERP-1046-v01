@@ -4,8 +4,7 @@ import { analysis, differentialData, erpTasks, improvementCategories, improvemen
 
 import { SectionBrowser } from './ProjectUI.jsx'
 import { pageHref, readRoute } from './navigation.js'
-
-const base = import.meta.env.BASE_URL
+import { modelUrl } from './modelAssets.js'
 
 function Intro({ label, title, children }) {
   return <header className="page-intro wrap"><p className="page-label">{label}</p><h1>{title}</h1><p className="page-intro-copy">{children}</p></header>
@@ -35,7 +34,7 @@ export function Diagram({ file, title, caption, improved = false }) {
   const [error, setError] = useState('')
   const [expanded, setExpanded] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const url = base + 'models/' + file + '?v=20261105-pools-1'
+  const url = modelUrl(file)
 
   useEffect(() => {
     let active = true
