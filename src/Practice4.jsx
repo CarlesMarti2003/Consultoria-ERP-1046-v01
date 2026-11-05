@@ -11,56 +11,98 @@ function Intro({ label, title, children }) {
   return <header className="page-intro wrap"><p className="page-label">{label}</p><h1>{title}</h1><p className="page-intro-copy">{children}</p></header>
 }
 
+function showDiagramStart(instance, container) {
+  const canvas = instance.get('canvas')
+  const start = instance.get('elementRegistry').filter((element) => element.type === 'bpmn:StartEvent')[0]
+  if (!start || !container.clientWidth || !container.clientHeight) return
+  const scale = 1
+  canvas.resized()
+  canvas.viewbox({
+    x: Math.max(0, start.x - 32),
+    y: Math.max(0, start.y + start.height / 2 - container.clientHeight / (2 * scale)),
+    width: container.clientWidth / scale,
+    height: container.clientHeight / scale,
+  })
+}
+
 export function Diagram({ file, title, caption, improved = false }) {
   const mount = useRef(null)
+  const figure = useRef(null)
+  const expandButton = useRef(null)
   const viewer = useRef(null)
   const [error, setError] = useState('')
-  const url = base + 'models/' + file
+  const [expanded, setExpanded] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const url = base + 'models/' + file + '?v=20261105-symbols'
 
   useEffect(() => {
     let active = true
-    const instance = new NavigatedViewer({ container: mount.current })
+    let resizeObserver
+    setLoaded(false)
+    setError('')
+    const instance = new NavigatedViewer({ container: mount.current, zoomScroll: { enabled: false } })
     viewer.current = instance
     fetch(url)
       .then((response) => {
         if (!response.ok) throw new Error('No s’ha pogut carregar el model.')
         return response.text()
       })
-      .then((xml) => instance.importXML(xml))
+      .then((xml) => { if (active) return instance.importXML(xml) })
       .then(() => {
         if (!active) return
-        instance.get('canvas').zoom('fit-viewport')
         if (improved) {
-          for (const id of erpTasks.map((task) => task.id)) {
-            instance.get('canvas').addMarker(id, 'erp-task')
-          }
+          for (const id of erpTasks.map((task) => task.id)) instance.get('canvas').addMarker(id, 'erp-task')
         }
+        showDiagramStart(instance, mount.current)
+        resizeObserver = new ResizeObserver(() => { if (active) showDiagramStart(instance, mount.current) })
+        resizeObserver.observe(mount.current)
+        setLoaded(true)
       })
-      .catch(() => { if (active) setError('No s’ha pogut mostrar el model. Descarrega el fitxer BPMN per obrir-lo en Camunda Modeler.') })
-    return () => { active = false; viewer.current = null; instance.destroy() }
+      .catch(() => { if (active) setError('No s’ha pogut mostrar el model. Torna a carregar la pàgina o descarrega el fitxer BPMN.') })
+    return () => { active = false; resizeObserver?.disconnect(); viewer.current = null; instance.destroy() }
   }, [url, improved])
+
+  useEffect(() => {
+    if (!expanded) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const frame = requestAnimationFrame(() => expandButton.current?.focus())
+    const onKeyDown = (event) => {
+      if (event.key === 'Escape') { event.preventDefault(); setExpanded(false); return }
+      if (event.key !== 'Tab') return
+      const focusable = [...figure.current.querySelectorAll('button:not(:disabled), a[href], [tabindex="0"]')]
+      const first = focusable[0]
+      const last = focusable[focusable.length - 1]
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+    }
+    document.addEventListener('keydown', onKeyDown)
+    return () => {
+      cancelAnimationFrame(frame)
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener('keydown', onKeyDown)
+      expandButton.current?.focus()
+    }
+  }, [expanded])
 
   const zoom = (factor) => {
     const canvas = viewer.current?.get('canvas')
-    if (canvas) canvas.zoom(canvas.zoom() * factor)
+    if (canvas) canvas.zoom(Math.min(3, Math.max(.15, canvas.zoom() * factor)))
   }
+  const move = (dx, dy) => viewer.current?.get('canvas').scroll({ dx, dy })
 
-  return (
-    <figure className="model-figure">
-      <div className="model-heading">
-        <div><h2>{title}</h2><p>{caption}</p></div>
-        <div className="model-actions">
-          <button type="button" onClick={() => zoom(1.25)} aria-label="Ampliar el model">+</button>
-          <button type="button" onClick={() => zoom(.8)} aria-label="Reduir el model">−</button>
-          <button type="button" onClick={() => viewer.current?.get('canvas').zoom('fit-viewport')}>Ajustar</button>
-          <a href={url} download>Descarregar BPMN</a>
-        </div>
-      </div>
-      <div className="bpmn-canvas" ref={mount} role="img" aria-label={title + '. El fitxer BPMN es pot descarregar amb l’enllaç de damunt.'} />
-      {error && <p className="model-error" role="alert">{error}</p>}
-      <figcaption>Amplia el model amb «+» i arrossega'l per llegir cada pas. {improved && 'Les tasques ressaltades tenen suport de l’ERP. Les fletxes que tornen a un pas anterior mostren correccions, canvis de proveïdor o revisions pendents. Les peticions rebutjades i els lots no conformes es deriven fora del recorregut principal.'}</figcaption>
-    </figure>
-  )
+  return <figure ref={figure} className={'model-figure' + (expanded ? ' model-expanded' : '')} role={expanded ? 'dialog' : undefined} aria-modal={expanded || undefined} aria-label={expanded ? title : undefined}>
+    <div className="model-heading"><div><h2>{title}</h2><p>{caption}</p></div><button ref={expandButton} className="model-expand-button" type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? 'Tancar vista ampliada ×' : 'Ampliar vista ↗'}</button></div>
+    <div className="model-toolbar" aria-label="Controls del model">
+      <div className="model-actions"><button type="button" disabled={!loaded} onClick={() => zoom(1.25)} aria-label="Ampliar el model">+</button><button type="button" disabled={!loaded} onClick={() => zoom(.8)} aria-label="Reduir el model">−</button><button type="button" disabled={!loaded} onClick={() => showDiagramStart(viewer.current, mount.current)}>Anar a l’inici</button><button type="button" disabled={!loaded} onClick={() => viewer.current.get('canvas').zoom('fit-viewport', 'auto')}>Veure tot</button></div>
+      <div className="model-actions model-pan"><span>Moure</span>{[{ label:'esquerra', symbol:'←', dx:160, dy:0 },{ label:'amunt', symbol:'↑', dx:0, dy:160 },{ label:'avall', symbol:'↓', dx:0, dy:-160 },{ label:'dreta', symbol:'→', dx:-160, dy:0 }].map((direction) => <button key={direction.label} type="button" disabled={!loaded} aria-label={'Anar cap a ' + direction.label} onClick={() => move(direction.dx, direction.dy)}>{direction.symbol}</button>)}</div>
+      <a className="model-download" href={url} download>Descarregar BPMN ↓</a>
+    </div>
+    <div className="bpmn-canvas" ref={mount} role="img" aria-label={title + '. Usa els controls per ampliar i recórrer el diagrama.'} />
+    {!loaded && !error && <p role="status" className="model-status">Carregant el model…</p>}
+    {error && <p className="model-error" role="alert">{error}</p>}
+    <figcaption>Usa «Moure» o arrossega el diagrama per seguir el recorregut. «Veure tot» mostra el conjunt. <span className="model-legend"><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Inici</span><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="3" /></svg>Final</span><span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 23 12 12 23 1 12Z M8 8 16 16 M16 8 8 16" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Decisió exclusiva (X)</span><span>→ Seqüència</span></span>{improved && 'Les tasques ressaltades tenen suport de l’ERP. Les fletxes de retorn indiquen correccions o revisions pendents.'}</figcaption>
+  </figure>
 }
 
 export function AnalysisPage() {

@@ -221,34 +221,34 @@
       <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="40" y="292" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="need_di" bpmnElement="need"><dc:Bounds x="130" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="calculate_di" bpmnElement="calculate"><dc:Bounds x="345" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="stock_ok_di" bpmnElement="stock_ok"><dc:Bounds x="560" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="stock_ok_di" bpmnElement="stock_ok" isMarkerVisible="true"><dc:Bounds x="560" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reserve_di" bpmnElement="reserve"><dc:Bounds x="675" y="85" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="reorder_check_di" bpmnElement="reorder_check"><dc:Bounds x="890" y="101" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reorder_check_di" bpmnElement="reorder_check" isMarkerVisible="true"><dc:Bounds x="890" y="101" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="stock_end_di" bpmnElement="stock_end"><dc:Bounds x="1100" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_di" bpmnElement="request"><dc:Bounds x="1005" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="approval_ok_di" bpmnElement="approval_ok"><dc:Bounds x="1220" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="approval_ok_di" bpmnElement="approval_ok" isMarkerVisible="true"><dc:Bounds x="1220" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_correction_di" bpmnElement="request_correction"><dc:Bounds x="1335" y="475" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_rejected_di" bpmnElement="request_rejected"><dc:Bounds x="1335" y="85" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_end_di" bpmnElement="request_end"><dc:Bounds x="1800" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="supplier_di" bpmnElement="supplier"><dc:Bounds x="1335" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="1800" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="eta_di" bpmnElement="eta"><dc:Bounds x="2015" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="date_ok_di" bpmnElement="date_ok"><dc:Bounds x="2230" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="date_ok_di" bpmnElement="date_ok" isMarkerVisible="true"><dc:Bounds x="2230" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="delay_response_di" bpmnElement="delay_response"><dc:Bounds x="2345" y="475" width="178" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="alternative_needed_di" bpmnElement="alternative_needed"><dc:Bounds x="2550" y="491" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="alternative_needed_di" bpmnElement="alternative_needed" isMarkerVisible="true"><dc:Bounds x="2550" y="491" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="2450" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok"><dc:Bounds x="2665" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok" isMarkerVisible="true"><dc:Bounds x="2665" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="2780" y="85" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="2995" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="partial_di" bpmnElement="partial"><dc:Bounds x="2780" y="475" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="2880" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok"><dc:Bounds x="3095" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok" isMarkerVisible="true"><dc:Bounds x="3095" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="3210" y="85" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="3425" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="3210" y="475" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="register_di" bpmnElement="register"><dc:Bounds x="3425" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="end_di" bpmnElement="end"><dc:Bounds x="3640" y="293" width="36" height="36" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="offer_ok_di" bpmnElement="offer_ok"><dc:Bounds x="1550" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="offer_ok_di" bpmnElement="offer_ok" isMarkerVisible="true"><dc:Bounds x="1550" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reserve_partial_di" bpmnElement="reserve_partial"><dc:Bounds x="675" y="475" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="cancel_order_di" bpmnElement="cancel_order"><dc:Bounds x="1800" y="850" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="locate_di" bpmnElement="locate"><dc:Bounds x="3210" y="270" width="164" height="82" /></bpmndi:BPMNShape>

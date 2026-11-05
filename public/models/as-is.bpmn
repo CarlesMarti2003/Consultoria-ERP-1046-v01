@@ -110,17 +110,17 @@
       <bpmndi:BPMNShape id="start_di" bpmnElement="start"><dc:Bounds x="40" y="292" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="need_di" bpmnElement="need"><dc:Bounds x="130" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="stock_di" bpmnElement="stock"><dc:Bounds x="345" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="stock_ok_di" bpmnElement="stock_ok"><dc:Bounds x="560" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="stock_ok_di" bpmnElement="stock_ok" isMarkerVisible="true"><dc:Bounds x="560" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="stock_end_di" bpmnElement="stock_end"><dc:Bounds x="677" y="104" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="request_di" bpmnElement="request"><dc:Bounds x="675" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="order_di" bpmnElement="order"><dc:Bounds x="890" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="follow_di" bpmnElement="follow"><dc:Bounds x="1105" y="270" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="receive_di" bpmnElement="receive"><dc:Bounds x="1320" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok"><dc:Bounds x="1535" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="qty_ok_di" bpmnElement="qty_ok" isMarkerVisible="true"><dc:Bounds x="1535" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="qty_issue_di" bpmnElement="qty_issue"><dc:Bounds x="1650" y="85" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="qty_end_di" bpmnElement="qty_end"><dc:Bounds x="1865" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="quality_di" bpmnElement="quality"><dc:Bounds x="1650" y="270" width="164" height="82" /></bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok"><dc:Bounds x="1865" y="286" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="quality_ok_di" bpmnElement="quality_ok" isMarkerVisible="true"><dc:Bounds x="1865" y="286" width="50" height="50" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reject_di" bpmnElement="reject"><dc:Bounds x="1980" y="85" width="164" height="82" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="reject_end_di" bpmnElement="reject_end"><dc:Bounds x="2195" y="108" width="36" height="36" /></bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="quality_pending_di" bpmnElement="quality_pending"><dc:Bounds x="1980" y="465" width="164" height="82" /></bpmndi:BPMNShape>

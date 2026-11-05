@@ -174,7 +174,7 @@ function build(model) {
   }
   const elements = model.nodes.map((item) => `    <bpmn:${item.type} id="${item.id}" name="${escape(item.name)}">\n${item.documentation ? `      <bpmn:documentation>${escape(item.documentation)}</bpmn:documentation>\n` : ''}${incoming.get(item.id).map((id) => `      <bpmn:incoming>${id}</bpmn:incoming>`).join('\n')}\n${outgoing.get(item.id).map((id) => `      <bpmn:outgoing>${id}</bpmn:outgoing>`).join('\n')}\n    </bpmn:${item.type}>`).join('\n')
   const sequences = model.flows.map((edge) => `    <bpmn:sequenceFlow id="${edge.id}" sourceRef="${edge.source}" targetRef="${edge.target}"${edge.name ? ` name="${escape(edge.name)}"` : ''} />`).join('\n')
-  const shapes = model.nodes.map((item) => `      <bpmndi:BPMNShape id="${item.id}_di" bpmnElement="${item.id}"><dc:Bounds x="${item.x}" y="${item.y}" width="${item.width}" height="${item.height}" /></bpmndi:BPMNShape>`).join('\n')
+  const shapes = model.nodes.map((item) => `      <bpmndi:BPMNShape id="${item.id}_di" bpmnElement="${item.id}"${item.type === 'exclusiveGateway' ? ' isMarkerVisible="true"' : ''}><dc:Bounds x="${item.x}" y="${item.y}" width="${item.width}" height="${item.height}" /></bpmndi:BPMNShape>`).join('\n')
   const edges = model.flows.map((edge) => {
     const source = model.nodes.find((item) => item.id === edge.source)
     const target = model.nodes.find((item) => item.id === edge.target)

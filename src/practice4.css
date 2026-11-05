@@ -1,17 +1,30 @@
 @import "bpmn-js/dist/assets/diagram-js.css";
 
 .model-figure { margin-top: .5rem; }
-.model-heading { display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 1.2rem; }
+.model-heading { display: flex; justify-content: space-between; align-items: start; gap: 1rem; margin-bottom: 1rem; }
 .model-heading h2,.to-be-notes h2,.sources-inline h2 { font-family: var(--font-editorial); font-size: 1.65rem; font-weight: 400; letter-spacing: -.035em; line-height: 1.25; }
 .model-heading p { margin-top: .6rem; color: var(--color-muted); font-size: .88rem; line-height: 1.65; }
-.model-actions { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }
-.model-actions button,.model-actions a { display: inline-flex; justify-content: center; align-items: center; min-height: 2.2rem; padding: .4rem .65rem; background: transparent; border: 1px solid var(--color-line); font-size: .78rem; text-decoration: none; color: var(--color-ink); }
-.model-actions button:hover,.model-actions a:hover { border-color: var(--color-brand); color: var(--color-brand); }
-.bpmn-canvas { width: 100%; height: clamp(23rem,36vw,31rem); background: white; }
-.model-figure figcaption,.model-error { color: var(--color-muted); font-size: .78rem; line-height: 1.65; margin-top: .8rem; max-width: 47rem; }
+.model-expand-button { flex: none; background: var(--color-forest); color: white; border: 0; padding: .65rem .85rem; font-size: .8rem; }
+.model-toolbar { display: flex; flex-wrap: wrap; gap: .7rem 1rem; align-items: center; margin-bottom: .75rem; }
+.model-actions { display: flex; flex-wrap: wrap; gap: .3rem; align-items: center; }
+.model-actions button { display: inline-flex; justify-content: center; align-items: center; min-height: 2.25rem; min-width: 2.25rem; padding: .4rem .6rem; background: white; border: 1px solid var(--color-line); font-size: .78rem; color: var(--color-ink); }
+.model-actions button:disabled { opacity: .45; cursor: wait; }
+.model-actions button:hover { border-color: var(--color-brand); color: var(--color-brand); }
+.model-pan > span { font-size: .75rem; color: var(--color-muted); margin-right: .25rem; }
+.model-download { margin-left: auto; font-size: .78rem; color: var(--color-forest); }
+.bpmn-canvas { width: 100%; height: clamp(25rem,40vw,34rem); background: white; border: 1px solid var(--color-line); }
+.bpmn-canvas svg:focus-visible { outline: 2px solid var(--color-brand); outline-offset: -3px; }
+.model-figure figcaption,.model-error,.model-status { color: var(--color-muted); font-size: .78rem; line-height: 1.65; margin-top: .8rem; max-width: 65rem; }
+.model-legend { display: flex; flex-wrap: wrap; gap: .4rem 1.1rem; color: var(--color-ink); margin-block: .5rem; }
+.model-legend > span { display: inline-flex; align-items: center; gap: .35rem; }
+.model-legend svg { flex: none; }
 .model-error { color: #a73725; }
 .bpmn-canvas .djs-element.erp-task .djs-visual > rect { stroke: var(--color-brand) !important; stroke-width: 2.5px !important; fill: #fff7f2 !important; }
 .bpmn-canvas .djs-container .djs-hit { cursor: grab; }
+.model-expanded { position: fixed; inset: 1rem; z-index: 100; display: flex; flex-direction: column; background: var(--color-ground); padding: 1.25rem; margin: 0; box-shadow: 0 0 0 2rem #302825bb; }
+.model-expanded .bpmn-canvas { flex: 1; min-height: 0; height: auto; }
+.model-expanded .model-heading { flex: none; }
+.model-expanded figcaption { flex: none; font-size: .75rem; }
 .analysis-item { padding-block: 1rem; }
 .analysis-heading { margin-bottom: 0; }
 .analysis-preview,.disclosure-label { grid-column: 2; }
@@ -92,7 +105,15 @@
 .sources-inline h2 { margin-bottom: 1.5rem; }
 @media (max-width:700px) {
   .model-actions { gap: .3rem; }
-  .bpmn-canvas { height: 24rem; }
+  .bpmn-canvas { height: 27rem; }
+  .model-heading { flex-direction: column; }
+  .model-download { margin-left: 0; }
+  .model-expanded { inset: 0; padding: .8rem; }
+  .model-expanded .model-heading h2 { font-size: 1.2rem; }
+  .model-expanded .model-heading p { display: none; }
+  .model-expanded .model-heading { flex-direction: row; align-items: start; }
+  .model-expanded .model-expand-button { font-size: .72rem; max-width: 9rem; }
+  .model-expanded .model-legend { gap: .3rem .7rem; }
   .analysis-observations,.improvement-list,.priority-list,.to-be-notes,.indicator-list,.story-evidence { grid-template-columns: 1fr; }
   .improvement-list { gap: 2rem; }
   .to-be-notes { gap: 1rem; }
