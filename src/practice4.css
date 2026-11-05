@@ -12,10 +12,16 @@
 .model-error { color: #a73725; }
 .bpmn-canvas .djs-element.erp-task .djs-visual > rect { stroke: var(--color-brand) !important; stroke-width: 2.5px !important; fill: #fff7f2 !important; }
 .bpmn-canvas .djs-container .djs-hit { cursor: grab; }
-.analysis-item { padding-block: 1.25rem; }
-.analysis-heading { display: grid; grid-template-columns: 2rem 1fr; gap: .3rem .75rem; align-items: baseline; margin-bottom: .8rem; }
+.analysis-item { padding-block: 1rem; }
+.analysis-heading { margin-bottom: 0; }
+.analysis-preview,.disclosure-label { grid-column: 2; }
+.analysis-preview { font-size: .9rem; color: var(--color-muted); line-height: 1.6; }
+.disclosure-label { display: flex; align-items: center; gap: .8rem; color: var(--color-forest); font-size: .8rem; margin-top: .25rem; }
+.analysis-item[open] > .analysis-heading .disclosure-label span { transform: rotate(45deg); }
+.analysis-copy { margin: 1rem 0 0 2.75rem; border-left: 2px solid var(--color-line); padding-left: 1rem; }
+.analysis-heading { list-style: none; cursor: pointer; display: grid; grid-template-columns: 2rem 1fr; gap: .3rem .75rem; align-items: baseline; margin-bottom: 0; }
 .analysis-owner { grid-column: 2; }
-.analysis-item + .analysis-item { padding-top: 1.5rem; border-top: 1px solid var(--color-line); }
+.analysis-item + .analysis-item { padding-top: 1rem; border-top: 1px solid var(--color-line); }
 .analysis-heading h3 { color: var(--color-forest); font-size: 1.15rem; font-weight: 500; line-height: 1.45; margin-top: 0; }
 .analysis-id { color: var(--color-brand); font-family: var(--font-editorial); font-size: 2rem; }
 .analysis-owner { margin-top: 0; color: var(--color-muted); font-size: .75rem; line-height: 1.6; }
@@ -38,6 +44,8 @@
 .work-table tbody th { font-weight: 500; min-width: 9rem; }
 .work-table td { color: var(--color-muted); min-width: 9rem; }
 .work-table td strong { font-weight: 500; color: var(--color-ink); }
+.reference-links { display: flex; flex-wrap: wrap; gap: .3rem .7rem; }
+.reference-links a { color: var(--color-forest); white-space: nowrap; }
 .work-table small { display: block; margin-top: .5rem; font-size: .72rem; font-weight: 400; color: var(--color-brand); }
 .improvement-list { margin-top: 1.25rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem 2rem; align-items: start; }
 .improvement-list article { display: block; }
@@ -58,9 +66,10 @@
 .validation-note { margin-top: 1.5rem; }
 .validation-note h3 { font-family: var(--font-editorial); font-size: 1.5rem; font-weight: 400; }
 .indicator-list { padding-left: 1rem; display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 2rem; margin-top: 1rem; color: var(--color-muted); font-size: .86rem; line-height: 1.7; }
-.requirements-intro { display: flex; align-items: start; gap: 2rem; padding-block: 1rem 1.5rem; }
-.requirements-intro p { color: var(--color-muted); max-width: 36rem; font-size: .88rem; line-height: 1.65; }
-.requirements-intro a { flex: none; max-width: 11rem; color: var(--color-brand); font-size: .78rem; line-height: 1.7; }
+.requirements-note { font-size: .85rem; line-height: 1.65; color: var(--color-muted); padding-top: .8rem; }
+.story-validation { margin-top: .75rem; }
+.story-validation[open] { margin-bottom: .8rem; }
+.model-explanation { border-block: 1px solid var(--color-line); padding-block: 1rem; margin-top: 1rem; }
 .requirement-chapter { --chapter-color: var(--color-brand); padding-block: 1.5rem; border-top: 2px solid var(--color-line); }
 .chapter-heading { display: grid; grid-template-columns: 2rem 1fr; gap: .3rem .75rem; align-items: baseline; margin-bottom: 1rem; }
 .chapter-number { color: var(--color-brand); font-family: var(--font-editorial); font-size: 1.6rem; }
@@ -81,10 +90,6 @@
 .story-evidence small { display: block; font-size: .73rem; color: var(--color-muted); margin-top: .15rem; }
 .story-specific-note { border-left: 2px solid var(--color-brand); padding-left: 1rem; margin-top: 1rem; }
 .sources-inline h2 { margin-bottom: 1.5rem; }
-@media (max-width:1100px) {
-  .requirements-intro { display: block; }
-  .requirements-intro a { display: inline-block; max-width: none; margin-top: .6rem; }
-}
 @media (max-width:700px) {
   .model-actions { gap: .3rem; }
   .bpmn-canvas { height: 24rem; }

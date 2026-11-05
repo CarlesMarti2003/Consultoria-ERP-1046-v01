@@ -25,6 +25,10 @@ export function readRoute(hash = window.location.hash) {
   const [rawPath, query = ''] = hash.split('?')
   const path = rawPath.replace(/\/$/, '') || '#'
   const found = allNavigation.find((item) => item.href.replace(/\/$/, '') === path)
-  return { page: found?.page || aliases[path] || 'notfound', section: new URLSearchParams(query).get('seccio') || '' }
+  const params = new URLSearchParams(query)
+  const page = found?.page || aliases[path] || 'notfound'
+  const section = params.get('seccio') || ''
+  if (page === 'millora' && section === 'tasques-erp') return { page: 'requisits', section: 'tasques-erp', view: 'tasques-erp' }
+  return { page, section, view: params.get('vista') || '' }
 }
 export const pageHref = (page) => allNavigation.find((item) => item.page === page)?.href || '#/'

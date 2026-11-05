@@ -3,7 +3,7 @@ import { caseStudies, departments, steps, team } from './content.js'
 import { AnalysisPage, Diagram, ImprovementPage, RequirementsPage } from './Practice4.jsx'
 
 import { mainNavigation as navigation, projectNavigation as caseNavigation, legalNavigation as footerNavigation, readRoute, pageHref, projectBase } from './navigation.js'
-import { Documents, PageContents, ProjectMenu, ProjectOverview, ProjectPager } from './ProjectUI.jsx'
+import { Documents, SectionBrowser, ProjectMenu, ProjectOverview, ProjectPager } from './ProjectUI.jsx'
 
 const asset = (file) => import.meta.env.BASE_URL + 'images/' + file
 
@@ -82,7 +82,7 @@ function Home() {
   return <>
     <section className="home-opening"><div className="wrap home-opening-grid">
       <div><p className="page-label">Nexe Consultoria ERP</p><h1>Consultoria ERP <span>per a la teua empresa.</span></h1><p className="home-lead">Ajudem les empreses a definir com ha de treballar el seu ERP a partir dels processos i les necessitats de cada equip.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer l’equip ↗</a></div></div>
-      <aside className="home-project-preview"><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a><nav aria-label="Accés directe al projecte">{caseNavigation.filter((item) => ['proces','millora','documents'].includes(item.page)).map((item) => <a key={item.page} href={item.href}>{item.label}<span aria-hidden="true">↗</span></a>)}</nav></aside>
+      <aside className="home-project-preview"><p className="page-label">Projecte en curs</p><h2>Ceràmica Riu Sec</h2><p>Aprovisionament de matèries primeres en una empresa ceràmica d’Onda.</p><a className="action-link" href={projectBase}>Explorar el projecte ↗</a></aside>
     </div></section>
     <section className="home-method section-space"><div className="wrap"><div className="section-heading-row"><h2>Com treballem</h2><p>Primer entenem el funcionament de l’empresa. Després definim els canvis del procés i els requisits amb què avaluarem l’ERP.</p></div><ol className="service-list home-services">{services.map((service, index) => <li key={service}><span>{String(index + 1).padStart(2, '0')}</span><p>{service}</p></li>)}</ol></div></section>
     <section className="home-question section-space"><div className="wrap home-question-grid"><h2>L’equip de Nexe</h2><div><p>Quatre membres amb funcions de coordinació, anàlisi de processos, solucions ERP i dades. La nostra formació combina Enginyeria Informàtica i Matemàtica Computacional.</p><a className="text-link" href="#/consultora">Veure qui fa cada funció ↗</a></div></div></section>
@@ -107,7 +107,6 @@ function Cases() {
     <section className="section-space cases-section"><div className="wrap case-list">{caseStudies.map((item) => <article className="client-case" key={item.slug}>
       <figure><img src={asset(item.image)} alt="Línia de fabricació de taulells ceràmics" width="1672" height="941" /><figcaption>Imatge il·lustrativa del sector</figcaption></figure>
       <div className="client-case-copy"><p className="page-label">{item.sector} · {item.location}</p><h2>{item.name}</h2><p className="case-status">{item.status}</p><p>{item.summary}</p><a className="action-link" href={'#/casos/' + item.slug}>Entrar al projecte ↗</a></div>
-      <nav className="case-quick-links" aria-label={'Continguts de ' + item.name}>{caseNavigation.map((section) => <a key={section.page} href={section.href}>{section.label}<span aria-hidden="true">↗</span></a>)}</nav>
     </article>)}</div></section>
   </>
 }
@@ -121,8 +120,8 @@ function Company() {
       <PageIntro label="Ceràmica Riu Sec" title="L’empresa">
         Una fàbrica de taulells d’Onda amb una planta de producció, un magatzem propi i unes {workforce} persones. Fabrica per a distribuïdors i empreses de construcció.
       </PageIntro>
-      <PageContents page="empresa" items={[["context","Context i estratègia"],["organitzacio","Organització"],["situacio","Situació actual"]]} />
-      <section id="context" className="section-space company-overview">
+        <SectionBrowser page="empresa" sections={[
+{ id: 'context', label: 'Context i estratègia', anchors: [], content: (<section id="context" className="section-space company-overview">
         <div className="wrap split-section">
           <h2>El context</h2>
           <div className="body-copy">
@@ -135,8 +134,8 @@ function Company() {
           <div><h3>Missió</h3><p>Fabricar taulells de qualitat i entregar les comandes dins del termini acordat.</p></div>
           <div><h3>Visió</h3><p>Créixer sense perdre el control de la producció, les existències ni els lliuraments.</p></div>
         </div>
-      </section>
-      <section className="section-space">
+      </section>) },
+{ id: 'organitzacio', label: 'Organització', anchors: [], content: (<section className="section-space">
         <div className="wrap">
           <div className="section-heading-row">
             <h2 id="organitzacio">Com s’organitza</h2>
@@ -160,8 +159,8 @@ function Company() {
             </ul>
           </div>
         </div>
-      </section>
-      <section id="situacio" className="section-space current-state">
+      </section>) },
+{ id: 'situacio', label: 'Situació actual', anchors: [], content: (<section id="situacio" className="section-space current-state">
         <div className="wrap">
           <div className="section-heading-row">
             <h2>Informació repartida</h2>
@@ -174,7 +173,8 @@ function Company() {
           </div>
           <p className="record-conclusion">La diferència entre l’estoc físic i el registrat es pot descobrir quan producció ja necessita el material.</p>
         </div>
-      </section>
+      </section>) }
+]} />
     </>
   )
 }
@@ -182,7 +182,7 @@ function Company() {
 function ProcessStep({ step, index }) {
   return <li className="process-item" id={'activitat-' + (index + 1)}>
     <div className="process-step-title"><span className="step-number">{String(index + 1).padStart(2, '0')}</span><h3>{step.title}</h3></div><p className="process-step-action">{step.summary}</p>
-    <dl className="process-fields"><div><dt>Responsables</dt><dd>{step.owner}</dd></div><div><dt>Entrada</dt><dd>{step.input}</dd></div><div><dt>Resultat</dt><dd>{step.output}</dd></div><div><dt>Eines</dt><dd>{step.tools}</dd></div><div><dt>Deficiència</dt><dd>{step.problem}</dd></div><div><dt>Conseqüència</dt><dd>{step.consequence}</dd></div></dl>
+    <details className="activity-details"><summary>Responsables, documents i incidència <span aria-hidden="true">+</span></summary><dl className="process-fields"><div><dt>Responsables</dt><dd>{step.owner}</dd></div><div><dt>Entrada</dt><dd>{step.input}</dd></div><div><dt>Resultat</dt><dd>{step.output}</dd></div><div><dt>Eines</dt><dd>{step.tools}</dd></div><div><dt>Deficiència</dt><dd>{step.problem}</dd></div><div><dt>Conseqüència</dt><dd>{step.consequence}</dd></div></dl></details>
   </li>
 }
 
@@ -190,21 +190,14 @@ function Process() {
   return (
     <>
       <PageIntro label="Procés" title="Aprovisionament de matèries primeres">
-        L’objectiu del procés és garantir que producció dispose de les matèries primeres necessàries, en la quantitat adequada i a temps, amb l’estoc actualitzat. Comença quan producció identifica una necessitat i acaba quan el material acceptat queda registrat al magatzem.
+        El recorregut de les matèries primeres, des de la necessitat de producció fins al registre del material acceptat al magatzem.
       </PageIntro>
-      <PageContents page="proces" items={[["abast","Objectiu i abast"],["activitats","Les huit activitats"],["model-actual","Model AS-IS"],["preocupacions","Necessitats de direcció"]]} />
-      <section id="abast" className="scope-section">
-        <div className="wrap scope-grid">
-          <div><span>Inici</span><p>Producció comunica els materials que necessita.</p></div>
-          <div><span>Final</span><p>El material acceptat queda disponible al magatzem.</p></div>
-          <p className="scope-note">El consum durant la fabricació i el pagament de la factura queden fora de l’abast inicial.</p>
-        </div>
-      </section>
-      <section className="section-space">
+        <SectionBrowser page="proces" sections={[
+{ id: 'activitats', label: 'Les huit activitats', anchors: ['activitat-1', 'activitat-2', 'activitat-3', 'activitat-4', 'activitat-5', 'activitat-6', 'activitat-7', 'activitat-8'], content: (<section className="section-space">
         <div className="wrap">
           <div className="section-heading-row process-heading">
             <h2 id="activitats">Les huit activitats actuals</h2>
-            <p>Cada activitat mostra els responsables, les entrades i eixides, les eines i la deficiència detectada.</p>
+            <p>El recorregut té huit passos. Obri el detall d’una activitat per consultar qui intervé, els documents i la incidència detectada.</p>
           </div>
           <div className="process-columns">
             {[0, 4].map((start) => (
@@ -217,9 +210,17 @@ function Process() {
             ))}
           </div>
         </div>
-      </section>
-      <section id="model-actual" className="section-space analysis-section"><div className="wrap"><Diagram file="as-is.bpmn" title="Model del procés actual · AS-IS" caption="Des de la necessitat de producció fins al registre manual de l’entrada." /></div></section>
-      <section id="preocupacions" className="concerns section-space">
+      </section>) },
+{ id: 'model-actual', label: 'Model AS-IS', anchors: [], content: (<section id="model-actual" className="section-space analysis-section"><div className="wrap"><Diagram file="as-is.bpmn" title="Model del procés actual · AS-IS" caption="Des de la necessitat de producció fins al registre manual de l’entrada." /></div></section>) },
+{ id: 'abast', label: 'Objectiu i abast', anchors: [], content: (<section id="abast" className="scope-section">
+        <div className="section-heading-row"><h2>Objectiu i abast</h2><p>Garantir que producció dispose de les matèries primeres necessàries, en la quantitat adequada i a temps, amb l’estoc actualitzat.</p></div>
+        <div className="wrap scope-grid">
+          <div><span>Inici</span><p>Producció comunica els materials que necessita.</p></div>
+          <div><span>Final</span><p>El material acceptat queda disponible al magatzem.</p></div>
+          <p className="scope-note">El consum durant la fabricació i el pagament de la factura queden fora de l’abast inicial.</p>
+        </div>
+      </section>) },
+{ id: 'preocupacions', label: 'Necessitats de direcció', anchors: [], content: (<section id="preocupacions" className="concerns section-space">
         <div className="wrap">
           <div className="section-heading-row"><h2>Què preocupa la direcció</h2><p>Els errors de coordinació es traslladen a les compres i als terminis de fabricació.</p></div>
           <div className="concern-grid">
@@ -229,7 +230,8 @@ function Process() {
           </div>
           <p className="concern-end">La proposta estudiarà com compartir dades d’estoc, necessitats de producció i estat de les compres mitjançant un ERP.</p>
         </div>
-      </section>
+      </section>) }
+]} />
     </>
   )
 }
@@ -293,26 +295,16 @@ function Cookies() {
   )
 }
 
-function Footer({ page }) {
-  return (
-    <footer className="site-footer">
-      <div className="wrap footer-directory"><div><h2>Nexe</h2>{navigation.filter((item) => item.page !== 'contacte').map((item) => <a key={item.page} href={item.href}>{item.label}</a>)}</div><div><h2>Ceràmica Riu Sec</h2>{caseNavigation.map((item) => <a key={item.page} href={item.href}>{item.label}</a>)}</div></div>
-      <div className="wrap footer-inner">
-        <div className="footer-meta">
-          <strong>Nexe Consultoria ERP</strong>
-          <p>© {new Date().getFullYear()} Nexe. Tots els drets reservats.</p>
-        </div>
-        <nav aria-label="Enllaços del peu de pàgina" className="footer-links">
-          {footerNavigation.map((item) => <a key={item.href} href={item.href} aria-current={page === item.href.slice(2) ? 'page' : undefined} onClick={() => { if (page === item.href.slice(2)) window.scrollTo(0, 0) }}>{item.label}</a>)}
-        </nav>
-      </div>
-    </footer>
-  )
+function Footer() {
+  return <footer className="site-footer"><div className="wrap footer-inner">
+    <div className="footer-meta"><strong>Nexe Consultoria ERP</strong><p>© {new Date().getFullYear()} Nexe. Tots els drets reservats.</p></div>
+    <nav aria-label="Enllaços del peu de pàgina" className="footer-links">{[...navigation.filter((item) => item.page !== 'contacte'), ...footerNavigation].map((item) => <a key={item.href} href={item.href}>{item.label}</a>)}</nav>
+  </div></footer>
 }
 
 export default function App() {
   const [route, setRoute] = useState(readRoute)
-  const { page, section } = route
+  const { page, section, view } = route
   const isProject = caseNavigation.some((item) => item.page === page)
   useEffect(() => {
     const handleHashChange = () => setRoute(readRoute())
@@ -327,7 +319,7 @@ export default function App() {
       else window.scrollTo(0, 0)
     })
     return () => cancelAnimationFrame(frame)
-  }, [page, section, isProject])
+  }, [page, section, view, isProject])
   const content = <>
     {page === 'inici' && <Home />}
     {page === 'serveis' && <Services />}

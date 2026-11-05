@@ -1,15 +1,25 @@
-import { projectNavigation, pageHref } from './navigation.js'
+import { projectNavigation, pageHref, readRoute } from './navigation.js'
 
-export function PageContents({ page, items }) {
-  return <nav className="page-contents wrap" aria-label="Índex d’aquesta pàgina"><strong>En aquesta pàgina</strong><ul>{items.map(([id, label]) => <li key={id}><a href={pageHref(page) + '?seccio=' + id}>{label}<span aria-hidden="true">↓</span></a></li>)}</ul></nav>
+export function SectionBrowser({ page, sections }) {
+  const route = readRoute()
+  const legacy = sections.find((item) => item.id === route.section || item.anchors?.includes(route.section))
+  const active = sections.find((item) => item.id === route.view) || legacy || sections[0]
+  return <div className="section-browser wrap">
+    <nav className="section-navigation" aria-label="Continguts d’aquest apartat">
+      {sections.map((item) => <a key={item.id} href={pageHref(page) + '?vista=' + item.id} aria-current={active.id === item.id ? 'page' : undefined}>{item.label}{item.count && <span>{item.count}</span>}</a>)}
+    </nav>
+    <div className="section-panel" key={active.id} data-view={active.id}>{active.content}</div>
+  </div>
 }
 
 export function ProjectMenu({ page }) {
+  const current = projectNavigation.find((item) => item.page === page)
+  const links = <ol>{projectNavigation.map((item,index) => <li key={item.page}><a href={item.href} aria-current={page === item.page ? 'page' : undefined}><span>{String(index + 1).padStart(2,'0')}</span>{item.label}</a></li>)}</ol>
   return <aside className="project-menu" aria-label="Projecte Ceràmica Riu Sec">
     <a className="back-to-cases" href="#/casos">← Tots els casos</a>
     <p className="project-menu-name">Ceràmica Riu Sec</p><p className="project-menu-status">Projecte en curs</p>
-    <nav aria-label="Apartats del projecte"><ol>{projectNavigation.map((item, index) => <li key={item.page}><a href={item.href} aria-current={page === item.page ? 'page' : undefined}><span>{String(index + 1).padStart(2, '0')}</span>{item.label}</a></li>)}</ol></nav>
-    <a className="project-download" href={pageHref('documents')}>Models i presentació ↗</a>
+    <nav className="desktop-project-index" aria-label="Apartats del projecte">{links}</nav>
+    <details className="mobile-project-index" key={page}><summary>{current.label}<span>Canviar apartat ⌄</span></summary><nav aria-label="Apartats del projecte">{links}</nav></details>
   </aside>
 }
 
@@ -27,7 +37,9 @@ export function ProjectOverview() {
   return <>
     <header className="page-intro wrap"><p className="page-label">Indústria ceràmica · Onda</p><h1>Ceràmica Riu Sec</h1><p className="page-intro-copy">Revisió de l’aprovisionament de matèries primeres per coordinar producció, compres, magatzem i qualitat.</p></header>
     <section className="project-opening wrap"><div className="project-opening-copy"><p className="page-label">L’encàrrec</p><p className="project-opening-lead">Disposar de material a temps i treballar amb dades d’estoc fiables.</p><p>L’empresa utilitza correus i fulls de càlcul separats. Nexe revisa el procés actual, identifica problemes i prepara una proposta amb suport ERP.</p></div><dl className="project-facts"><div><dt>Procés</dt><dd>Aprovisionament de matèries primeres</dd></div><div><dt>Estat</dt><dd>Anàlisi i proposta de millora</dd></div></dl></section>
-    <section className="section-space"><div className="wrap"><div className="section-heading-row"><h2>El projecte, apartat a apartat</h2><p>De la situació actual als requisits que utilitzarem per avaluar l’ERP.</p></div><ol className="project-directory">{projectNavigation.slice(1).map((item, index) => <li key={item.page}><a href={item.href}><span className="directory-number">{String(index + 2).padStart(2,'0')}</span><div><h3>{item.label}</h3><p>{item.description}</p></div><span aria-hidden="true">↗</span></a></li>)}</ol></div></section>
+    <section className="section-space"><div className="wrap"><h2 className="plain-section-title">Recorregut del projecte</h2><ol className="project-stages">
+      {[{ title: 'Entendre el cas', pages: ['empresa','proces'] }, { title: 'Analitzar i millorar', pages: ['analisi','millora'] }, { title: 'Definir la solució', pages: ['requisits','documents'] }].map((stage,index) => <li key={stage.title}><span>{String(index + 1).padStart(2,'0')}</span><h3>{stage.title}</h3><div>{stage.pages.map((page) => <a key={page} href={pageHref(page)}>{projectNavigation.find((item) => item.page === page).label} ↗</a>)}</div></li>)}
+    </ol></div></section>
     <section className="section-space project-brief"><div className="wrap split-section"><h2>Abast del treball</h2><div className="body-copy"><p>Comença quan producció identifica una necessitat de matèria primera i acaba quan el material acceptat queda registrat al magatzem. El consum en fabricació i el pagament queden fora de l’abast.</p><p>La proposta encara no s’ha implantat. La selecció del producte ERP i els resultats de la implantació corresponen a fases posteriors.</p></div></div></section>
   </>
 }
@@ -48,7 +60,6 @@ export function Sources() {
 export function Documents() {
   return <>
     <header className="page-intro wrap"><p className="page-label">Ceràmica Riu Sec</p><h1>Documents i fonts</h1><p className="page-intro-copy">Tots els fitxers del projecte i les referències consultades, en un mateix lloc.</p></header>
-    <PageContents page="documents" items={[["descarregues","Descarregar fitxers"],["fonts","Fonts de consulta"]]} />
     <section id="descarregues" className="section-space"><div className="wrap"><h2 className="plain-section-title">Descarregar fitxers</h2><ul className="download-list">{downloads.map((item) => <li key={item.file}><div><h3>{item.title}</h3><p>{item.detail}</p></div><a href={import.meta.env.BASE_URL + item.file} download>Descarregar <span aria-hidden="true">↓</span></a></li>)}</ul><p className="document-help">Pots consultar els models en la web, en «Procés actual» i «Proposta de millora». Els fitxers BPMN també es poden obrir amb bpmn.io o Camunda Modeler.</p></div></section>
     <Sources />
   </>

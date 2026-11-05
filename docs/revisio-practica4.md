@@ -35,7 +35,7 @@ S’han revisat aquests recorreguts:
 
 Les incidències no conformes es deriven a reclamació. La resolució comercial de reclamacions i devolucions queda fora del recorregut principal i no es confon amb material disponible.
 
-On és: **Proposta de millora → Model TO-BE** i **Responsables i suport ERP**. La taula i la documentació del BPMN identifiquen qui executa cada tasca i les HU associades.
+On és: **Proposta de millora → Model TO-BE** i **Requisits ERP → Cobertura ERP**. La taula i la documentació del BPMN identifiquen qui executa cada tasca i les HU associades.
 
 ## Tercera sessió: requisits i presentació
 
@@ -61,3 +61,16 @@ El text de l’enunciat esmenta user tasks, service tasks i script tasks com a t
 - Incorporar qualsevol canvi acordat en la validació. Els valors inicials dels indicadors i les entrevistes continuen pendents si es volen presentar com a dades reals.
 
 La selecció del producte ERP i una implantació amb resultats mesurats no es donen per fetes en aquesta pràctica.
+
+## Organització de la web
+
+Cada apartat del projecte té vistes amb enllaç propi (`?vista=...`). Es manté la compatibilitat amb els enllaços anteriors `?seccio=...`.
+
+- Empresa: context i estratègia, organització, situació actual.
+- Procés actual: huit activitats, model AS-IS, objectiu i abast, necessitats de direcció. Cada activitat conserva responsables, entrada, resultat, eines, deficiència i conseqüència en el seu detall.
+- Problemes detectats: anàlisi textual de cada activitat, amb resum visible i detall desplegable, seguida d’una vista amb la taula comparativa.
+- Proposta de millora: quatre categories de canvis, model TO-BE amb explicació de les excepcions, prioritats i indicadors.
+- Requisits ERP: onze històries distribuïdes en quatre àrees, dades específiques i cobertura de les vint tasques. La necessitat i el benefici són visibles. Els criteris i les tasques associades es consulten en cada història.
+- Documents: descàrregues i fonts reunides.
+
+La reorganització conserva els fitxers BPMN i totes les dades d’anàlisi i requisits. No dona per feta la validació amb participants ni una implantació ERP.
