@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { caseStudies, departments, steps, team } from './content.js'
+import { caseStudies, steps, team } from './content.js'
 import { CurrentProcessDiagram, ImprovementPage, RequirementsPage } from './Practice4.jsx'
 
 import { mainNavigation as navigation, projectNavigation as caseNavigation, legalNavigation as footerNavigation, readRoute, projectBase } from './navigation.js'
@@ -85,7 +85,7 @@ function Services() {
 }
 
 function Cases() {
-  return <><PageIntro label="Projectes de Nexe" title="Casos d’èxit">Cada empresa té el seu espai, amb el context del projecte, l’anàlisi del procés i la proposta de millora.</PageIntro>
+  return <><PageIntro label="Projectes de Nexe" title="Casos d’èxit">Coneix els projectes en què estem treballant.</PageIntro>
     <section className="section-space cases-section"><div className="wrap case-list">{caseStudies.map((item) => <article className="client-case" key={item.slug}>
       <figure><img src={asset(item.image)} alt="Línia de fabricació de taulells ceràmics" width="1672" height="941" /></figure>
       <div className="client-case-copy"><p className="page-label">{item.sector} · {item.location}</p><h2>{item.name}</h2><p className="case-status">{item.status}</p><p>{item.summary}</p><a className="action-link" href={'#/casos/' + item.slug}>Entrar al projecte ↗</a></div>
@@ -93,19 +93,10 @@ function Cases() {
   </>
 }
 
-function Company() {
-  const workforce = departments.reduce((total,item) => total + item.people,0)
-  return <section id="empresa" className="section-space wrap company-section">
-    <div className="section-heading-row"><h2>L’empresa</h2><p>Fàbrica de taulells d’Onda amb una planta, un magatzem propi i {workforce} persones. Treballa per a distribuïdors i empreses de construcció.</p></div>
-    <div className="company-essential"><div><h3>Activitat i estratègia</h3><p>Planifica la fabricació segons la demanda i busca disposar dels materials a temps, evitant aturades i excés d’estoc.</p><dl className="company-purpose"><div><dt>Missió</dt><dd>Fabricar taulells de qualitat i complir els terminis.</dd></div><div><dt>Visió</dt><dd>Créixer mantenint el control de la producció i les existències.</dd></div></dl></div><div id="situacio"><h3>Situació actual</h3><p>Disposa d’un programa de comptabilitat. Producció comunica necessitats per correu, compres prepara peticions i comandes en fitxers separats, i magatzem registra les entrades en un altre full.</p><p>Direcció necessita un estoc fiable, menys compres urgents i complir els terminis de fabricació.</p></div></div>
-    <details id="organitzacio" className="content-disclosure"><summary>Organització i funcions dels departaments <span aria-hidden="true">+</span></summary><ul className="org-areas">{departments.map((item) => <li key={item.name}><h3>{item.name}</h3><p>{item.task}</p><span>{item.people} persones</span></li>)}</ul></details>
-  </section>
-}
-
 function ProcessStep({ step, index }) {
   return <li className="process-item" id={'activitat-' + (index + 1)}>
-    <div className="process-step-title"><span className="step-number">{String(index + 1).padStart(2, '0')}</span><h3>{step.title}</h3></div><p className="process-step-action">{step.summary}</p>
-    <details className="activity-details"><summary>Responsables, documents i incidència <span aria-hidden="true">+</span></summary><dl className="process-fields"><div><dt>Responsables</dt><dd>{step.owner}</dd></div><div><dt>Entrada</dt><dd>{step.input}</dd></div><div><dt>Resultat</dt><dd>{step.output}</dd></div><div><dt>Eines</dt><dd>{step.tools}</dd></div><div><dt>Deficiència</dt><dd>{step.problem}</dd></div><div><dt>Conseqüència</dt><dd>{step.consequence}</dd></div></dl></details>
+    <div className="process-step-title"><span className="step-number">{String(index + 1).padStart(2, '0')}</span><h3>{step.title}</h3></div>
+    <p className="process-step-action"><strong>{step.owner}.</strong> {step.summary}</p>
   </li>
 }
 
@@ -113,8 +104,7 @@ function Process() {
   return <>
     <PageIntro label="Aprovisionament de matèries primeres" title="El procés actual">De la necessitat de producció al registre del material acceptat. El treball es coordina amb correus, telefonades i fulls de càlcul separats.</PageIntro>
     <section id="model-actual" className="section-space wrap"><CurrentProcessDiagram /></section>
-    <section id="activitats" className="section-space wrap"><div className="section-heading-row"><h2>Les huit activitats</h2><p>Responsables, informació i problemes del recorregut actual.</p></div><div className="process-columns">{[0,4].map((start) => <ol className="process-list" start={start+1} key={start}>{steps.slice(start,start+4).map((step,offset) => <ProcessStep key={step.title} step={step} index={start+offset} />)}</ol>)}</div></section>
-    <p id="abast" className="process-scope wrap">Objectiu: disposar de matèries primeres en la quantitat adequada i a temps, amb l’estoc actualitzat. El consum en fabricació i el pagament queden fora de l’abast.</p>
+    <section id="activitats" className="section-space wrap"><div className="section-heading-row"><h2>Les huit activitats</h2><p>Del pla de producció al material disponible.</p></div><div className="process-columns">{[0,4].map((start) => <ol className="process-list" start={start+1} key={start}>{steps.slice(start,start+4).map((step,offset) => <ProcessStep key={step.title} step={step} index={start+offset} />)}</ol>)}</div></section>
   </>
 }
 
@@ -225,7 +215,7 @@ export default function App() {
     {page === 'inici' && <Home />}
     {page === 'serveis' && <Services />}
     {page === 'casos' && <Cases />}
-    {page === 'projecte' && <><ProjectOverview /><Company /></>}
+    {page === 'projecte' && <ProjectOverview />}
     {page === 'proces' && <Process />}
     {page === 'millora' && <ImprovementPage />}
     {page === 'requisits' && <RequirementsPage />}

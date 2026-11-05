@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import NavigatedViewer from 'bpmn-js/lib/NavigatedViewer'
-import { analysis, differentialData, erpTasks, improvementCategories, improvementPriorities, indicators, userStories } from './practice4Content.js'
+import { differentialData, erpTasks, userStories } from './practice4Content.js'
 
 import { SectionBrowser } from './ProjectUI.jsx'
 import { pageHref, readRoute } from './navigation.js'
@@ -149,23 +149,18 @@ export function CurrentProcessDiagram() {
   </>
 }
 
+const caseImprovements = [
+  { title: 'Peticions i aprovacions', summary: 'Una sol·licitud compartida, amb responsable i estat visibles.' },
+  { title: 'Estoc i reposició', summary: 'Existències, reserves i lots bloquejats en un mateix registre.' },
+  { title: 'Recepció i qualitat', summary: 'Control de recepcions parcials i bloqueig dels lots fins a l’acceptació.' },
+  { title: 'Seguiment i avisos', summary: 'Dates confirmades i incidències compartides amb compres i producció.' },
+]
+
 export function ImprovementPage() {
-  const route = readRoute()
   return <>
-    <Intro label="Aprovisionament de matèries primeres" title="Proposta de millora">Un registre compartit per coordinar les necessitats, les compres i la disponibilitat del material. És una proposta pendent de validació i implantació.</Intro>
-    <section id="canvis" className="section-space wrap"><div className="section-heading-row"><h2>Què proposem canviar</h2><p>Les decisions de compres i qualitat continuen sota responsabilitat humana. L’ERP dona suport al registre, el seguiment i els avisos.</p></div>
-      <div className="improvement-list">{improvementCategories.map((item,index) => <article key={item.title}><span className="item-index">{String(index+1).padStart(2,'0')}</span><h3>{item.title}</h3><p>{item.change}</p><p className="improvement-reason"><strong>Justificació.</strong> {item.reason}</p><p className="improvement-steps">Activitats {item.steps}</p></article>)}</div>
-    </section>
-    <section id="model-proposat" className="section-space wrap"><Diagram file="to-be.bpmn" title="Model TO-BE" caption="Procés proposat amb suport ERP." improved />
-        <details className="model-explanation content-disclosure"><summary>Decisions i incidències del recorregut <span aria-hidden="true">+</span></summary><div className="to-be-notes"><h2>Què canvia en el recorregut</h2><h3>Disponibilitat i reposició</h3><p>Primer es calcula la disponibilitat i una proposta de reposició amb el consum previst i les entrades confirmades. Les reserves es consideren una sola vegada. Es comprova si l’estoc utilitzable cobreix la necessitat actual. Si la cobreix, es reserva el material i es revisa igualment el punt de reposició. Per tant, pot iniciar-se una compra encara que la fabricació immediata tinga material. Si no cal reposar, el cas es tanca sense compra. Si no està coberta, es reserva la part utilitzable i es demana la quantitat pendent, junt amb la reposició que pertoque. </p><h3>Revisió de la petició</h3><p>Una petició retornada torna a revisió després de corregir-la. Una petició rebutjada es tanca sense emetre cap comanda.</p><h3>Resposta als retards</h3><p>Quan la data confirmada posa en risc la fabricació, compres decideix si reclama al proveïdor, en busca un altre o replanifica. Després torna a comprovar la data. Si cal un altre proveïdor, primer resol el saldo substituït de la comanda original i després repeteix la selecció. Si cap oferta és adequada, torna a buscar-ne abans d’emetre una comanda. </p><h3>Recepcions parcials</h3><p>Una recepció parcial deixa obert el saldo pendent i envia només la part rebuda a qualitat. Quan arribe la resta, es registra una altra recepció contra la mateixa comanda. Un material incorrecte es bloqueja i passa a reclamació. </p><h3>Qualitat i lots bloquejats</h3><p>Un lot pendent continua bloquejat i torna a inspecció quan es completen les proves. Els lots bloquejats o rebutjats s’associen a les ordres de fabricació afectades. </p><h3>Registre del material acceptat</h3><p>Magatzem confirma la quantitat acceptada i la ubicació. A partir d’aquesta confirmació, el servei de l’ERP actualitza l’estoc i avisa producció.</p></div></details>
-    </section>
-    <section className="section-space wrap proposal-evidence">
-      <details id="diagnostic" className="content-disclosure" open={route.section === 'diagnostic' || route.section === 'resum-problemes'}><summary>Anàlisi i justificació de les huit activitats <span aria-hidden="true">+</span></summary>
-        <p className="evidence-intro">La valoració i les possibles preocupacions s’han de contrastar amb el personal de cada departament.</p>
-        <div className="analysis-list">{analysis.map((item) => <article key={item.id} className="analysis-item"><div className="analysis-title"><span className="item-index">{item.id}</span><div><h3>{item.step}</h3><p className="analysis-owner">{item.owner} · {item.assessment}</p></div></div><p className="analysis-diagnosis">{item.diagnosis}</p><dl className="analysis-facts"><div><dt>Participants i conseqüències</dt><dd>{item.participantConcern} {item.consequence}</dd></div><div><dt>Decisió</dt><dd>{item.decision}</dd></div><div><dt>Millora</dt><dd>{item.improvement}</dd></div><div><dt>Justificació</dt><dd>{item.justification}</dd></div></dl><p className="analysis-category">{item.category}</p></article>)}</div>
-      </details>
-      <details className="project-followup" id="prioritats" open={readRoute().view === 'prioritats' || readRoute().section === 'prioritats'}><summary>Prioritats, indicadors i validació <span aria-hidden="true">+</span></summary><div className="followup-content"><h3>Prioritats</h3><ul>{improvementPriorities.map((item) => <li key={item.title}><strong>{item.level} · {item.title}.</strong> {item.detail}</li>)}</ul><h3>Indicadors</h3><ul>{indicators.map((item) => <li key={item}>{item}</li>)}</ul><p>Cal mesurar el punt de partida i validar les causes i els canvis amb producció, compres, magatzem i qualitat.</p></div></details>
-    </section>
+    <Intro label="Aprovisionament de matèries primeres" title="Proposta de millora">Compartir les dades en un ERP per reduir compres urgents, registres duplicats i errors de coordinació.</Intro>
+    <section id="canvis" className="section-space wrap"><div className="improvement-list case-highlights">{caseImprovements.map((item) => <article key={item.title}><h2>{item.title}</h2><p>{item.summary}</p></article>)}</div></section>
+    <section id="model-proposat" className="section-space wrap"><Diagram file="to-be.bpmn" title="Model TO-BE" caption="Procés proposat amb suport ERP. Pendent d’implantació." improved /></section>
   </>
 }
 

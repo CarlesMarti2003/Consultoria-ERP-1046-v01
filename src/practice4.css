@@ -61,6 +61,7 @@
 .work-table small { display: block; margin-top: .5rem; font-size: .72rem; font-weight: 400; color: var(--color-accent); }
 .improvement-list { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem 3rem; align-items: start; }
 .improvement-list article { border-top: 1px solid var(--color-line); padding-top: 1rem; }
+.case-highlights h2 { font-family: var(--font-sans); font-size: 1.1rem; font-weight: 500; line-height: 1.4; letter-spacing: normal; }
 .improvement-list h3 { margin-top: .6rem; font-size: 1.2rem; }
 .improvement-list p { margin-top: .7rem; color: var(--color-muted); font-size: .92rem; line-height: 1.65; }
 .improvement-list .improvement-steps { font-size: .7rem; color: var(--color-accent); }

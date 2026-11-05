@@ -118,6 +118,10 @@ dd { margin: .3rem 0 0; }
 .project-facts dt { font-size: .8rem; }
 .project-facts dd { color: var(--color-muted); font-size: .95rem; }
 .project-status { background: var(--color-soft); padding: 1rem 1.25rem; font-size: .9rem; }
+.case-brief { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 2.5rem; }
+.case-brief h2 { font-size: 1.5rem; }
+.case-brief p { color: var(--color-muted); margin-top: .7rem; }
+.process-step-action strong { color: var(--color-ink); font-weight: 500; }
 .company-section { border-bottom: 1px solid var(--color-line); }
 .company-essential { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
 .company-essential p { color: var(--color-muted); margin-top: .75rem; }
@@ -196,6 +200,7 @@ details[open] > summary > span[aria-hidden] { transform: rotate(45deg); }
   .process-columns { gap: 2rem; }
 }
 @media (max-width:700px) {
+  .case-brief { grid-template-columns: 1fr; gap: 1.5rem; }
   .wrap { width: calc(100% - 2.5rem); }
   .header-inner { min-height: 4.5rem; }
   .brand img { width: 7rem; }

@@ -32,9 +32,9 @@ export function ProjectPager({ page }) {
 
 export function ProjectOverview() {
   return <>
-    <header className="page-intro wrap"><p className="page-label">Indústria ceràmica · Onda</p><h1>Ceràmica Riu Sec</h1><p className="page-intro-copy">Revisem l’aprovisionament de matèries primeres per coordinar producció, compres, magatzem i qualitat.</p></header>
-    <section className="section-space wrap project-overview"><div><h2>L’encàrrec</h2><p>Disposar de material a temps i treballar amb dades d’estoc fiables. L’empresa utilitza correus i fulls de càlcul separats, sense un ERP que connecte aquestes àrees.</p></div><dl className="project-facts"><div><dt>Inici del procés</dt><dd>Producció identifica una necessitat de matèria primera.</dd></div><div><dt>Final del procés</dt><dd>El material acceptat queda registrat al magatzem.</dd></div><div><dt>Fora de l’abast</dt><dd>Consum en fabricació i pagament de factures.</dd></div></dl></section>
-    <div className="project-status wrap"><strong>Projecte en curs.</strong> Anàlisi i proposta de millora, pendent d’implantació.</div>
+    <header className="page-intro wrap"><p className="page-label">Indústria ceràmica · Onda</p><h1>Ceràmica Riu Sec</h1><p className="page-intro-copy">Fabricant de taulells amb 64 persones. Ajudem l’empresa a coordinar l’aprovisionament de matèries primeres.</p></header>
+    <section className="section-space wrap case-brief"><article><h2>El repte</h2><p>Els correus i fulls separats dificulten conéixer l’estoc real i provoquen compres urgents i avisos tardans.</p></article><article><h2>L’objectiu</h2><p>Tindre el material a temps i compartir la informació entre producció, compres, magatzem i qualitat.</p></article><article id="abast"><h2>L’abast</h2><p>De la necessitat de producció al registre del material acceptat. La fabricació i el pagament queden fora.</p></article></section>
+    <p className="project-status wrap"><strong>Projecte en curs.</strong> Millores proposades, pendents d’implantació.</p>
   </>
 }
 

@@ -19,3 +19,9 @@ Requisits ERP i Documents i fonts continuen amagats amb `showAdvancedSections = 
 ## Criteris de lectura
 
 Una sola capçalera principal per pàgina, columnes amb amplària suficient, mida de text llegible i cap retall de text o altura fixa per a paràgrafs. La imatge AS-IS i el BPMN TO-BE es mostren complets inicialment, amb ampliació i descàrrega.
+
+## Versió pública breu
+
+Seguint la indicació posterior de la professora, el cas públic queda reduït a empresa, repte, objectiu, abast, AS-IS, resum de les huit activitats, quatre millores principals i TO-BE.
+
+S’han retirat de la web l’organització, la missió i visió, les fitxes detallades de les activitats, les justificacions llargues, els indicadors i les explicacions repetides. La documentació completa es conserva en `docs/analisi-detallada.md`, `src/content.js` i `src/practice4Content.js`. No s’ha mogut el mateix text a nous desplegables públics.
