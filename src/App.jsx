@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { caseStudies, departments, steps, team } from './content.js'
-import { AnalysisPage, CurrentProcessDiagram, ImprovementPage, RequirementsPage } from './Practice4.jsx'
+import { CurrentProcessDiagram, ImprovementPage, RequirementsPage } from './Practice4.jsx'
 
-import { mainNavigation as navigation, projectNavigation as caseNavigation, legalNavigation as footerNavigation, readRoute, pageHref, projectBase } from './navigation.js'
-import { Documents, SectionBrowser, ProjectMenu, ProjectOverview, ProjectPager } from './ProjectUI.jsx'
+import { mainNavigation as navigation, projectNavigation as caseNavigation, legalNavigation as footerNavigation, readRoute, projectBase } from './navigation.js'
+import { Documents, ProjectMenu, ProjectOverview, ProjectPager } from './ProjectUI.jsx'
 
 const asset = (file) => import.meta.env.BASE_URL + 'images/' + file
 
@@ -11,7 +11,7 @@ const titles = {
   inici: 'Inici',
   casos: 'Casos d’èxit',
   serveis: 'Serveis',
-  projecte: 'Resum del projecte',
+  projecte: 'El projecte',
   documents: 'Documents i fonts',
   notfound: 'Pàgina no trobada',
   empresa: 'Empresa',
@@ -44,7 +44,7 @@ function Header({ page }) {
     </div>
     <nav id="mobile-nav" className="mobile-nav" aria-label="Navegació mòbil" hidden={!menuOpen}>
       {navigation.map((item) => <a key={item.page} href={item.href} aria-current={page === item.page || (item.page === 'casos' && isProject) ? 'page' : undefined} onClick={() => setMenuOpen(false)}>{item.label}</a>)}
-      <div className="mobile-project"><p>Ceràmica Riu Sec</p>{caseNavigation.map((item) => <a key={item.page} href={item.href} onClick={() => setMenuOpen(false)}>{item.label}</a>)}</div>
+
     </nav>
   </header>
 }
@@ -63,12 +63,11 @@ function Home() {
   return <>
     <section className="home-hero" aria-labelledby="home-title">
       <img className="home-hero-image" src={asset('consultoria-hero.jpg')} alt="" width="2400" height="1600" fetchPriority="high" />
-      <div className="wrap home-hero-content"><p className="page-label">Nexe Consultoria ERP</p><h1 id="home-title">Consultoria ERP<br />per a la teua empresa.</h1><p className="home-lead">Analitzem els processos i definim què necessita el teu negoci abans de triar una solució ERP.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer Nexe ↗</a></div></div>
+      <div className="wrap home-hero-content"><p className="page-label">Nexe Consultoria ERP</p><h1 id="home-title">Consultoria ERP <span>per a la teua empresa.</span></h1><p className="home-lead">Analitzem els processos i definim què necessita el teu negoci abans de triar una solució ERP.</p><div className="home-actions"><a className="action-link" href="#/serveis">Els nostres serveis ↗</a><a className="text-link" href="#/consultora">Conéixer Nexe ↗</a></div></div>
     </section>
     <section className="section-space home-offering"><div className="wrap"><div className="section-heading-row"><h2>En què podem ajudar-te</h2><p>Des de l’anàlisi del procés fins a la preparació del canvi de sistema.</p></div><div className="home-offering-grid">{serviceOfferings.map((item,index) => <article key={item.title}><span>{String(index+1).padStart(2,'0')}</span><h3>{item.title}</h3><p>{item.result}</p></article>)}</div><a className="text-link next-link" href="#/serveis">Consultar els serveis ↗</a></div></section>
-    <section className="home-method section-space"><div className="wrap home-method-copy"><h2>Com treballem</h2><p>Documentem les activitats i les dades actuals, localitzem els problemes i proposem canvis justificats. Les necessitats de cada perfil es tradueixen en requisits que es puguen comprovar durant l’avaluació de l’ERP.</p><p>Els models del procés actual i del procés proposat permeten revisar les decisions amb l’empresa abans de plantejar la implantació.</p></div></section>
     <section className="section-space home-featured"><div className="wrap home-featured-grid"><div><p className="page-label">Projecte en curs · Indústria ceràmica</p><h2>Ceràmica Riu Sec</h2><p>Revisem l’aprovisionament de matèries primeres d’una empresa d’Onda: des de la necessitat de producció fins al registre del material acceptat.</p><a className="action-link next-link" href={projectBase}>Conéixer el projecte ↗</a></div><dl><div><dt>Equips implicats</dt><dd>Producció, compres, magatzem i qualitat.</dd></div><div><dt>Objectiu</dt><dd>Disposar de material a temps i d’un estoc fiable.</dd></div><div><dt>Estat</dt><dd>Anàlisi i proposta de millora. Encara no s’ha implantat.</dd></div></dl></div></section>
-    <section className="home-question section-space"><div className="wrap"><div className="section-heading-row"><h2>Les persones darrere de Nexe</h2><p>Un equip amb formació en Enginyeria Informàtica i Matemàtica Computacional, amb una funció definida per a cada àrea del projecte.</p></div><ul className="home-team">{team.map((person) => <li key={person.name}><strong>{person.name}</strong><span>{person.role}</span></li>)}</ul><a className="text-link next-link" href="#/consultora">Veure l’equip ↗</a></div></section>
+    <section className="home-contact section-space"><div className="wrap"><div><h2>Comencem pel teu procés</h2><p>Expliquem com treballem i qui formarà part del projecte.</p></div><a className="action-link" href="#/consultora">Conéixer l’equip ↗</a></div></section>
   </>
 }
 
@@ -96,11 +95,11 @@ function Cases() {
 
 function Company() {
   const workforce = departments.reduce((total,item) => total + item.people,0)
-  return <>
-    <PageIntro label="Ceràmica Riu Sec" title="L’empresa">Fàbrica de taulells d’Onda amb una planta, un magatzem propi i {workforce} persones. Treballa per a distribuïdors i empreses de construcció.</PageIntro>
-    <section id="context" className="section-space"><div className="wrap company-essential"><div><h2 className="plain-section-title">Activitat i estratègia</h2><p>Planifica la fabricació segons la demanda i busca disposar dels materials a temps, evitant aturades i excés d’estoc.</p><dl className="company-purpose"><div><dt>Missió</dt><dd>Fabricar taulells de qualitat i complir els terminis.</dd></div><div><dt>Visió</dt><dd>Créixer mantenint el control de la producció i les existències.</dd></div></dl></div><div id="situacio"><h2 className="plain-section-title">Situació actual</h2><p>Disposa d’un programa de comptabilitat, però encara no té un ERP que connecte les àrees. Producció comunica necessitats per correu, compres prepara peticions i comandes en fitxers separats, i magatzem registra les entrades en un altre full.</p></div></div></section>
-    <section id="organitzacio" className="section-space"><div className="wrap"><h2 className="plain-section-title">Organització</h2><ul className="org-areas">{departments.map((item) => <li key={item.name}><h3>{item.name}</h3><p>{item.task}</p><span>{item.people} persones</span></li>)}</ul></div></section>
-  </>
+  return <section id="empresa" className="section-space wrap company-section">
+    <div className="section-heading-row"><h2>L’empresa</h2><p>Fàbrica de taulells d’Onda amb una planta, un magatzem propi i {workforce} persones. Treballa per a distribuïdors i empreses de construcció.</p></div>
+    <div className="company-essential"><div><h3>Activitat i estratègia</h3><p>Planifica la fabricació segons la demanda i busca disposar dels materials a temps, evitant aturades i excés d’estoc.</p><dl className="company-purpose"><div><dt>Missió</dt><dd>Fabricar taulells de qualitat i complir els terminis.</dd></div><div><dt>Visió</dt><dd>Créixer mantenint el control de la producció i les existències.</dd></div></dl></div><div id="situacio"><h3>Situació actual</h3><p>Disposa d’un programa de comptabilitat. Producció comunica necessitats per correu, compres prepara peticions i comandes en fitxers separats, i magatzem registra les entrades en un altre full.</p><p>Direcció necessita un estoc fiable, menys compres urgents i complir els terminis de fabricació.</p></div></div>
+    <details id="organitzacio" className="content-disclosure"><summary>Organització i funcions dels departaments <span aria-hidden="true">+</span></summary><ul className="org-areas">{departments.map((item) => <li key={item.name}><h3>{item.name}</h3><p>{item.task}</p><span>{item.people} persones</span></li>)}</ul></details>
+  </section>
 }
 
 function ProcessStep({ step, index }) {
@@ -111,28 +110,12 @@ function ProcessStep({ step, index }) {
 }
 
 function Process() {
-  return <><PageIntro label="Procés actual" title="Aprovisionament de matèries primeres">L’objectiu és disposar de les matèries primeres en la quantitat adequada i a temps, amb l’estoc actualitzat. Comença amb la necessitat de producció i acaba amb el registre del material acceptat al magatzem.</PageIntro><p id="abast" className="process-scope wrap">Fora de l’abast: el consum en fabricació i el pagament de factures.</p><SectionBrowser page="proces" sections={[
-{ id: 'activitats', label: 'Les huit activitats', anchors: ['abast','preocupacions','activitat-1', 'activitat-2', 'activitat-3', 'activitat-4', 'activitat-5', 'activitat-6', 'activitat-7', 'activitat-8'], content: (<section className="section-space">
-        <div className="wrap">
-          <div className="section-heading-row process-heading">
-            <h2 id="activitats">Les huit activitats actuals</h2>
-            <p>El recorregut té huit passos. Obri el detall d’una activitat per consultar qui intervé, els documents i la incidència detectada.</p>
-          </div>
-          <div className="process-columns">
-            {[0, 4].map((start) => (
-              <ol className="process-list" start={start + 1} key={start}>
-                {steps.slice(start, start + 4).map((step, offset) => {
-                  const index = start + offset
-                  return <ProcessStep key={step.title} step={step} index={index} />
-                })}
-              </ol>
-            ))}
-          </div>
-        </div>
-        <div id="preocupacions" className="wrap process-management"><h3>Prioritats de direcció</h3><p>Estoc fiable, menys compres urgents i compliment dels terminis de fabricació.</p></div>
-      </section>) },
-{ id: 'model-actual', label: 'Model AS-IS', anchors: [], content: (<section id="model-actual" className="section-space analysis-section"><div className="wrap"><CurrentProcessDiagram /></div></section>) }
-]} /></>
+  return <>
+    <PageIntro label="Aprovisionament de matèries primeres" title="El procés actual">De la necessitat de producció al registre del material acceptat. El treball es coordina amb correus, telefonades i fulls de càlcul separats.</PageIntro>
+    <section id="model-actual" className="section-space wrap"><CurrentProcessDiagram /></section>
+    <section id="activitats" className="section-space wrap"><div className="section-heading-row"><h2>Les huit activitats</h2><p>Responsables, informació i problemes del recorregut actual.</p></div><div className="process-columns">{[0,4].map((start) => <ol className="process-list" start={start+1} key={start}>{steps.slice(start,start+4).map((step,offset) => <ProcessStep key={step.title} step={step} index={start+offset} />)}</ol>)}</div></section>
+    <p id="abast" className="process-scope wrap">Objectiu: disposar de matèries primeres en la quantitat adequada i a temps, amb l’estoc actualitzat. El consum en fabricació i el pagament queden fora de l’abast.</p>
+  </>
 }
 
 function Consultancy() {
@@ -229,6 +212,10 @@ export default function App() {
     document.title = titles[page] + (isProject ? ' · Ceràmica Riu Sec' : '') + ' · Nexe Consultoria ERP'
     const frame = requestAnimationFrame(() => {
       const target = section && document.getElementById(section)
+      if (target) {
+        let details = target.closest('details')
+        while (details) { details.open = true; details = details.parentElement?.closest('details') }
+      }
       if (target) { target.scrollIntoView({ block: 'start' }); target.setAttribute('tabindex', '-1'); target.focus({ preventScroll: true }) }
       else window.scrollTo(0, 0)
     })
@@ -238,10 +225,8 @@ export default function App() {
     {page === 'inici' && <Home />}
     {page === 'serveis' && <Services />}
     {page === 'casos' && <Cases />}
-    {page === 'projecte' && <ProjectOverview />}
-    {page === 'empresa' && <Company />}
+    {page === 'projecte' && <><ProjectOverview /><Company /></>}
     {page === 'proces' && <Process />}
-    {page === 'analisi' && <AnalysisPage />}
     {page === 'millora' && <ImprovementPage />}
     {page === 'requisits' && <RequirementsPage />}
     {page === 'documents' && <Documents />}
@@ -249,9 +234,9 @@ export default function App() {
     {page === 'contacte' && <Contact />}
     {page === 'privacitat' && <Privacy />}
     {page === 'cookies' && <Cookies />}
-    {page === 'notfound' && <><PageIntro label="Navegació" title="Pàgina no trobada">Pots tornar a l’inici o consultar l’índex del projecte.</PageIntro><div className="wrap section-space"><a className="action-link" href="#/">Tornar a l’inici</a><a className="text-link" href={projectBase}>Resum de Ceràmica Riu Sec</a></div></>}
+    {page === 'notfound' && <><PageIntro label="Navegació" title="Pàgina no trobada">Pots tornar a l’inici o consultar els projectes de Nexe.</PageIntro><div className="wrap section-space"><a className="action-link" href="#/">Tornar a l’inici</a><a className="text-link" href={projectBase}>Projecte de Ceràmica Riu Sec</a></div></>}
   </>
   return <><Header page={page} /><main id="main-content" tabIndex="-1">
-    {isProject ? <div className="project-shell wrap"><ProjectMenu page={page} /><div className="project-body"><nav className="project-breadcrumb" aria-label="Ruta de navegació"><a href="#/casos">Casos d’èxit</a><span aria-hidden="true">/</span>{page === 'projecte' ? <span>Ceràmica Riu Sec</span> : <><a href={projectBase}>Ceràmica Riu Sec</a><span aria-hidden="true">/</span><span aria-current="page">{caseNavigation.find((item) => item.page === page)?.label}</span></>}</nav>{content}<ProjectPager page={page} /></div></div> : content}
+    {isProject ? <><ProjectMenu page={page} /><div className="project-body">{content}<ProjectPager page={page} /></div></> : content}
   </main><Footer page={page} /></>
 }

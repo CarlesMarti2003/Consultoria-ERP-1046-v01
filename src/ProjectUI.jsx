@@ -14,14 +14,10 @@ export function SectionBrowser({ page, sections }) {
 }
 
 export function ProjectMenu({ page }) {
-  const current = projectNavigation.find((item) => item.page === page)
-  const links = <ol>{projectNavigation.map((item,index) => <li key={item.page}><a href={item.href} aria-current={page === item.page ? 'page' : undefined}><span>{String(index + 1).padStart(2,'0')}</span>{item.label}</a></li>)}</ol>
-  return <aside className="project-menu" aria-label="Projecte Ceràmica Riu Sec">
-    <a className="back-to-cases" href="#/casos">← Tots els casos</a>
-    <p className="project-menu-name">Ceràmica Riu Sec</p><p className="project-menu-status">Projecte en curs</p>
-    <nav className="desktop-project-index" aria-label="Apartats del projecte">{links}</nav>
-    <details className="mobile-project-index" key={page}><summary>{current.label}<span>Canviar apartat ⌄</span></summary><nav aria-label="Apartats del projecte">{links}</nav></details>
-  </aside>
+  return <div className="project-navigation wrap">
+    <div className="project-context"><a href="#/casos">← Casos d’èxit</a><span>Ceràmica Riu Sec</span></div>
+    <nav aria-label="Apartats del projecte">{projectNavigation.map((item) => <a key={item.page} href={item.href} aria-current={page === item.page ? 'page' : undefined}>{item.label}</a>)}</nav>
+  </div>
 }
 
 export function ProjectPager({ page }) {
@@ -30,18 +26,15 @@ export function ProjectPager({ page }) {
   const next = projectNavigation[index + 1]
   return <nav className="project-pager wrap" aria-label="Continuar pel projecte">
     {previous ? <a href={previous.href}><small>← Apartat anterior</small><strong>{previous.label}</strong></a> : <a href="#/casos"><small>← Tornar</small><strong>Casos d’èxit</strong></a>}
-    {next ? <a href={next.href}><small>A continuació →</small><strong>{next.label}</strong></a> : <a href={pageHref('projecte')}><small>Tornar al començament →</small><strong>Resum del projecte</strong></a>}
+    {next ? <a href={next.href}><small>A continuació →</small><strong>{next.label}</strong></a> : <a href={pageHref('projecte')}><small>Tornar al començament →</small><strong>El projecte</strong></a>}
   </nav>
 }
 
 export function ProjectOverview() {
   return <>
-    <header className="page-intro wrap"><p className="page-label">Indústria ceràmica · Onda</p><h1>Ceràmica Riu Sec</h1><p className="page-intro-copy">Revisió de l’aprovisionament de matèries primeres per coordinar producció, compres, magatzem i qualitat.</p></header>
-    <section className="project-opening wrap"><div className="project-opening-copy"><p className="page-label">L’encàrrec</p><p className="project-opening-lead">Disposar de material a temps i treballar amb dades d’estoc fiables.</p><p>L’empresa utilitza correus i fulls de càlcul separats. Nexe revisa el procés actual, identifica problemes i prepara una proposta amb suport ERP.</p></div><dl className="project-facts"><div><dt>Procés</dt><dd>Aprovisionament de matèries primeres</dd></div><div><dt>Estat</dt><dd>Anàlisi i proposta de millora</dd></div></dl></section>
-    <section className="section-space"><div className="wrap"><h2 className="plain-section-title">Recorregut del projecte</h2><ol className="project-stages">
-      {[{ title: 'Entendre el cas', pages: ['empresa','proces'] }, { title: 'Analitzar i millorar', pages: ['analisi','millora'] }, { title: 'Definir la solució', pages: ['requisits','documents'] }].filter((stage) => stage.pages.some((page) => projectNavigation.some((item) => item.page === page))).map((stage,index) => <li key={stage.title}><span>{String(index + 1).padStart(2,'0')}</span><h3>{stage.title}</h3><div>{stage.pages.filter((page) => projectNavigation.some((item) => item.page === page)).map((page) => <a key={page} href={pageHref(page)}>{projectNavigation.find((item) => item.page === page).label} ↗</a>)}</div></li>)}
-    </ol></div></section>
-    <section className="section-space project-brief"><div className="wrap split-section"><h2>Abast del treball</h2><div className="body-copy"><p>Comença quan producció identifica una necessitat de matèria primera i acaba quan el material acceptat queda registrat al magatzem. El consum en fabricació i el pagament queden fora de l’abast.</p><p>La proposta encara no s’ha implantat. La selecció del producte ERP i els resultats de la implantació corresponen a fases posteriors.</p></div></div></section>
+    <header className="page-intro wrap"><p className="page-label">Indústria ceràmica · Onda</p><h1>Ceràmica Riu Sec</h1><p className="page-intro-copy">Revisem l’aprovisionament de matèries primeres per coordinar producció, compres, magatzem i qualitat.</p></header>
+    <section className="section-space wrap project-overview"><div><h2>L’encàrrec</h2><p>Disposar de material a temps i treballar amb dades d’estoc fiables. L’empresa utilitza correus i fulls de càlcul separats, sense un ERP que connecte aquestes àrees.</p></div><dl className="project-facts"><div><dt>Inici del procés</dt><dd>Producció identifica una necessitat de matèria primera.</dd></div><div><dt>Final del procés</dt><dd>El material acceptat queda registrat al magatzem.</dd></div><div><dt>Fora de l’abast</dt><dd>Consum en fabricació i pagament de factures.</dd></div></dl></section>
+    <div className="project-status wrap"><strong>Projecte en curs.</strong> Anàlisi i proposta de millora, pendent d’implantació.</div>
   </>
 }
 

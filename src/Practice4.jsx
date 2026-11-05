@@ -5,7 +5,6 @@ import { analysis, differentialData, erpTasks, improvementCategories, improvemen
 import { SectionBrowser } from './ProjectUI.jsx'
 import { pageHref, readRoute } from './navigation.js'
 import { modelUrl } from './modelAssets.js'
-import { isProjectPagePublished } from './publication.js'
 
 function Intro({ label, title, children }) {
   return <header className="page-intro wrap"><p className="page-label">{label}</p><h1>{title}</h1><p className="page-intro-copy">{children}</p></header>
@@ -55,8 +54,10 @@ export function Diagram({ file, title, caption, improved = false }) {
         if (improved) {
           for (const id of erpTasks.map((task) => task.id)) instance.get('canvas').addMarker(id, 'erp-task')
         }
-        showDiagramStart(instance, mount.current)
-        resizeObserver = new ResizeObserver(() => { if (active) showDiagramStart(instance, mount.current) })
+        instance.get('canvas').zoom('fit-viewport', 'auto')
+        resizeObserver = new ResizeObserver(() => {
+          if (active) { instance.get('canvas').resized(); instance.get('canvas').zoom('fit-viewport', 'auto') }
+        })
         resizeObserver.observe(mount.current)
         setLoaded(true)
       })
@@ -103,7 +104,7 @@ export function Diagram({ file, title, caption, improved = false }) {
     <div className="bpmn-canvas" ref={mount} role="img" aria-label={title + '. Usa els controls per ampliar i recórrer el diagrama.'} />
     {!loaded && !error && <p role="status" className="model-status">Carregant el model…</p>}
     {error && <p className="model-error" role="alert">{error}</p>}
-    <figcaption>Pools: Ceràmica Riu Sec i Proveïdors. Carrils: {improved ? 'Producció, Compres, Magatzem, Qualitat i Suport ERP' : 'Producció, Compres, Magatzem i Qualitat'}. Usa «Moure» o arrossega el diagrama per seguir el recorregut. «Veure tot» mostra el conjunt. <span className="model-legend"><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Inici</span><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="3" /></svg>Final</span><span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 23 12 12 23 1 12Z M8 8 16 16 M16 8 8 16" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Decisió exclusiva (X)</span><span>→ Seqüència dins de l’empresa</span><span>⇢ Missatge entre pools</span></span>{improved && 'Les tasques ressaltades tenen suport de l’ERP. Les fletxes de retorn indiquen correccions o revisions pendents.'}</figcaption>
+    <figcaption><span className="model-legend"><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Inici</span><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="3" /></svg>Final</span><span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 23 12 12 23 1 12Z M8 8 16 16 M16 8 8 16" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Decisió exclusiva (X)</span><span>→ Seqüència dins de l’empresa</span><span>⇢ Missatge entre pools</span></span>{improved && 'Les tasques amb fons gris tenen suport ERP.'}</figcaption>
   </figure>
 }
 
@@ -148,60 +149,23 @@ export function CurrentProcessDiagram() {
   </>
 }
 
-export function AnalysisPage() {
-  return <>
-    <Intro label="Anàlisi" title="Problemes detectats">
-      Revisem cada activitat del procés actual, els punts de decisió i les conseqüències dels problemes per als departaments.
-    </Intro>
-    <SectionBrowser page="analisi" sections={[
-{ id: 'diagnostic', label: 'Anàlisi per activitat', anchors: [], content: (<section className="section-space">
-      <div className="wrap">
-        <div className="section-heading-row"><h2 id="diagnostic">Anàlisi de les huit activitats</h2><p>La insatisfacció indicada és una possibilitat deduïda del procés; cal contrastar-la amb el personal de cada departament.</p></div>
-        <div className="analysis-list">
-          {analysis.map((item) => <details key={item.id} className="analysis-item" name="analisi-activitats">
-            <summary className="analysis-heading"><span className="analysis-id">{item.id}</span><h3>{item.step}</h3><p className="analysis-owner">{item.owner} · <span>{item.assessment}</span></p><p className="analysis-preview">{item.problemSummary}</p><span className="disclosure-label">Anàlisi i justificació <span aria-hidden="true">+</span></span></summary>
-            <div className="analysis-copy"><p className="analysis-diagnosis">{item.diagnosis}</p><div className="analysis-observations"><div><h4>Participants i conseqüència</h4><p>{item.participantConcern}</p><p>{item.consequence}</p></div><div><h4>Punt de decisió</h4><p>{item.decision}</p></div></div><div className="analysis-response"><h4>Millora proposada</h4><p>{item.improvement}</p><p className="analysis-why">{item.justification}</p></div><p className="analysis-category">Categories {item.category}</p></div>
-          </details>)}
-        </div>
-      </div>
-    </section>) },
-{ id: 'resum-problemes', label: 'Taula comparativa', anchors: [], content: (<section className="section-space table-section">
-      <div className="wrap">
-        <div className="section-heading-row"><h2 id="resum-problemes">Taula de problemes, decisions i millores</h2><p>La taula resumeix l’anàlisi textual anterior i relaciona cada problema amb una decisió i una millora.</p></div>
-        <div className="table-scroll"><table className="work-table"><thead><tr><th>Pas i valoració</th><th>Problema principal</th><th>Punt de decisió</th><th>Millora proposada i categoria</th></tr></thead><tbody>{analysis.map((item) => <tr key={item.id}><th scope="row">{item.id} · {item.step}<small>{item.assessment}</small></th><td>{item.problemSummary}</td><td>{item.decision}</td><td>{item.improvementSummary}<small>{item.category}</small></td></tr>)}</tbody></table></div>
-      </div>
-    </section>) }
-]} />
-
-  </>
-}
-
 export function ImprovementPage() {
+  const route = readRoute()
   return <>
-    <Intro label="Millora" title="Proposta de millora">
-      La proposta actua sobre els errors detectats sense canviar l’abast: acaba quan el material acceptat queda disponible per a producció.
-    </Intro>
-    <SectionBrowser page="millora" sections={[
-{ id: 'canvis', label: 'Canvis proposats', anchors: ['prioritats'], content: (<section className="section-space">
-      <div className="wrap">
-        <div className="section-heading-row"><h2 id="canvis">Millores proposades</h2><p>Les actuacions combinen canvis en el procés i suport de l’ERP. Les decisions de compres i qualitat continuen sota responsabilitat humana.</p></div>
-        <p className="model-note">La reposició planificada es planteja com un canvi de la política de compres i s’ha de validar amb direcció. La proposta no pressuposa una ampliació aprovada ni un ERP ja adoptat.</p><div className="improvement-list">{improvementCategories.map((item, index) => <article key={item.title}>
-          <span className="analysis-id">0{index + 1}</span>
-          <div><h3>{item.title}</h3><p className="improvement-steps">Passos {item.steps}</p><p>{item.change}</p><p><strong>Justificació:</strong> {item.reason}</p></div>
-        </article>)}</div>
-      </div>
+    <Intro label="Aprovisionament de matèries primeres" title="Proposta de millora">Un registre compartit per coordinar les necessitats, les compres i la disponibilitat del material. És una proposta pendent de validació i implantació.</Intro>
+    <section id="canvis" className="section-space wrap"><div className="section-heading-row"><h2>Què proposem canviar</h2><p>Les decisions de compres i qualitat continuen sota responsabilitat humana. L’ERP dona suport al registre, el seguiment i els avisos.</p></div>
+      <div className="improvement-list">{improvementCategories.map((item,index) => <article key={item.title}><span className="item-index">{String(index+1).padStart(2,'0')}</span><h3>{item.title}</h3><p>{item.change}</p><p className="improvement-reason"><strong>Justificació.</strong> {item.reason}</p><p className="improvement-steps">Activitats {item.steps}</p></article>)}</div>
+    </section>
+    <section id="model-proposat" className="section-space wrap"><Diagram file="to-be.bpmn" title="Model TO-BE" caption="Procés proposat amb suport ERP." improved />
+        <details className="model-explanation content-disclosure"><summary>Decisions i incidències del recorregut <span aria-hidden="true">+</span></summary><div className="to-be-notes"><h2>Què canvia en el recorregut</h2><h3>Disponibilitat i reposició</h3><p>Primer es calcula la disponibilitat i una proposta de reposició amb el consum previst i les entrades confirmades. Les reserves es consideren una sola vegada. Es comprova si l’estoc utilitzable cobreix la necessitat actual. Si la cobreix, es reserva el material i es revisa igualment el punt de reposició. Per tant, pot iniciar-se una compra encara que la fabricació immediata tinga material. Si no cal reposar, el cas es tanca sense compra. Si no està coberta, es reserva la part utilitzable i es demana la quantitat pendent, junt amb la reposició que pertoque. </p><h3>Revisió de la petició</h3><p>Una petició retornada torna a revisió després de corregir-la. Una petició rebutjada es tanca sense emetre cap comanda.</p><h3>Resposta als retards</h3><p>Quan la data confirmada posa en risc la fabricació, compres decideix si reclama al proveïdor, en busca un altre o replanifica. Després torna a comprovar la data. Si cal un altre proveïdor, primer resol el saldo substituït de la comanda original i després repeteix la selecció. Si cap oferta és adequada, torna a buscar-ne abans d’emetre una comanda. </p><h3>Recepcions parcials</h3><p>Una recepció parcial deixa obert el saldo pendent i envia només la part rebuda a qualitat. Quan arribe la resta, es registra una altra recepció contra la mateixa comanda. Un material incorrecte es bloqueja i passa a reclamació. </p><h3>Qualitat i lots bloquejats</h3><p>Un lot pendent continua bloquejat i torna a inspecció quan es completen les proves. Els lots bloquejats o rebutjats s’associen a les ordres de fabricació afectades. </p><h3>Registre del material acceptat</h3><p>Magatzem confirma la quantitat acceptada i la ubicació. A partir d’aquesta confirmació, el servei de l’ERP actualitza l’estoc i avisa producció.</p></div></details>
+    </section>
+    <section className="section-space wrap proposal-evidence">
+      <details id="diagnostic" className="content-disclosure" open={route.section === 'diagnostic' || route.section === 'resum-problemes'}><summary>Anàlisi i justificació de les huit activitats <span aria-hidden="true">+</span></summary>
+        <p className="evidence-intro">La valoració i les possibles preocupacions s’han de contrastar amb el personal de cada departament.</p>
+        <div className="analysis-list">{analysis.map((item) => <article key={item.id} className="analysis-item"><div className="analysis-title"><span className="item-index">{item.id}</span><div><h3>{item.step}</h3><p className="analysis-owner">{item.owner} · {item.assessment}</p></div></div><p className="analysis-diagnosis">{item.diagnosis}</p><dl className="analysis-facts"><div><dt>Participants i conseqüències</dt><dd>{item.participantConcern} {item.consequence}</dd></div><div><dt>Decisió</dt><dd>{item.decision}</dd></div><div><dt>Millora</dt><dd>{item.improvement}</dd></div><div><dt>Justificació</dt><dd>{item.justification}</dd></div></dl><p className="analysis-category">{item.category}</p></article>)}</div>
+      </details>
       <details className="project-followup" id="prioritats" open={readRoute().view === 'prioritats' || readRoute().section === 'prioritats'}><summary>Prioritats, indicadors i validació <span aria-hidden="true">+</span></summary><div className="followup-content"><h3>Prioritats</h3><ul>{improvementPriorities.map((item) => <li key={item.title}><strong>{item.level} · {item.title}.</strong> {item.detail}</li>)}</ul><h3>Indicadors</h3><ul>{indicators.map((item) => <li key={item}>{item}</li>)}</ul><p>Cal mesurar el punt de partida i validar les causes i els canvis amb producció, compres, magatzem i qualitat.</p></div></details>
-    </section>) },
-{ id: 'model-proposat', label: 'Model TO-BE', anchors: [], content: (<section id="model-proposat" className="section-space analysis-section">
-      <div className="wrap"><Diagram file="to-be.bpmn" title="Model TO-BE · BPMN2" caption="El model separa les decisions humanes de les tasques amb suport de l’ERP." improved />
-        <details className="model-explanation"><summary>Decisions i incidències del recorregut <span aria-hidden="true">+</span></summary><div className="to-be-notes"><h2>Què canvia en el recorregut</h2><h3>Disponibilitat i reposició</h3><p>Primer es calcula la disponibilitat i una proposta de reposició amb el consum previst i les entrades confirmades. Les reserves es consideren una sola vegada. Es comprova si l’estoc utilitzable cobreix la necessitat actual. Si la cobreix, es reserva el material i es revisa igualment el punt de reposició. Per tant, pot iniciar-se una compra encara que la fabricació immediata tinga material. Si no cal reposar, el cas es tanca sense compra. Si no està coberta, es reserva la part utilitzable i es demana la quantitat pendent, junt amb la reposició que pertoque. </p><h3>Revisió de la petició</h3><p>Una petició retornada torna a revisió després de corregir-la. Una petició rebutjada es tanca sense emetre cap comanda.</p><h3>Resposta als retards</h3><p>Quan la data confirmada posa en risc la fabricació, compres decideix si reclama al proveïdor, en busca un altre o replanifica. Després torna a comprovar la data. Si cal un altre proveïdor, primer resol el saldo substituït de la comanda original i després repeteix la selecció. Si cap oferta és adequada, torna a buscar-ne abans d’emetre una comanda. </p><h3>Recepcions parcials</h3><p>Una recepció parcial deixa obert el saldo pendent i envia només la part rebuda a qualitat. Quan arribe la resta, es registra una altra recepció contra la mateixa comanda. Un material incorrecte es bloqueja i passa a reclamació. </p><h3>Qualitat i lots bloquejats</h3><p>Un lot pendent continua bloquejat i torna a inspecció quan es completen les proves. Els lots bloquejats o rebutjats s’associen a les ordres de fabricació afectades. </p><h3>Registre del material acceptat</h3><p>Magatzem confirma la quantitat acceptada i la ubicació. A partir d’aquesta confirmació, el servei de l’ERP actualitza l’estoc i avisa producció.</p></div></details>
-        <p className="model-note">Aquest és un model proposat per avaluar solucions ERP. No representa una implantació ja feta ni beneficis mesurats.</p>
-        {isProjectPagePublished('documents') && <a className="text-link next-link" href={pageHref('documents')}>Models i presentació del projecte <span aria-hidden="true">↗</span></a>}
-      </div>
-    </section>) },
-
-]} />
-
+    </section>
   </>
 }
 
