@@ -6,18 +6,17 @@ La web conté la presentació de l'empresa i la consultora, el procés, l'anàli
 
 ## Organització de la web
 
-El menú principal presenta la consultora: Inici, Serveis, Casos d’èxit, Equip i Contacte.
-Cada projecte té un índex propi. Ceràmica Riu Sec es troba a `#/casos/ceramica-riu-sec`:
+El menú principal presenta Inici, Serveis, Projectes, Equip i Contacte. El formulari de contacte és una demostració local.
 
-1. Resum del projecte
-2. L’empresa (`/empresa`)
-3. Procés actual i model AS-IS (`/proces`)
-4. Problemes detectats (`/analisi`)
-5. Proposta de millora i model TO-BE (`/millora`)
-6. Requisits ERP (`/requisits`)
-7. Documents i fonts (`/documents`)
+El cas de Ceràmica Riu Sec està a `#/casos/ceramica-riu-sec`:
 
-`src/navigation.js` centralitza les rutes, els noms i els enllaços. `src/ProjectUI.jsx` conté l’índex del projecte, el menú, els enllaços anterior/següent i la pàgina de documents. Els enllaços anteriors, com `#/proces`, continuen funcionant. Els índexs interns usen `?seccio=...` dins de la ruta amb hash i admeten accés directe i navegació enrere.
+1. **El projecte** situa l’empresa, el repte, l’objectiu i l’abast.
+2. **Procés actual** inclou les huit activitats amb entrades, eixides i decisions, l’anàlisi, la taula de millores i el model AS-IS.
+3. **Proposta de millora** justifica les quatre categories BPR i mostra el recorregut proposat i el TO-BE.
+4. **Requisits ERP** recull les històries d’usuari, les dades diferencials i la cobertura de les tasques del TO-BE.
+5. **Documents i fonts** reuneix els models BPMN i la presentació de dues diapositives.
+
+`src/navigation.js` centralitza les rutes. Els enllaços antics continuen portant a l’apartat relacionat. Els índexs interns usen `?seccio=...` dins de la ruta amb hash i admeten accés directe i navegació enrere.
 
 ## Desenvolupament
 

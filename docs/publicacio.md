@@ -1,11 +1,6 @@
-# Visibilitat temporal
+# Visibilitat dels apartats
 
-Petició d’Héctor del 5 de novembre de 2026:
-
-- Amagar «Requisits ERP» i «Documents i fonts», conservant el contingut.
-- Tornar a mostrar-los **només quan Héctor ho demane**. No hi ha data ni automatització programada.
-- La configuració és `showAdvancedSections` en `src/publication.js`. Canviar-la a `true` recupera les pàgines i els accessos.
-- Els enllaços antics dels apartats amagats mostren temporalment el resum del projecte.
+La revisió de la pràctica 4 activa «Requisits ERP» i «Documents i fonts» en la V01. La configuració es troba en `src/publication.js`. La còpia publicada en GitHub Pages canvia quan s’exporta la V01 i es pugen els canvis a la branca de publicació.
 
 # Fotografia de portada
 

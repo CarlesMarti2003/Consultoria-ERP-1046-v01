@@ -1,195 +1,295 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import NavigatedViewer from 'bpmn-js/lib/NavigatedViewer'
-import { differentialData, erpTasks, userStories } from './practice4Content.js'
-
-import { SectionBrowser } from './ProjectUI.jsx'
-import { pageHref, readRoute } from './navigation.js'
+import { steps } from './content.js'
+import { analysis, differentialData, erpTasks, improvementCategories, userStories } from './practice4Content.js'
+import { PageIntro, SectionLinks } from './ProjectUI.jsx'
+import { pageHref } from './navigation.js'
 import { modelUrl } from './modelAssets.js'
 
-function Intro({ label, title, children }) {
-  return <header className="page-intro wrap"><p className="page-label">{label}</p><h1>{title}</h1><p className="page-intro-copy">{children}</p></header>
-}
+const pans = [
+  { label: 'Moure a l’esquerra', symbol: '←', x: -1, y: 0 },
+  { label: 'Moure amunt', symbol: '↑', x: 0, y: -1 },
+  { label: 'Moure avall', symbol: '↓', x: 0, y: 1 },
+  { label: 'Moure a la dreta', symbol: '→', x: 1, y: 0 },
+]
 
-function showDiagramStart(instance, container) {
-  const canvas = instance.get('canvas')
-  const elements = instance.get('elementRegistry')
-  const start = elements.filter((element) => element.type === 'bpmn:StartEvent')[0]
-  const company = elements.filter((element) => element.type === 'bpmn:Participant' && element.businessObject.processRef)[0]
-  if (!start || !container.clientWidth || !container.clientHeight) return
-  const scale = 1
-  canvas.resized()
-  canvas.viewbox({
-    x: Math.max(0, company ? company.x - 16 : start.x - 32),
-    y: Math.max(0, company ? company.y - 16 : start.y + start.height / 2 - container.clientHeight / (2 * scale)),
-    width: container.clientWidth / scale,
-    height: container.clientHeight / scale,
-  })
-}
-
-export function Diagram({ file, title, caption, improved = false }) {
-  const mount = useRef(null)
-  const figure = useRef(null)
-  const expandButton = useRef(null)
-  const viewer = useRef(null)
-  const [error, setError] = useState('')
-  const [expanded, setExpanded] = useState(false)
-  const [loaded, setLoaded] = useState(false)
+function ProcessDiagram({ title, file, caption, textHref, textLabel }) {
+  const isImage = file.endsWith('.png')
   const url = modelUrl(file)
+  const id = useId()
+  const dialog = useRef(null)
+  const opener = useRef(null)
+  const closeButton = useRef(null)
+  const viewport = useRef(null)
+  const viewer = useRef(null)
+  const [open, setOpen] = useState(false)
+  const [loaded, setLoaded] = useState(false)
+  const [failed, setFailed] = useState(false)
+  const [zoom, setZoom] = useState(1)
 
   useEffect(() => {
-    let active = true
-    let resizeObserver
-    setLoaded(false)
-    setError('')
-    const instance = new NavigatedViewer({ container: mount.current, zoomScroll: { enabled: false } })
+    if (!open || isImage) return
+    const element = viewport.current
+    const controller = new AbortController()
+    const instance = new NavigatedViewer({ container: element, zoomScroll: { enabled: false } })
     viewer.current = instance
-    fetch(url)
-      .then((response) => {
-        if (!response.ok) throw new Error('No s’ha pogut carregar el model.')
-        return response.text()
-      })
-      .then((xml) => { if (active) return instance.importXML(xml) })
-      .then(() => {
-        if (!active) return
-        if (improved) {
-          for (const id of erpTasks.map((task) => task.id)) instance.get('canvas').addMarker(id, 'erp-task')
-        }
-        instance.get('canvas').zoom('fit-viewport', 'auto')
-        resizeObserver = new ResizeObserver(() => {
-          if (active) { instance.get('canvas').resized(); instance.get('canvas').zoom('fit-viewport', 'auto') }
-        })
-        resizeObserver.observe(mount.current)
+    const canvas = instance.get('canvas')
+    const resize = new ResizeObserver(() => canvas.resized())
+    resize.observe(element)
+
+    async function loadModel() {
+      try {
+        const response = await fetch(url, { signal: controller.signal })
+        if (!response.ok) throw new Error('No s’ha pogut carregar el BPMN.')
+        const xml = await response.text()
+        if (controller.signal.aborted) return
+        await instance.importXML(xml)
+        if (controller.signal.aborted) return
+        for (const task of erpTasks) canvas.addMarker(task.id, 'erp-task')
+        canvas.resized()
+        canvas.zoom('fit-viewport', 'auto')
         setLoaded(true)
-      })
-      .catch(() => { if (active) setError('No s’ha pogut mostrar el model. Torna a carregar la pàgina o descarrega el fitxer BPMN.') })
-    return () => { active = false; resizeObserver?.disconnect(); viewer.current = null; instance.destroy() }
-  }, [url, improved])
-
-  useEffect(() => {
-    if (!expanded) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    const frame = requestAnimationFrame(() => expandButton.current?.focus())
-    const onKeyDown = (event) => {
-      if (event.key === 'Escape') { event.preventDefault(); setExpanded(false); return }
-      if (event.key !== 'Tab') return
-      const focusable = [...figure.current.querySelectorAll('button:not(:disabled), a[href], [tabindex="0"]')]
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus() }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
+      } catch {
+        if (!controller.signal.aborted) setFailed(true)
+      }
     }
-    document.addEventListener('keydown', onKeyDown)
+
+    loadModel()
     return () => {
-      cancelAnimationFrame(frame)
-      document.body.style.overflow = previousOverflow
-      document.removeEventListener('keydown', onKeyDown)
-      expandButton.current?.focus()
+      controller.abort()
+      resize.disconnect()
+      instance.destroy()
+      viewer.current = null
     }
-  }, [expanded])
+  }, [open, isImage, url])
 
-  const zoom = (factor) => {
-    const canvas = viewer.current?.get('canvas')
-    if (canvas) canvas.zoom(Math.min(3, Math.max(.03, canvas.zoom() * factor)))
+  function changeZoom(factor) {
+    if (isImage) {
+      setZoom((current) => Math.min(12, Math.max(1, current * factor)))
+      return
+    }
+    const canvas = viewer.current.get('canvas')
+    canvas.zoom(Math.min(4, Math.max(0.03, canvas.zoom() * factor)), 'auto')
   }
-  const move = (dx, dy) => viewer.current?.get('canvas').scroll({ dx, dy })
 
-  return <figure ref={figure} className={'model-figure' + (expanded ? ' model-expanded' : '')} role={expanded ? 'dialog' : undefined} aria-modal={expanded || undefined} aria-label={expanded ? title : undefined}>
-    <div className="model-heading"><div><h2>{title}</h2><p>{caption}</p></div><button ref={expandButton} className="model-expand-button" type="button" aria-expanded={expanded} onClick={() => setExpanded(!expanded)}>{expanded ? 'Tancar vista ampliada ×' : 'Ampliar vista ↗'}</button></div>
-    <div className="model-toolbar" aria-label="Controls del model">
-      <div className="model-actions"><button type="button" disabled={!loaded} onClick={() => zoom(1.25)} aria-label="Ampliar el model">+</button><button type="button" disabled={!loaded} onClick={() => zoom(.8)} aria-label="Reduir el model">−</button><button type="button" disabled={!loaded} onClick={() => showDiagramStart(viewer.current, mount.current)}>Anar a l’inici</button><button type="button" disabled={!loaded} onClick={() => viewer.current.get('canvas').zoom('fit-viewport', 'auto')}>Veure tot</button></div>
-      <div className="model-actions model-pan"><span>Moure</span>{[{ label:'esquerra', symbol:'←', dx:160, dy:0 },{ label:'amunt', symbol:'↑', dx:0, dy:160 },{ label:'avall', symbol:'↓', dx:0, dy:-160 },{ label:'dreta', symbol:'→', dx:-160, dy:0 }].map((direction) => <button key={direction.label} type="button" disabled={!loaded} aria-label={'Anar cap a ' + direction.label} onClick={() => move(direction.dx, direction.dy)}>{direction.symbol}</button>)}</div>
-      <a className="model-download" href={url} download>Descarregar BPMN ↓</a>
+  function fit() {
+    if (isImage) {
+      setZoom(1)
+      viewport.current.scrollTo(0, 0)
+    } else viewer.current.get('canvas').zoom('fit-viewport', 'auto')
+  }
+
+  function pan(x, y) {
+    if (isImage) viewport.current.scrollBy(x * 160, y * 160)
+    else viewer.current.get('canvas').scroll({ dx: -x * 160, dy: -y * 160 })
+  }
+
+  function openDiagram() {
+    setFailed(false)
+    setLoaded(false)
+    setZoom(1)
+    dialog.current.showModal()
+    setOpen(true)
+    closeButton.current.focus()
+  }
+
+  const ready = loaded && !failed
+  return <div className="model-access">
+    <h2>{title}</h2>
+    <p>{caption}</p>
+    <div className="model-links">
+      <button type="button" className="action-link" ref={opener} onClick={openDiagram} aria-haspopup="dialog">Obrir el diagrama</button>
+      <a className="text-link" href={url} download>Descarregar {isImage ? 'PNG' : 'BPMN'}</a>
+      <a className="text-link" href={textHref}>{textLabel}</a>
     </div>
-    <div className="bpmn-canvas" ref={mount} role="img" aria-label={title + '. Usa els controls per ampliar i recórrer el diagrama.'} />
-    {!loaded && !error && <p role="status" className="model-status">Carregant el model…</p>}
-    {error && <p className="model-error" role="alert">{error}</p>}
-    <figcaption><span className="model-legend"><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Inici</span><span><svg width="16" height="16" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8" fill="none" stroke="currentColor" strokeWidth="3" /></svg>Final</span><span><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1 23 12 12 23 1 12Z M8 8 16 16 M16 8 8 16" fill="none" stroke="currentColor" strokeWidth="1.5" /></svg>Decisió exclusiva (X)</span><span>→ Seqüència dins de l’empresa</span><span>⇢ Missatge entre pools</span></span>{improved && 'Les tasques amb fons gris tenen suport ERP.'}</figcaption>
-  </figure>
+    <dialog ref={dialog} className="diagram-dialog" aria-labelledby={id} onClose={() => {
+      setOpen(false)
+      opener.current?.focus()
+    }}>
+      <div className="diagram-heading">
+        <h2 id={id}>{title}</h2>
+        <button type="button" className="diagram-control" ref={closeButton} onClick={() => dialog.current.close()}>Tancar</button>
+      </div>
+      {open && <>
+        <div className="diagram-toolbar">
+          <div className="diagram-controls" role="group" aria-label="Zoom">
+            <button type="button" disabled={!ready || (isImage && zoom >= 12)} onClick={() => changeZoom(1.5)}>Ampliar</button>
+            <button type="button" disabled={!ready || (isImage && zoom <= 1)} onClick={() => changeZoom(1 / 1.5)}>Reduir</button>
+            <button type="button" disabled={!ready} onClick={fit}>Veure tot</button>
+          </div>
+          <div className="diagram-controls" role="group" aria-label="Desplaçament del diagrama">
+            {pans.map(({ label, symbol, x, y }) => <button key={label} type="button" disabled={!ready || (isImage && zoom <= 1)}
+              onClick={() => pan(x, y)} aria-label={label}>{symbol}</button>)}
+          </div>
+        </div>
+        {failed && <p role="alert">El diagrama no s’ha pogut carregar. Tanca el visor per descarregar el fitxer o consultar el recorregut en text.</p>}
+        {!loaded && !failed && <p role="status">Carregant el diagrama…</p>}
+        <div ref={viewport} className={'diagram-viewport' + (isImage ? ' diagram-image' : '')} role={isImage ? 'region' : 'img'}
+          aria-label={isImage ? 'Imatge del procés actual' : 'Diagrama del procés proposat amb les tasques ERP marcades'}
+          tabIndex={isImage ? 0 : undefined}>
+          {isImage && <img src={url} alt="Procés d’aprovisionament actual amb els carrils de producció, compres, magatzem i qualitat."
+            width="7998" height="3870" style={{ width: zoom * 100 + '%' }} onLoad={() => setLoaded(true)} onError={() => setFailed(true)} />}
+        </div>
+        {!isImage && <p className="diagram-legend">Les tasques amb fons gris tenen suport ERP. La persona o el servei que les executa figura en «Requisits ERP».</p>}
+      </>}
+    </dialog>
+  </div>
 }
 
-export function CurrentProcessDiagram() {
-  const dialog = useRef(null)
-  const [expanded, setExpanded] = useState(false)
-  const [zoom, setZoom] = useState(1)
-  const url = modelUrl('as-is-diagrama.png')
+const currentDecisions = {
+  '01': 'Si canvia el pla de fabricació, cal recalcular les necessitats i les dates.',
+  '02': 'Si hi ha prou estoc, el material ja està disponible. Si en falta, es prepara una sol·licitud.',
+  '03': 'Cal revisar la necessitat i el pressupost abans d’autoritzar la compra.',
+  '04': 'Compres valora quina oferta s’ajusta al material, el preu i el termini requerits.',
+  '05': 'Compres contrasta la data confirmada pel proveïdor amb la que necessita producció.',
+  '06': 'Si la quantitat és correcta, el lot passa a qualitat. Si hi ha una diferència, es comunica i l’entrada queda pendent de regularitzar.',
+  '07': 'Si el lot és acceptat, es registra l’entrada. Si el lot es rebutja, es comunica el rebuig. Si calen més proves, queda pendent de qualitat.',
+  '08': 'Magatzem registra la quantitat acceptada i la ubicació abans d’avisar producció.',
+}
 
-  useEffect(() => {
-    if (!expanded) return
-    const previousOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-    dialog.current.showModal()
-    return () => {
-      dialog.current?.close()
-      document.body.style.overflow = previousOverflow
-    }
-  }, [expanded])
-
-  const controls = <div className="model-toolbar">
-    <div className="model-actions" aria-label="Controls de la imatge">
-      <button type="button" aria-label="Ampliar el model" disabled={zoom >= 12} onClick={() => setZoom((value) => Math.min(12,value * 1.5))}>+</button>
-      <button type="button" aria-label="Reduir el model" disabled={zoom <= 1} onClick={() => setZoom((value) => Math.max(1,value / 1.5))}>−</button>
-      <button type="button" onClick={() => setZoom(1)}>Veure tot</button>
-    </div>
-    <a className="model-download" href={url} download="Nexe-model-AS-IS.png">Descarregar imatge ↓</a>
-  </div>
-  const image = <div className="model-image-viewport" tabIndex="0" role="region" aria-label="Diagrama AS-IS. Desplaça’t per la imatge quan estiga ampliada.">
-    <img src={url} alt="Diagrama amb els pools de Ceràmica Riu Sec i proveïdors, i els carrils de producció, compres, magatzem i qualitat." width="7998" height="3870" style={{ width: `${zoom * 100}%`, height: zoom === 1 ? '100%' : 'auto', objectFit: zoom === 1 ? 'contain' : undefined }} />
-  </div>
-
+export function ProcessPage() {
+  const processHref = pageHref('proces')
   return <>
-    <figure className="model-figure model-image">
-      <div className="model-heading"><h2>Model AS-IS</h2><button className="model-expand-button" type="button" onClick={() => { setZoom(1); setExpanded(true) }}>Ampliar vista ↗</button></div>
-      {controls}{image}
-    </figure>
-    <dialog className="model-image-dialog" ref={dialog} aria-labelledby="as-is-dialog-title" onCancel={() => setExpanded(false)} onClose={() => setExpanded(false)}>
-      <div className="model-heading"><h2 id="as-is-dialog-title">Model AS-IS</h2><button className="model-expand-button" type="button" onClick={() => setExpanded(false)}>Tancar vista ampliada ×</button></div>
-      {controls}{image}
-    </dialog>
+    <PageIntro label="Aprovisionament de matèries primeres" title="El procés actual">Producció, compres, magatzem i qualitat es coordinen amb correus, telefonades i fulls de càlcul separats.</PageIntro>
+    <SectionLinks page="proces" links={[['abast', 'Abast'], ['activitats', 'Activitats'], ['diagnostic', 'Taula d’anàlisi'], ['model-actual', 'Diagrama AS-IS']]} />
+    <section id="abast" className="section-space wrap">
+      <h2>Abast del procés</h2>
+      <dl className="process-scope-grid">
+        <div><dt>Inici</dt><dd>Producció detecta una necessitat d’argila o esmalt en el pla de fabricació.</dd></div>
+        <div><dt>Final</dt><dd>El material està disponible. Les diferències de recepció i els lots rebutjats o pendents de qualitat es deriven al tractament corresponent.</dd></div>
+        <div><dt>Proveïdors</dt><dd>Reben les comandes, confirmen la data i acompanyen el lliurament amb l’albarà i l’avís corresponent.</dd></div>
+      </dl>
+    </section>
+    <section id="activitats" className="section-space wrap">
+      <h2>Les huit activitats</h2>
+      <ol className="process-list" role="list">
+        {steps.map((step, index) => {
+          const item = analysis[index]
+          return <li className="process-item" key={item.id} id={'activitat-' + (index + 1)}>
+            <div className="process-step-title"><span className="step-number" aria-hidden="true">{item.id}</span><h3>{step.title}</h3></div>
+            <div className="process-step-content">
+              <p className="process-step-action"><strong>{step.owner}.</strong> {step.summary}</p>
+              <dl className="process-fields">
+                <div><dt>Entrada</dt><dd>{step.input}</dd></div>
+                <div><dt>Eixida</dt><dd>{step.output}</dd></div>
+              </dl>
+              <p className="process-decision"><strong>Punt de decisió.</strong> {currentDecisions[item.id]}</p>
+              <details className="activity-details">
+                <summary aria-label={'Anàlisi i millora del pas: ' + step.title}>Anàlisi i millora del pas <span aria-hidden="true">+</span></summary>
+                <div className="activity-analysis">
+                  <p><strong>{item.assessment}.</strong> {item.diagnosis}</p>
+                  <p><strong>Impacte i preocupacions possibles.</strong> {item.participantConcern} {item.consequence}</p>
+                  <p><strong>Millora proposada.</strong> {item.improvement}</p>
+                  <p><strong>Justificació.</strong> {item.justification}</p>
+                </div>
+              </details>
+            </div>
+          </li>
+        })}
+      </ol>
+    </section>
+    <section id="diagnostic" className="section-space wrap">
+      <h2>Taula d’anàlisi i millores</h2>
+      <div className="table-scroll" role="region" aria-label="Problemes i millores per activitat" tabIndex={0}>
+        <table className="work-table">
+          <caption>Resum dels problemes detectats i les millores proposades</caption>
+          <thead><tr><th scope="col">Activitat</th><th scope="col">Problema</th><th scope="col">Decisió</th><th scope="col">Millora</th><th scope="col">Categories BPR</th></tr></thead>
+          <tbody>{analysis.map((item, index) => <tr key={item.id}>
+            <th scope="row"><a href={processHref + '?seccio=activitat-' + (index + 1)}>{item.id} · {item.step}</a></th>
+            <td>{item.problemSummary}</td><td>{currentDecisions[item.id]}</td><td>{item.improvementSummary}</td><td>{item.category.replaceAll('; ', ' · ')}</td>
+          </tr>)}</tbody>
+        </table>
+      </div>
+    </section>
+    <section id="model-actual" className="section-space wrap">
+      <ProcessDiagram file="as-is-diagrama.png" title="Model AS-IS" caption="Diagrama del recorregut actual, amb els departaments i els intercanvis amb proveïdors."
+        textHref={processHref + '?seccio=activitats'} textLabel="Llegir les activitats i decisions" />
+    </section>
   </>
 }
 
-const caseImprovements = [
-  { title: 'Peticions i aprovacions', summary: 'Una sol·licitud compartida, amb responsable i estat visibles.' },
-  { title: 'Estoc i reposició', summary: 'Existències, reserves i lots bloquejats en un mateix registre.' },
-  { title: 'Recepció i qualitat', summary: 'Control de recepcions parcials i bloqueig dels lots fins a l’acceptació.' },
-  { title: 'Seguiment i avisos', summary: 'Dates confirmades i incidències compartides amb compres i producció.' },
+const improvedFlow = [
+  ['Planificar i reservar material', 'L’ERP relaciona la necessitat amb la versió del pla i calcula l’estoc utilitzable. Amb estoc suficient, reserva el material i comprova si cal reposar. Si en falta, reserva la part disponible i tramita la quantitat pendent.'],
+  ['Autoritzar i comprar', 'Una petició aprovada passa a compres. Si cal corregir-la, torna a revisió. Si es rebutja, es tanca amb el motiu. Compres torna a buscar si cap oferta és adequada. Amb una oferta vàlida, l’ERP emet la comanda.'],
+  ['Fer seguiment del lliurament', 'L’ERP contrasta la data confirmada amb la requerida i avisa de les ordres afectades. Davant d’un retard, compres pot reclamar, replanificar o buscar una alternativa després de resoldre el saldo que es vol substituir.'],
+  ['Rebre i validar el lot', 'La recepció completa o la part rebuda d’una recepció parcial passa a qualitat. El saldo queda pendent. Les diferències es bloquegen i es deriven a reclamació. Un lot en revisió continua bloquejat fins que es repetisca el control. Els lots rebutjats es deriven a reclamació.'],
+  ['Registrar el material acceptat', 'Magatzem confirma la quantitat acceptada i la ubicació. L’ERP actualitza les existències una sola vegada i avisa producció.'],
 ]
 
 export function ImprovementPage() {
   return <>
-    <Intro label="Aprovisionament de matèries primeres" title="Proposta de millora">Compartir les dades en un ERP per reduir compres urgents, registres duplicats i errors de coordinació.</Intro>
-    <section id="canvis" className="section-space wrap"><div className="improvement-list case-highlights">{caseImprovements.map((item) => <article key={item.title}><h2>{item.title}</h2><p>{item.summary}</p></article>)}</div></section>
-    <section id="model-proposat" className="section-space wrap"><Diagram file="to-be.bpmn" title="Model TO-BE" caption="Procés proposat amb suport ERP. Pendent d’implantació." improved /></section>
+    <PageIntro label="Aprovisionament de matèries primeres" title="Proposta de millora">Compartir les dades en un ERP reduiria compres urgents, registres duplicats i errors de coordinació.</PageIntro>
+    <SectionLinks page="millora" links={[['canvis', 'Categories BPR'], ['recorregut', 'Recorregut proposat'], ['model-proposat', 'Diagrama TO-BE']]} />
+    <section id="canvis" className="section-space wrap">
+      <h2>Les quatre categories de millora</h2>
+      <div className="improvement-list">{improvementCategories.map((item) => <article key={item.title}>
+        <h3>{item.title}</h3><p>{item.change}</p><p><strong>Justificació.</strong> {item.reason}</p>
+      </article>)}</div>
+      <a className="text-link next-link" href={pageHref('proces') + '?seccio=diagnostic'}>Consultar la millora de cada activitat</a>
+    </section>
+    <section id="recorregut" className="section-space wrap">
+      <h2>Com funcionaria el procés proposat</h2>
+      <ol className="improved-flow">{improvedFlow.map(([title, description]) => <li key={title}><h3>{title}</h3><p>{description}</p></li>)}</ol>
+      <a className="text-link next-link" href={pageHref('requisits') + '?seccio=tasques-erp'}>Veure quines tasques necessiten l’ERP</a>
+    </section>
+    <section id="model-proposat" className="section-space wrap">
+      <ProcessDiagram file="to-be.bpmn" title="Model TO-BE" caption="Model BPMN 2.0 de la proposta, pendent d’implantació."
+        textHref={pageHref('millora') + '?seccio=recorregut'} textLabel="Llegir el recorregut proposat" />
+    </section>
   </>
 }
 
 const requirementGroups = [
-  { id: 'planificacio', title: 'Planificació i existències', detail: 'Necessitats, disponibilitat i assignació del material.', stories: ['HU-01','HU-02','HU-09'] },
-  { id: 'compres', title: 'Compres i proveïdors', detail: 'Autoritzacions, ofertes, comandes i resposta als retards.', stories: ['HU-03','HU-04','HU-10','HU-11'] },
-  { id: 'recepcio', title: 'Recepció i qualitat', detail: 'Controlar allò que arriba i decidir què es pot utilitzar.', stories: ['HU-06','HU-07'] },
-  { id: 'coordinacio', title: 'Coordinació amb producció', detail: 'Conéixer l’impacte de les incidències i confirmar la disponibilitat.', stories: ['HU-05','HU-08'] },
+  { id: 'planificacio', title: 'Planificació i existències', stories: ['HU-01', 'HU-02', 'HU-09'] },
+  { id: 'compres', title: 'Compres i proveïdors', stories: ['HU-03', 'HU-04', 'HU-10', 'HU-11'] },
+  { id: 'recepcio', title: 'Recepció i qualitat', stories: ['HU-06', 'HU-07'] },
+  { id: 'coordinacio', title: 'Coordinació amb producció', stories: ['HU-05', 'HU-08'] },
 ]
 
 function StoryReferences({ ids }) {
-  const values = Array.isArray(ids) ? ids : ids.match(/HU-\d+/g) || []
-  return <span className="reference-links">{values.map((id) => <a key={id} href={pageHref('requisits') + '?seccio=' + id.toLowerCase()}>{id}</a>)}</span>
+  return <span className="reference-links">{ids.map((id) => <a key={id} href={pageHref('requisits') + '?seccio=' + id.toLowerCase()}>{id}</a>)}</span>
 }
 
 export function RequirementsPage() {
-  const route = readRoute()
-  const selected = requirementGroups.find((group) => group.id === route.view || group.id === route.section || group.stories.some((id) => id.toLowerCase() === route.section))?.id || 'planificacio'
-  const sections = [{ id:'histories', label:'Històries d’usuari', anchors:[...requirementGroups.map((group) => group.id), ...userStories.map((story) => story.id.toLowerCase())], content:(<section className="section-space"><p className="requirements-note">Onze històries en quatre àrees. HU-05 i HU-07 són candidats diferencials que cal verificar.</p><div className="requirement-groups">{requirementGroups.map((group) => <details id={group.id} key={group.id + selected} className="requirement-group" name="requirement-areas" open={group.id === selected}>
-    <summary><h2>{group.title}</h2><span>{group.stories.length} històries <span aria-hidden="true">+</span></span></summary>
-    <div className="story-list">{group.stories.map((id) => {
-      const story = userStories.find((item) => item.id === id)
-      return <article className="user-story" key={id} id={id.toLowerCase()} aria-labelledby={id+'-title'}><div className="story-meta"><h3 id={id+'-title'}>{id}</h3><span>Pas {story.steps}</span>{story.differential && <span className="story-specific">Candidat diferencial</span>}</div><p className="story-statement">Com a <strong>{story.role}</strong>, vull {story.need} per a {story.benefit}.</p><p className="story-check"><strong>Validació.</strong> {story.acceptance}</p>{story.differentialReason && <p className="story-check"><strong>Particularitat.</strong> {story.differentialReason}</p>}</article>
-    })}</div>
-  </details>)}</div></section>)}]
-  sections.push({ id: 'dades', label: 'Dades específiques', content: (<section id="dades" className="section-space data-section"><div className="wrap"><div className="section-heading-row"><h2>Les dades que ho fan possible</h2><p>Les fitxes de producte, estoc i comandes són necessàries. A més, el procés requereix aquestes dades de qualitat i la seua relació amb fabricació.</p></div>
-      <div className="table-scroll" role="region" aria-label="Dades específiques del procés" tabIndex="0"><table className="work-table"><thead><tr><th>Dada i camps necessaris</th><th>Origen i ús en el procés</th><th>Històries</th></tr></thead><tbody>{differentialData.map((item) => <tr key={item.name}><th scope="row">{item.name}<small>{item.fields}</small></th><td><strong>{item.source}.</strong> {item.use}</td><td><StoryReferences ids={item.stories} /></td></tr>)}</tbody></table></div>
-      <p className="story-note">Les particularitats indicades s’han de comprovar en els mòduls i la configuració del producte concret. Qualitat ha de validar els paràmetres i els límits tècnics.</p>
-    </div></section>) })
-  sections.push({ id: 'tasques-erp', label: 'Cobertura ERP', anchors: [], content: (<section id="tasques-erp" className="section-space"><div className="wrap"><div className="section-heading-row"><h2>Responsables i suport ERP</h2><p>Les tasques d’usuari impliquen una entrada o una decisió humana. Les tasques de servei automatitzen el càlcul, l’emissió o el registre després de dades confirmades. El fitxer BPMN conserva els responsables i les HU associades en la documentació de cada tasca.</p></div><div className="table-scroll" role="region" aria-label="Tasques amb suport ERP" tabIndex="0"><table className="work-table"><thead><tr><th>Pas i tasca del TO-BE</th><th>Responsable</th><th>Tipus de tasca</th><th>Històries d’usuari</th></tr></thead><tbody>{erpTasks.map((task) => <tr key={task.id}><th scope="row">{task.step} · {task.label}</th><td>{task.owner}</td><td>{task.kind}</td><td><StoryReferences ids={userStories.filter((story) => story.taskRefs.includes(task.id)).map((story) => story.id)} /></td></tr>)}</tbody></table></div></div></section>) })
-  return <><Intro label="Requisits ERP" title="Què necessita cada equip">Necessitats dels participants, dades específiques i relació amb les tasques del procés proposat.</Intro><SectionBrowser page="requisits" sections={sections} /></>
+  return <>
+    <PageIntro title="Requisits ERP">Històries d’usuari, dades diferencials i cobertura de les tasques del procés proposat.</PageIntro>
+    <SectionLinks page="requisits" links={[['histories', 'Històries d’usuari'], ['dades', 'Dades diferencials'], ['tasques-erp', 'Cobertura ERP']]} />
+    <section id="histories" className="section-space wrap">
+      <h2>Històries d’usuari</h2>
+      <p className="requirements-note">Les històries HU-05 i HU-07 descriuen particularitats que cal verificar en els productes avaluats.</p>
+      <div className="requirement-groups">{requirementGroups.map((group, index) => <details id={group.id} key={group.id} className="requirement-group" open={index === 0}>
+        <summary><span>{group.title}</span><span aria-hidden="true">+</span></summary>
+        <div className="story-list">{group.stories.map((id) => {
+          const story = userStories.find((item) => item.id === id)
+          return <article className="user-story" key={id} id={id.toLowerCase()} aria-labelledby={id + '-title'}>
+            <div className="story-meta"><h3 id={id + '-title'}>{id}</h3><span>Pas {story.steps}</span>{story.differential && <strong className="story-specific">Candidat diferencial</strong>}</div>
+            <p className="story-statement">Com a <strong>{story.role}</strong>, vull {story.need} per a {story.benefit}.</p>
+            <p className="story-check"><strong>Validació.</strong> {story.acceptance}</p>
+            {story.differentialReason && <p className="story-check"><strong>Particularitat.</strong> {story.differentialReason}</p>}
+          </article>
+        })}</div>
+      </details>)}</div>
+    </section>
+    <section id="dades" className="section-space wrap">
+      <h2>Dades diferencials</h2>
+      <div className="table-scroll" role="region" aria-label="Dades diferencials del procés" tabIndex={0}>
+        <table className="work-table">
+          <caption>Dades específiques de qualitat i de planificació</caption>
+          <thead><tr><th scope="col">Dada i camps necessaris</th><th scope="col">Origen i ús en el procés</th><th scope="col">Històries</th></tr></thead>
+          <tbody>{differentialData.map((item) => <tr key={item.name}><th scope="row">{item.name}<small>{item.fields}</small></th><td><strong>{item.source}.</strong> {item.use}</td><td><StoryReferences ids={item.stories.match(/HU-\d+/g)} /></td></tr>)}</tbody>
+        </table>
+      </div>
+    </section>
+    <section id="tasques-erp" className="section-space wrap">
+      <h2>Cobertura ERP</h2>
+      <p className="requirements-note">Les tasques d’usuari requereixen una entrada o decisió humana. Les tasques de servei automatitzen càlculs, emissions i registres.</p>
+      <div className="table-scroll" role="region" aria-label="Tasques amb suport ERP" tabIndex={0}>
+        <table className="work-table">
+          <caption>Relació entre les tasques del TO-BE i les històries d’usuari</caption>
+          <thead><tr><th scope="col">Pas i tasca</th><th scope="col">Responsable</th><th scope="col">Tipus de tasca</th><th scope="col">Històries</th></tr></thead>
+          <tbody>{erpTasks.map((task) => <tr key={task.id}><th scope="row">{task.step} · {task.label}</th><td>{task.owner}</td><td>{task.kind}</td><td><StoryReferences ids={userStories.filter((story) => story.taskRefs.includes(task.id)).map((story) => story.id)} /></td></tr>)}</tbody>
+        </table>
+      </div>
+    </section>
+  </>
 }
