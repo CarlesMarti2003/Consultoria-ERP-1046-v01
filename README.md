@@ -14,7 +14,8 @@ El cas de Ceràmica Riu Sec està a `#/casos/ceramica-riu-sec`:
 2. **Procés actual** inclou les huit activitats amb entrades, eixides i decisions, l’anàlisi, la taula de millores i el model AS-IS.
 3. **Proposta de millora** justifica les quatre categories BPR i mostra el recorregut proposat i el TO-BE.
 4. **Requisits ERP** recull les històries d’usuari, les dades diferencials i la cobertura de les tasques del TO-BE.
-5. **Documents i fonts** reuneix els models BPMN i la presentació de dues diapositives.
+
+L’apartat **Documents i fonts** conserva els models BPMN i la presentació de dues diapositives. La seua visibilitat es controla des de `src/publication.js`.
 
 `src/navigation.js` centralitza les rutes. Els enllaços antics continuen portant a l’apartat relacionat. Els índexs interns usen `?seccio=...` dins de la ruta amb hash i admeten accés directe i navegació enrere.
 

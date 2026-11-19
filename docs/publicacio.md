@@ -1,6 +1,6 @@
 # Visibilitat dels apartats
 
-La revisió de la pràctica 4 activa «Requisits ERP» i «Documents i fonts» en la V01. La configuració es troba en `src/publication.js`. La còpia publicada en GitHub Pages canvia quan s’exporta la V01 i es pugen els canvis a la branca de publicació.
+«Requisits ERP» continua visible en la V01. «Documents i fonts» queda ocult amb `showDocuments` en `src/publication.js`. Els enllaços antics a l’apartat mostren el resum de Ceràmica Riu Sec. La còpia publicada en GitHub Pages canvia quan s’exporta la V01 i es pugen els canvis a la branca de publicació.
 
 # Fotografia de portada
 
