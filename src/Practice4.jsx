@@ -12,7 +12,8 @@ const pans = [
   { label: 'Moure a la dreta', symbol: '→', x: 1, y: 0 },
 ]
 
-function ProcessDiagram({ title, image, caption, textHref, textLabel, downloads = [[image.file, 'Descarregar PNG']] }) {
+function ProcessDiagram({ title, image, caption, textHref, textLabel }) {
+  const imageUrl = modelUrl(image.file)
   const id = useId()
   const dialog = useRef(null)
   const opener = useRef(null)
@@ -47,7 +48,7 @@ function ProcessDiagram({ title, image, caption, textHref, textLabel, downloads 
     <p>{caption}</p>
     <div className="model-links">
       <button type="button" className="action-link" ref={opener} onClick={openDiagram} aria-haspopup="dialog">Obrir el diagrama</button>
-      {downloads.map(([file, label]) => <a key={file} className="text-link" href={modelUrl(file)} download>{label}</a>)}
+      <a className="text-link" href={imageUrl} download>Descarregar PNG</a>
       <a className="text-link" href={textHref}>{textLabel}</a>
     </div>
     <dialog ref={dialog} className="diagram-dialog" aria-labelledby={id} onClose={() => {
@@ -73,7 +74,7 @@ function ProcessDiagram({ title, image, caption, textHref, textLabel, downloads 
         {failed && <p role="alert">El diagrama no s’ha pogut carregar. Tanca el visor per descarregar el fitxer o consultar el recorregut en text.</p>}
         {!loaded && !failed && <p role="status">Carregant el diagrama…</p>}
         <div ref={viewport} className="diagram-viewport" role="region" aria-label="Àrea de desplaçament del diagrama" tabIndex={0}>
-          <img src={modelUrl(image.file)} alt={image.alt} width={image.width} height={image.height}
+          <img src={imageUrl} alt={image.alt} width={image.width} height={image.height}
             style={{ width: `min(${zoom * 100}cqw, ${zoom * 100 * image.width / image.height}cqh)` }}
             onLoad={() => setLoaded(true)} onError={() => setFailed(true)} />
         </div>
@@ -182,7 +183,6 @@ export function ImprovementPage() {
     <section id="model-proposat" className="section-space wrap">
       <ProcessDiagram title="Model TO-BE" caption="Model BPMN 2.0 de la proposta, pendent d’implantació. Les tasques amb l’etiqueta «ERP» tenen suport del sistema."
         image={{ file: 'to-be-diagrama.png', width: 9000, height: 3918, alt: 'Model TO-BE d’aprovisionament amb producció, compres, magatzem, qualitat, suport ERP i proveïdors.' }}
-        downloads={ [['to-be.pdf', 'Descarregar PDF'], ['to-be.bpmn', 'Descarregar BPMN per a Camunda Modeler']] }
         textHref={pageHref('millora') + '?seccio=recorregut'} textLabel="Llegir el recorregut proposat" />
     </section>
   </>
