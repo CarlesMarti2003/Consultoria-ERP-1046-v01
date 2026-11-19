@@ -1,5 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
-import NavigatedViewer from 'bpmn-js/lib/NavigatedViewer'
+import { useId, useRef, useState } from 'react'
 import { steps } from './content.js'
 import { analysis, differentialData, erpTasks, improvementCategories, userStories } from './practice4Content.js'
 import { PageIntro, SectionLinks } from './ProjectUI.jsx'
@@ -13,75 +12,24 @@ const pans = [
   { label: 'Moure a la dreta', symbol: '→', x: 1, y: 0 },
 ]
 
-function ProcessDiagram({ title, file, caption, textHref, textLabel }) {
-  const isImage = file.endsWith('.png')
-  const url = modelUrl(file)
+function ProcessDiagram({ title, image, caption, textHref, textLabel, downloads = [[image.file, 'Descarregar PNG']] }) {
   const id = useId()
   const dialog = useRef(null)
   const opener = useRef(null)
   const closeButton = useRef(null)
   const viewport = useRef(null)
-  const viewer = useRef(null)
   const [open, setOpen] = useState(false)
   const [loaded, setLoaded] = useState(false)
   const [failed, setFailed] = useState(false)
   const [zoom, setZoom] = useState(1)
 
-  useEffect(() => {
-    if (!open || isImage) return
-    const element = viewport.current
-    const controller = new AbortController()
-    const instance = new NavigatedViewer({ container: element, zoomScroll: { enabled: false } })
-    viewer.current = instance
-    const canvas = instance.get('canvas')
-    const resize = new ResizeObserver(() => canvas.resized())
-    resize.observe(element)
-
-    async function loadModel() {
-      try {
-        const response = await fetch(url, { signal: controller.signal })
-        if (!response.ok) throw new Error('No s’ha pogut carregar el BPMN.')
-        const xml = await response.text()
-        if (controller.signal.aborted) return
-        await instance.importXML(xml)
-        if (controller.signal.aborted) return
-        for (const task of erpTasks) canvas.addMarker(task.id, 'erp-task')
-        canvas.resized()
-        canvas.zoom('fit-viewport', 'auto')
-        setLoaded(true)
-      } catch {
-        if (!controller.signal.aborted) setFailed(true)
-      }
-    }
-
-    loadModel()
-    return () => {
-      controller.abort()
-      resize.disconnect()
-      instance.destroy()
-      viewer.current = null
-    }
-  }, [open, isImage, url])
-
   function changeZoom(factor) {
-    if (isImage) {
-      setZoom((current) => Math.min(12, Math.max(1, current * factor)))
-      return
-    }
-    const canvas = viewer.current.get('canvas')
-    canvas.zoom(Math.min(4, Math.max(0.03, canvas.zoom() * factor)), 'auto')
+    setZoom((current) => Math.min(12, Math.max(1, current * factor)))
   }
 
   function fit() {
-    if (isImage) {
-      setZoom(1)
-      viewport.current.scrollTo(0, 0)
-    } else viewer.current.get('canvas').zoom('fit-viewport', 'auto')
-  }
-
-  function pan(x, y) {
-    if (isImage) viewport.current.scrollBy(x * 160, y * 160)
-    else viewer.current.get('canvas').scroll({ dx: -x * 160, dy: -y * 160 })
+    setZoom(1)
+    viewport.current.scrollTo(0, 0)
   }
 
   function openDiagram() {
@@ -99,7 +47,7 @@ function ProcessDiagram({ title, file, caption, textHref, textLabel }) {
     <p>{caption}</p>
     <div className="model-links">
       <button type="button" className="action-link" ref={opener} onClick={openDiagram} aria-haspopup="dialog">Obrir el diagrama</button>
-      <a className="text-link" href={url} download>Descarregar {isImage ? 'PNG' : 'BPMN'}</a>
+      {downloads.map(([file, label]) => <a key={file} className="text-link" href={modelUrl(file)} download>{label}</a>)}
       <a className="text-link" href={textHref}>{textLabel}</a>
     </div>
     <dialog ref={dialog} className="diagram-dialog" aria-labelledby={id} onClose={() => {
@@ -113,24 +61,22 @@ function ProcessDiagram({ title, file, caption, textHref, textLabel }) {
       {open && <>
         <div className="diagram-toolbar">
           <div className="diagram-controls" role="group" aria-label="Zoom">
-            <button type="button" disabled={!ready || (isImage && zoom >= 12)} onClick={() => changeZoom(1.5)}>Ampliar</button>
-            <button type="button" disabled={!ready || (isImage && zoom <= 1)} onClick={() => changeZoom(1 / 1.5)}>Reduir</button>
+            <button type="button" disabled={!ready || zoom >= 12} onClick={() => changeZoom(1.5)}>Ampliar</button>
+            <button type="button" disabled={!ready || zoom <= 1} onClick={() => changeZoom(1 / 1.5)}>Reduir</button>
             <button type="button" disabled={!ready} onClick={fit}>Veure tot</button>
           </div>
           <div className="diagram-controls" role="group" aria-label="Desplaçament del diagrama">
-            {pans.map(({ label, symbol, x, y }) => <button key={label} type="button" disabled={!ready || (isImage && zoom <= 1)}
-              onClick={() => pan(x, y)} aria-label={label}>{symbol}</button>)}
+            {pans.map(({ label, symbol, x, y }) => <button key={label} type="button" disabled={!ready || zoom <= 1}
+              onClick={() => viewport.current.scrollBy(x * 160, y * 160)} aria-label={label}>{symbol}</button>)}
           </div>
         </div>
         {failed && <p role="alert">El diagrama no s’ha pogut carregar. Tanca el visor per descarregar el fitxer o consultar el recorregut en text.</p>}
         {!loaded && !failed && <p role="status">Carregant el diagrama…</p>}
-        <div ref={viewport} className={'diagram-viewport' + (isImage ? ' diagram-image' : '')} role={isImage ? 'region' : 'img'}
-          aria-label={isImage ? 'Imatge del procés actual' : 'Diagrama del procés proposat amb les tasques ERP marcades'}
-          tabIndex={isImage ? 0 : undefined}>
-          {isImage && <img src={url} alt="Procés d’aprovisionament actual amb els carrils de producció, compres, magatzem i qualitat."
-            width="7998" height="3870" style={{ width: zoom * 100 + '%' }} onLoad={() => setLoaded(true)} onError={() => setFailed(true)} />}
+        <div ref={viewport} className="diagram-viewport" role="region" aria-label="Àrea de desplaçament del diagrama" tabIndex={0}>
+          <img src={modelUrl(image.file)} alt={image.alt} width={image.width} height={image.height}
+            style={{ width: `min(${zoom * 100}cqw, ${zoom * 100 * image.width / image.height}cqh)` }}
+            onLoad={() => setLoaded(true)} onError={() => setFailed(true)} />
         </div>
-        {!isImage && <p className="diagram-legend">Les tasques amb fons gris tenen suport ERP. La persona o el servei que les executa figura en «Requisits ERP».</p>}
       </>}
     </dialog>
   </div>
@@ -202,7 +148,8 @@ export function ProcessPage() {
       </div>
     </section>
     <section id="model-actual" className="section-space wrap">
-      <ProcessDiagram file="as-is-diagrama.png" title="Model AS-IS" caption="Diagrama del recorregut actual, amb els departaments i els intercanvis amb proveïdors."
+      <ProcessDiagram title="Model AS-IS" caption="Diagrama del recorregut actual, amb els departaments i els intercanvis amb proveïdors."
+        image={{ file: 'as-is-diagrama.png', width: 7998, height: 3870, alt: 'Procés d’aprovisionament actual amb els carrils de producció, compres, magatzem i qualitat.' }}
         textHref={processHref + '?seccio=activitats'} textLabel="Llegir les activitats i decisions" />
     </section>
   </>
@@ -233,7 +180,9 @@ export function ImprovementPage() {
       <a className="text-link next-link" href={pageHref('requisits') + '?seccio=tasques-erp'}>Veure quines tasques necessiten l’ERP</a>
     </section>
     <section id="model-proposat" className="section-space wrap">
-      <ProcessDiagram file="to-be.bpmn" title="Model TO-BE" caption="Model BPMN 2.0 de la proposta, pendent d’implantació."
+      <ProcessDiagram title="Model TO-BE" caption="Model BPMN 2.0 de la proposta, pendent d’implantació. Les tasques amb l’etiqueta «ERP» tenen suport del sistema."
+        image={{ file: 'to-be-diagrama.png', width: 9000, height: 3918, alt: 'Model TO-BE d’aprovisionament amb producció, compres, magatzem, qualitat, suport ERP i proveïdors.' }}
+        downloads={ [['to-be.pdf', 'Descarregar PDF'], ['to-be.bpmn', 'Descarregar BPMN per a Camunda Modeler']] }
         textHref={pageHref('millora') + '?seccio=recorregut'} textLabel="Llegir el recorregut proposat" />
     </section>
   </>

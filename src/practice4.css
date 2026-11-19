@@ -1,7 +1,3 @@
-@import "bpmn-js/dist/assets/diagram-js.css";
-
-.diagram-viewport .djs-element.erp-task .djs-visual > rect { stroke: var(--color-accent) !important; stroke-width: 2.5px !important; fill: #eeeeee !important; }
-.diagram-viewport .djs-container .djs-hit { cursor: grab; }
 .analysis-item { padding-block: 1.5rem; border-top: 1px solid var(--color-line); }
 .analysis-title { display: flex; gap: 1rem; align-items: baseline; }
 .item-index { font-size: .8rem; color: var(--color-muted); }
@@ -108,10 +104,8 @@ body:has(.diagram-dialog[open]) { overflow: hidden; }
 .diagram-controls { display: flex; flex-wrap: wrap; gap: .4rem; }
 .diagram-controls button,.diagram-control { min-height: 44px; min-width: 44px; padding: .35rem .7rem; border: 1px solid #777; background: #fff; color: var(--color-ink); }
 .diagram-controls button:disabled { color: #777; border-color: #ccc; cursor: default; }
-.diagram-viewport { position: relative; width: 100%; min-height: 10rem; flex: 1 0 10rem; border: 1px solid var(--color-line); }
-.diagram-image { overflow: auto; }
-.diagram-image img { display: block; max-width: none; height: auto; }
-.diagram-legend { font-size: .9rem; color: var(--color-muted); }
+.diagram-viewport { position: relative; width: 100%; min-height: 10rem; flex: 1 0 10rem; border: 1px solid var(--color-line); overflow: auto; container-type: size; }
+.diagram-viewport img { display: block; max-width: none; height: auto; }
 .table-scroll { margin-top: 1rem; }
 .work-table caption { text-align: left; margin-bottom: .45rem; font-size: .9rem; color: var(--color-muted); }
 .improvement-list { margin-top: 1rem; }
